@@ -1,0 +1,51 @@
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN"
+        "http://struts.apache.org/dtds/struts-2.1.dtd">
+<struts>
+	<constant name="struts.multipart.maxSize" value="10000000000"/>
+	<constant name="struts.multipart.saveDir" value="/tmp"></constant>
+	<!-- 一个包可以就是一个模块 -->
+	<package name="pc" extends="pcAuthInterceptor" namespace="/iseek/pc">
+	
+		<!-- 一个包下可以放这个模块下的所有action -->
+		<action name="login" class="com.sr178.iseek.pc.action.PcNoAuthAction" method="login" />
+		<action name="checkVersion" class="com.sr178.iseek.pc.action.PcNoAuthAction" method="checkVersion" />
+		
+		<action name="editpwd" class="com.sr178.iseek.pc.action.PcAction" method="editpwd" />
+		<action name="systemTime" class="com.sr178.iseek.pc.action.PcAction" method="systemTime" />
+		<action name="uploadFiles" class="com.sr178.iseek.pc.action.PcAction" method="uploadFiles" />
+		<action name="sign" class="com.sr178.iseek.pc.action.PcAction" method="sign" />
+		<action name="bigCheckList" class="com.sr178.iseek.pc.action.PcAction" method="bigCheckList" />
+		<action name="checkDetails" class="com.sr178.iseek.pc.action.PcAction" method="checkDetails" />
+		<action name="companyList" class="com.sr178.iseek.pc.action.PcAction" method="companyList" />
+		
+		<action name="saveCheck" class="com.sr178.iseek.pc.action.PcAction" method="saveCheck" />
+		<action name="intendance" class="com.sr178.iseek.pc.action.PcAction" method="intendance" />
+		<action name="trainRecord" class="com.sr178.iseek.pc.action.PcAction" method="trainRecord" />
+		<action name="trainRecordSimple" class="com.sr178.iseek.pc.action.PcAction" method="trainSimpleRecord" />
+		<action name="newsList" class="com.sr178.iseek.pc.action.PcAction" method="newsList" />
+		<action name="noReadNum" class="com.sr178.iseek.pc.action.PcAction" method="noReadNum" />
+		<action name="newsContent" class="com.sr178.iseek.pc.action.PcAction" method="newsContent" />
+	</package>
+	
+	
+	<package name="pcAuthInterceptor" extends="myInterceptor">
+		<interceptors>
+			<!-- 认证拦截器-->
+			<interceptor name="pcUserInterceptor"
+				class="com.sr178.iseek.pc.interceptor.PcUserInterceptor" />
+			<interceptor-stack name="pcStack">
+				<interceptor-ref name="pcUserInterceptor" />
+				<interceptor-ref name="myStack" />
+			</interceptor-stack>
+		</interceptors>
+		<default-interceptor-ref name="pcStack" />
+		<global-results>
+			<result type="json" name="json">  
+                <!-- 这里指定将被Struts2序列化的属性，该属性在action中必须有对应的getter方法 -->  
+                <param name="root">dataMap</param>  
+            </result>  
+		</global-results>
+	</package>
+	
+</struts>
