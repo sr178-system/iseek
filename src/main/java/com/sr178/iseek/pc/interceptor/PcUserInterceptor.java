@@ -29,19 +29,22 @@ public class PcUserInterceptor extends AbstractInterceptor {
 		} else {
 			throw new RuntimeException("ACTION继承的类非AppBaseActionSupport"+className);
 		}
-		PcService aus = ServiceCacheFactory.getServiceCache()
-				.getService(PcService.class);
-		Map<String,Object> map = actionInvocation.getInvocationContext().getParameters();
-		Object values = map.get("tokenId");
-		String tokenId = values==null?null:((String[])values)[0];
-		String userName = aus.isLogin(tokenId);
-		if (userName==null&&!className.equals("com.sr178.iseek.pc.action.PcNoAuthAction")) {
-			appAction.renderErrorResult("token失效或没有登录");
-			return "json";
-		} else {
-			appAction.setUserName(userName);
-			String result = actionInvocation.invoke();
-			return result;
+		
+		if(!className.equals("com.sr178.iseek.pc.action.PcNoAuthAction")){
+			PcService aus = ServiceCacheFactory.getServiceCache()
+					.getService(PcService.class);
+			Map<String,Object> map = actionInvocation.getInvocationContext().getParameters();
+			Object userIdvalues = map.get("user_id");
+			Object authStrvalues = map.get("auth_str");
+			String userId = userIdvalues==null?null:((String[])userIdvalues)[0];//用户id
+			String authStr = authStrvalues==null?null:((String[])authStrvalues)[0];//加密校验串
+			//校验是否登录用户
+			if(!aus.isLogin(userId, authStr)){
+				appAction.renderErrorResult("秘钥失效或未登陆！");
+				return "json";
+			}
 		}
+		String result = actionInvocation.invoke();
+		return result;
 	}
 }

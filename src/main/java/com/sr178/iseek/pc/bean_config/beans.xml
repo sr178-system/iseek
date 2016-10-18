@@ -10,6 +10,23 @@
         http://www.springframework.org/schema/context
         http://www.springframework.org/schema/context/spring-context-3.0.xsd">
     
+    <bean id="chargeConfigDao" class="com.sr178.iseek.pc.dao.ChargeConfigDao"></bean>
+    <bean id="filesDao" class="com.sr178.iseek.pc.dao.FilesDao"></bean>
+    <bean id="mobileVerifyDao" class="com.sr178.iseek.pc.dao.MobileVerifyDao"></bean>
+    <bean id="newsConfigDao" class="com.sr178.iseek.pc.dao.NewsConfigDao"></bean>
+    <bean id="newsDao" class="com.sr178.iseek.pc.dao.NewsDao"></bean>
+    <bean id="noticeDao" class="com.sr178.iseek.pc.dao.NoticeDao"></bean>
+    <bean id="paymentLogDao" class="com.sr178.iseek.pc.dao.PaymentLogDao"></bean>
+    <bean id="paymentOrderDao" class="com.sr178.iseek.pc.dao.PaymentOrderDao"></bean>
+    <bean id="regQuestionDao" class="com.sr178.iseek.pc.dao.RegQuestionDao"></bean>
+    <bean id="userDao" class="com.sr178.iseek.pc.dao.UserDao"></bean>
+    <bean id="userFilesDao" class="com.sr178.iseek.pc.dao.UserFilesDao"></bean>
+    <bean id="userMessageDao" class="com.sr178.iseek.pc.dao.UserMessageDao"></bean>
+    <bean id="userNoticeStatusDao" class="com.sr178.iseek.pc.dao.UserNoticeStatusDao"></bean>
+    <bean id="versionDao" class="com.sr178.iseek.pc.dao.VersionDao"></bean>
+    
+    
+    
     <bean id="pcService" class="com.sr178.iseek.pc.service.PcService"></bean>
     
 </beans>

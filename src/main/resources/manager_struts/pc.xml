@@ -5,7 +5,7 @@
 	<constant name="struts.multipart.maxSize" value="10000000000"/>
 	<constant name="struts.multipart.saveDir" value="/tmp"></constant>
 	<!-- 一个包可以就是一个模块 -->
-	<package name="pc" extends="pcAuthInterceptor" namespace="/iseek/pc">
+	<package name="pc" extends="pcAuthInterceptor" namespace="/iseek/api/pcclient">
 	
 		<!-- 一个包下可以放这个模块下的所有action -->
 		<action name="login" class="com.sr178.iseek.pc.action.PcNoAuthAction" method="login" />

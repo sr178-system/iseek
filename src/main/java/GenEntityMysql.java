@@ -13,7 +13,7 @@ import java.sql.SQLException;
 
 public class GenEntityMysql {
 	
-	private String packageOutPath = "com.sr178.iseek.admin.bo";//指定实体生成所在包的路径
+	private String packageOutPath = "com.sr178.iseek.pc.bo";//指定实体生成所在包的路径
 	private String[] colnames; // 列名数组
 	private String[] colTypes; //列名类型数组
 	private int[] colSizes; //列名大小数组
@@ -21,7 +21,7 @@ public class GenEntityMysql {
 	private boolean f_sql = false; // 是否需要导入包java.sql.*
     
     //数据库连接
-	private static final String URL ="jdbc:mysql://localhost:3306/safe_check";
+	private static final String URL ="jdbc:mysql://localhost:3306/iseek";
 	private static final String NAME = "root";
 	private static final String PASS = "";
 	private static final String DRIVER ="com.mysql.jdbc.Driver";
@@ -227,7 +227,7 @@ public class GenEntityMysql {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		String[] tableNames = new String[]{"user","admin_user","check_items","check_record","enforce_record","notice","resource"};//表名
+		String[] tableNames = new String[]{"user","admin_user","charge_config","files","mobile_verify","news","news_config","notice","payment_log","payment_order","reg_question","user_files","user_friends","user_message","user_notice_status","version"};//表名
 		for(int i=0;i<tableNames.length;i++){
 			new GenEntityMysql(tableNames[i]);
 		}

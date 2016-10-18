@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.sr178.game.framework.context.ServiceCacheFactory;
+import com.sr178.iseek.pc.bean.UpdateBO;
 import com.sr178.iseek.pc.service.PcService;
 import com.sr178.module.web.action.JsonBaseActionSupport;
 
@@ -14,6 +15,16 @@ public class PcNoAuthAction extends JsonBaseActionSupport{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	/**
+	 * 版本更新
+	 * @return
+	 */
+	private int client_ver;//客户端版本号
+	public String update(){
+		UpdateBO result = new UpdateBO();
+		return renderObjectResult(result);
+	}
+	
 
 	/**
 	 * 登录接口
@@ -43,4 +54,11 @@ public class PcNoAuthAction extends JsonBaseActionSupport{
 	public void setUserName(String userName) {
 		this.userName = userName;
 	}
+	public int getClient_ver() {
+		return client_ver;
+	}
+	public void setClient_ver(int client_ver) {
+		this.client_ver = client_ver;
+	}
+	
 }
