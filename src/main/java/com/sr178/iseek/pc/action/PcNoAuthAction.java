@@ -1,7 +1,5 @@
 package com.sr178.iseek.pc.action;
 
-import java.util.HashMap;
-import java.util.Map;
 
 import com.sr178.game.framework.context.ServiceCacheFactory;
 import com.sr178.iseek.pc.bean.UpdateBO;
@@ -29,30 +27,26 @@ public class PcNoAuthAction extends JsonBaseActionSupport{
 	/**
 	 * 登录接口
 	 */
-	private String userName;
-	private String passWord;
+	private String login_name;
+	private String login_str;
 	public String login(){
-		Map<String,String> result = new HashMap<String,String>();
 		PcService pcService = ServiceCacheFactory.getService(PcService.class);
-//		result.put("tokenId", pcService.login(userName, passWord));
-        return renderObjectResult(result);
+        return renderObjectResult(pcService.login(login_name, login_str));
 	}
 	
 	
 	
-	
-	
-	public String getPassWord() {
-		return passWord;
+	public String getLogin_name() {
+		return login_name;
 	}
-	public void setPassWord(String passWord) {
-		this.passWord = passWord;
+	public void setLogin_name(String login_name) {
+		this.login_name = login_name;
 	}
-	public String getUserName() {
-		return userName;
+	public String getLogin_str() {
+		return login_str;
 	}
-	public void setUserName(String userName) {
-		this.userName = userName;
+	public void setLogin_str(String login_str) {
+		this.login_str = login_str;
 	}
 	public int getClient_ver() {
 		return client_ver;

@@ -1,0 +1,37 @@
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN"
+        "http://struts.apache.org/dtds/struts-2.1.dtd">
+<struts>
+
+	<!-- 一个包可以就是一个模块 -->
+	<package name="admin" extends="adminInterceptor" namespace="/">
+		
+	</package>
+	
+	<package name="test" extends="myInterceptor" namespace="/test">
+	 
+	</package>
+	
+	<package name="adminInterceptor" extends="myInterceptor">
+		<interceptors>
+			<!-- 认证拦截器-->
+			<interceptor name="adminUserInterceptor"
+				class="com.sr178.iseek.admin.interceptor.AdminUserInterceptor" />
+			<interceptor-stack name="adminStack">
+				<interceptor-ref name="adminUserInterceptor" />
+				<interceptor-ref name="myStack" />
+			</interceptor-stack>
+		</interceptors>
+		<default-interceptor-ref name="adminStack" />
+		<global-results>
+			<!-- 当anction抛出异常将被转向web的错误处理页面，拦截器是exceptionInterceptor -->
+			<result name="glober_error">
+				/error_manager.jsp
+			</result>
+			<!-- 当没有登录的时候就会跳到首页要求其进行登录 -->
+			<result name="nologin" type="redirect">
+				/index.jsp
+			</result>
+		</global-results>
+	</package>
+</struts>

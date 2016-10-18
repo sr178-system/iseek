@@ -1,0 +1,31 @@
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN"
+        "http://struts.apache.org/dtds/struts-2.1.dtd">
+<struts>
+	<!-- 一个包可以就是一个模块 -->
+	<package name="pc" extends="pcAuthInterceptor" namespace="/iseek/api/pcclient">
+		<action name="login" class="com.sr178.iseek.pc.action.PcNoAuthAction" method="login" />
+		<action name="update" class="com.sr178.iseek.pc.action.PcNoAuthAction" method="update" />
+	</package>
+	
+	
+	<package name="pcAuthInterceptor" extends="myInterceptor">
+		<interceptors>
+			<!-- 认证拦截器-->
+			<interceptor name="pcUserInterceptor"
+				class="com.sr178.iseek.pc.interceptor.PcUserInterceptor" />
+			<interceptor-stack name="pcStack">
+				<interceptor-ref name="pcUserInterceptor" />
+				<interceptor-ref name="myStack" />
+			</interceptor-stack>
+		</interceptors>
+		<default-interceptor-ref name="pcStack" />
+		<global-results>
+			<result type="json" name="json">  
+                <!-- 这里指定将被Struts2序列化的属性，该属性在action中必须有对应的getter方法 -->  
+                <param name="root">dataMap</param>  
+            </result>  
+		</global-results>
+	</package>
+	
+</struts>
