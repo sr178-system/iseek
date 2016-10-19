@@ -5,6 +5,7 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -20,11 +21,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.google.common.base.Strings;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.google.common.collect.Lists;
 import com.sr178.common.jdbc.bean.SqlParamBean;
 import com.sr178.game.framework.exception.ServiceException;
 import com.sr178.game.framework.log.LogSystem;
+import com.sr178.iseek.pc.bean.InfoPageBO;
+import com.sr178.iseek.pc.bean.InfoPageLinksBO;
 import com.sr178.iseek.pc.bean.LoginBO;
+import com.sr178.iseek.pc.bean.UpdateBO;
+import com.sr178.iseek.pc.bean.UpdatePackageBO;
+import com.sr178.iseek.pc.bo.News;
+import com.sr178.iseek.pc.bo.NewsConfig;
 import com.sr178.iseek.pc.bo.User;
+import com.sr178.iseek.pc.bo.Version;
 import com.sr178.iseek.pc.dao.ChargeConfigDao;
 import com.sr178.iseek.pc.dao.FilesDao;
 import com.sr178.iseek.pc.dao.MobileVerifyDao;
@@ -49,6 +58,10 @@ public class PcService {
 	public static final String OR = "or";
 
   	private Cache<String,String> userTransferKeys = CacheBuilder.newBuilder().maximumSize(20000).build();
+  	
+  	private Cache<String,Date> userWrongPasswordDate = CacheBuilder.newBuilder().maximumSize(2000).build();
+  	
+  	private Cache<String,Integer> userWrongPasswordTimes = CacheBuilder.newBuilder().maximumSize(2000).build();
 
   	@Autowired
   	private ChargeConfigDao chargeConfigDao;
@@ -185,6 +198,10 @@ public class PcService {
 		if (user == null) {
 			throw new ServiceException(3, "用户名不存在");
 		}
+		Date date = userWrongPasswordDate.getIfPresent(user.getUserId()+"");
+		if(date!=null&&(date.getTime()+1800*1000)>new Date().getTime()){
+			throw new ServiceException(8, "账号尝试密码次数超过10次！禁止登陆30分钟！！");
+		}
 		if(user.getStatus()!=0){
 			throw new ServiceException(5, "该账户已被禁用，请及时联系管理员！");
 		}
@@ -192,9 +209,17 @@ public class PcService {
 		
  		String decryptLoginStr = decrypt(loginStr, truePassword);
  		if(decryptLoginStr==null){
+ 			Integer times = userWrongPasswordTimes.getIfPresent(user.getUserId()+"");
+ 			if(times==null){
+ 				times=1;
+ 			}else{
+ 				times = times+1;
+ 			}
+ 			if(times>10){
+ 				userWrongPasswordDate.put(user.getUserId()+"", new Date());
+ 			}
  			throw new ServiceException(4, "密码错误");
  		}
- 		
  		String clientKey = decryptLoginStr.substring(0, 32);
 // 		String time = decryptLoginStr.substring(decryptLoginStr.length()-14,decryptLoginStr.length());
  		String loginUserName = decryptLoginStr.substring(32, decryptLoginStr.length()-14);
@@ -213,9 +238,62 @@ public class PcService {
 		String encryptStr = transferKey+userName+DateUtils.DateToString(new Date(), "yyyyMMddhhmmss");
         result.setLogin_ret_str(encrypt(encryptStr, clientKey));
         userTransferKeys.put(user.getUserId()+"", transferKey);
+        //清理密码错误留下的记录
+        userWrongPasswordDate.invalidate(user.getUserId()+"");
+        userWrongPasswordTimes.invalidate(user.getUserId()+"");
 		return result;
 	}
+	/**
+	 * 版本检查
+	 * @param clientVer
+	 * @return
+	 */
+	public UpdateBO checkVersion(int clientVer){
+		UpdateBO bo = new UpdateBO();
+		Version version = versionDao.getFirstOne(" order by version_num desc");
+		if(version==null|| version.getVersionNum()<=clientVer){
+			bo.setUpdate_flag(1);
+		}else{
+			bo.setUpdate_flag(version.getUpdateFlag());
+			List<UpdatePackageBO> pList = Lists.newArrayList();
+			if(!Strings.isNullOrEmpty(version.getUrlandtype())){
+				String[] array = version.getUrlandtype().split("\\|");
+				for(String str:array){
+					String[] strTemp = str.split("@");
+					if(strTemp.length!=2){
+						continue;
+					}
+					UpdatePackageBO updatePackageBO = new UpdatePackageBO(strTemp[0],Integer.valueOf(strTemp[1]));
+					pList.add(updatePackageBO);
+				}
+			}
+			bo.setUpdate_file(pList);
+		}
+		return bo;
+	}
 	
+	/**
+	 * 获取咨询页信息
+	 * @return
+	 */
+	public InfoPageBO getInfoPageBO(){
+		InfoPageBO result = new InfoPageBO();
+		NewsConfig newsConfig = newsConfigDao.getFirstOne("");
+		if(newsConfig!=null){
+			result.setBig_picture_url(newsConfig.getBigPictureUrl());
+			result.setSmall_picture_url(newsConfig.getSmallPictureUrl());
+		}
+		List<InfoPageLinksBO> links = Lists.newArrayList();
+		List<News> list = newsDao.getAllOrder(" order by created_time desc");
+		if(list!=null&&list.size()>0){
+			for(News news:list){
+				InfoPageLinksBO bo = new InfoPageLinksBO(news.getUpdatedTime().getTime(), news.getNewTitle(), news.getNewsUrl());
+				links.add(bo);
+			}
+		}
+		result.setLinks(links);
+		return result;
+	}
 	
 
 	public static void main(String[] args) throws Exception {

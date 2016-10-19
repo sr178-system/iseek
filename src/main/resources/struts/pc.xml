@@ -6,6 +6,7 @@
 	<package name="pc" extends="pcAuthInterceptor" namespace="/iseek/api/pcclient">
 		<action name="login" class="com.sr178.iseek.pc.action.PcNoAuthAction" method="login" />
 		<action name="update" class="com.sr178.iseek.pc.action.PcNoAuthAction" method="update" />
+		<action name="getinfopage" class="com.sr178.iseek.pc.action.PcNoAuthAction" method="getinfopage" />
 	</package>
 	
 	

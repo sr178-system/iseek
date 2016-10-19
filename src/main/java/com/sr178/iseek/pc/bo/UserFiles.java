@@ -1,5 +1,6 @@
 package com.sr178.iseek.pc.bo;
 
+import java.util.Date;
    /**
     * user_files 实体类
     */ 
@@ -11,6 +12,9 @@ public class UserFiles{
 	private String name;
 	private String shareDir;
 	private String subDir;
+	private String searchStype;
+	private String searchZj;
+	private Date createdTime;
 	public void setUserId(long userId){
 	this.userId=userId;
 	}
@@ -40,6 +44,24 @@ public class UserFiles{
 	}
 	public String getSubDir(){
 		return subDir;
+	}
+	public void setSearchStype(String searchStype){
+	this.searchStype=searchStype;
+	}
+	public String getSearchStype(){
+		return searchStype;
+	}
+	public void setSearchZj(String searchZj){
+	this.searchZj=searchZj;
+	}
+	public String getSearchZj(){
+		return searchZj;
+	}
+	public void setCreatedTime(Date createdTime){
+	this.createdTime=createdTime;
+	}
+	public Date getCreatedTime(){
+		return createdTime;
 	}
 }
 

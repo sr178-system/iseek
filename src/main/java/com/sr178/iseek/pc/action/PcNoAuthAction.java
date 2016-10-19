@@ -2,7 +2,6 @@ package com.sr178.iseek.pc.action;
 
 
 import com.sr178.game.framework.context.ServiceCacheFactory;
-import com.sr178.iseek.pc.bean.UpdateBO;
 import com.sr178.iseek.pc.service.PcService;
 import com.sr178.module.web.action.JsonBaseActionSupport;
 
@@ -19,11 +18,9 @@ public class PcNoAuthAction extends JsonBaseActionSupport{
 	 */
 	private int client_ver;//客户端版本号
 	public String update(){
-		UpdateBO result = new UpdateBO();
-		return renderObjectResult(result);
+		PcService pcService = ServiceCacheFactory.getService(PcService.class);
+		return renderObjectResult(pcService.checkVersion(client_ver));
 	}
-	
-
 	/**
 	 * 登录接口
 	 */
@@ -32,6 +29,15 @@ public class PcNoAuthAction extends JsonBaseActionSupport{
 	public String login(){
 		PcService pcService = ServiceCacheFactory.getService(PcService.class);
         return renderObjectResult(pcService.login(login_name, login_str));
+	}
+	
+	/**
+	 * 获取资讯首页信息
+	 * @return
+	 */
+	public String getinfopage(){
+		PcService pcService = ServiceCacheFactory.getService(PcService.class);
+        return renderObjectResult(pcService.getInfoPageBO());
 	}
 	
 	

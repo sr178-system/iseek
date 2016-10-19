@@ -16,4 +16,12 @@ public class UpdatePackageBO {
 	public void setType(int type) {
 		this.type = type;
 	}
+	public UpdatePackageBO(String url, int type) {
+		super();
+		this.url = url;
+		this.type = type;
+	}
+	public UpdatePackageBO() {
+		super();
+	}
 }

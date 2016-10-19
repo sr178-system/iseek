@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50624
 File Encoding         : 65001
 
-Date: 2016-10-18 13:56:18
+Date: 2016-10-19 16:38:40
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -20,7 +20,7 @@ SET FOREIGN_KEY_CHECKS=0;
 -- ----------------------------
 DROP TABLE IF EXISTS `admin_user`;
 CREATE TABLE `admin_user` (
-  `user_id` bigint(20) NOT NULL,
+  `user_id` bigint(20) NOT NULL AUTO_INCREMENT,
   `login_name` varchar(64) NOT NULL COMMENT '登录用户名',
   `name` varchar(32) NOT NULL COMMENT '昵称',
   `sex` int(11) NOT NULL COMMENT '1男  2女',
@@ -54,7 +54,7 @@ CREATE TABLE `charge_config` (
 -- ----------------------------
 DROP TABLE IF EXISTS `files`;
 CREATE TABLE `files` (
-  `id` bigint(20) NOT NULL,
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `hash` varchar(32) NOT NULL COMMENT '文件MD5',
   `name` varchar(512) NOT NULL,
   `type` int(11) NOT NULL COMMENT '1：MP3，2：Wav，3：压缩文件',
@@ -90,40 +90,43 @@ CREATE TABLE `mobile_verify` (
 -- ----------------------------
 DROP TABLE IF EXISTS `news`;
 CREATE TABLE `news` (
-  `news_id` int(11) NOT NULL,
+  `news_id` int(11) NOT NULL AUTO_INCREMENT,
   `new_title` varchar(512) NOT NULL,
   `news_url` varchar(512) NOT NULL,
   `updated_time` datetime NOT NULL,
   `created_time` datetime NOT NULL,
   PRIMARY KEY (`news_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of news
 -- ----------------------------
+INSERT INTO `news` VALUES ('1', '123', 'http://adfasdf.x', '2016-10-19 16:08:10', '2016-10-19 16:08:13');
+INSERT INTO `news` VALUES ('2', '456', 'http://sadfasf', '2016-10-19 16:10:59', '2016-10-19 16:11:02');
 
 -- ----------------------------
 -- Table structure for news_config
 -- ----------------------------
 DROP TABLE IF EXISTS `news_config`;
 CREATE TABLE `news_config` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `big_picture_url` varchar(255) NOT NULL,
   `small_picture_url` varchar(255) NOT NULL,
   `updated_time` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of news_config
 -- ----------------------------
+INSERT INTO `news_config` VALUES ('1', 'asdf', 'ffff', '2016-10-19 16:11:16');
 
 -- ----------------------------
 -- Table structure for notice
 -- ----------------------------
 DROP TABLE IF EXISTS `notice`;
 CREATE TABLE `notice` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `notice_content` varchar(1024) NOT NULL,
   `notice_url` varchar(512) NOT NULL,
   `created_time` datetime NOT NULL,
@@ -148,7 +151,7 @@ CREATE TABLE `payment_log` (
   `created_time` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of payment_log
@@ -172,7 +175,7 @@ CREATE TABLE `payment_order` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `order_id` (`order_id`),
   KEY `user_id` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of payment_order
@@ -183,7 +186,7 @@ CREATE TABLE `payment_order` (
 -- ----------------------------
 DROP TABLE IF EXISTS `reg_question`;
 CREATE TABLE `reg_question` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `question` varchar(64) NOT NULL,
   `answer_one` varchar(64) NOT NULL,
   `answer_two` varchar(64) NOT NULL,
@@ -202,7 +205,7 @@ CREATE TABLE `reg_question` (
 -- ----------------------------
 DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user` (
-  `user_id` bigint(20) NOT NULL,
+  `user_id` bigint(20) NOT NULL AUTO_INCREMENT,
   `login_name` varchar(64) NOT NULL COMMENT '登录用户名',
   `nick_name` varchar(32) NOT NULL COMMENT '昵称',
   `sex` int(11) NOT NULL COMMENT '1男  2女',
@@ -232,6 +235,9 @@ CREATE TABLE `user_files` (
   `name` varchar(512) NOT NULL COMMENT '文件名',
   `share_dir` varchar(512) NOT NULL COMMENT '文件所在的，软件设置的共享目录，两级目录间用“\\”隔开，路径最后要带上“\\”',
   `sub_dir` varchar(512) NOT NULL COMMENT '软件设置的共享目录之下的相对路径，两级目录间用“\\”隔开，路径最后要带上“\\”',
+  `search_stype` varchar(128) NOT NULL COMMENT '用户搜索风格类型的字段，取sub_dir第一个斜杠之前的内容 精确搜索',
+  `search_zj` varchar(128) NOT NULL COMMENT '用于搜索专辑的关键字  是sub_dir第一个斜杠后面的内容 用户搜索优化，模糊搜索',
+  `created_time` datetime NOT NULL,
   UNIQUE KEY `user_id,file_id` (`user_id`,`file_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -244,7 +250,7 @@ CREATE TABLE `user_files` (
 -- ----------------------------
 DROP TABLE IF EXISTS `user_friends`;
 CREATE TABLE `user_friends` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` bigint(20) NOT NULL,
   `friend_id` bigint(20) NOT NULL,
   `created_time` datetime NOT NULL,
@@ -261,7 +267,7 @@ CREATE TABLE `user_friends` (
 -- ----------------------------
 DROP TABLE IF EXISTS `user_message`;
 CREATE TABLE `user_message` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` bigint(20) NOT NULL,
   `type` int(11) NOT NULL COMMENT '1：会员续费或充值成功提醒，2：会员到期提醒，3：公告信息',
   `content` varchar(512) NOT NULL,
@@ -297,7 +303,7 @@ CREATE TABLE `user_notice_status` (
 DROP TABLE IF EXISTS `version`;
 CREATE TABLE `version` (
   `version_num` int(11) NOT NULL DEFAULT '0',
-  `urlandtype` varchar(1024) NOT NULL COMMENT 'url和类型的字符串  type 1：安装包',
+  `urlandtype` varchar(1024) NOT NULL COMMENT 'url和类型的字符串  type 1：安装包  url:type|url2:type2以竖线和分号隔开',
   `update_flag` int(11) NOT NULL COMMENT '1：无需更新，2：非强制更新，3：强制更新',
   PRIMARY KEY (`version_num`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -305,3 +311,4 @@ CREATE TABLE `version` (
 -- ----------------------------
 -- Records of version
 -- ----------------------------
+INSERT INTO `version` VALUES ('2', 'http://akkk.adf/adf.exe@1|http://jdjdjdjd@2', '2');

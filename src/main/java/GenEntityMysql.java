@@ -227,7 +227,8 @@ public class GenEntityMysql {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		String[] tableNames = new String[]{"user","admin_user","charge_config","files","mobile_verify","news","news_config","notice","payment_log","payment_order","reg_question","user_files","user_friends","user_message","user_notice_status","version"};//表名
+//		String[] tableNames = new String[]{"user","admin_user","charge_config","files","mobile_verify","news","news_config","notice","payment_log","payment_order","reg_question","user_files","user_friends","user_message","user_notice_status","version"};//表名
+		String[] tableNames = new String[]{"user_files"};
 		for(int i=0;i<tableNames.length;i++){
 			new GenEntityMysql(tableNames[i]);
 		}
