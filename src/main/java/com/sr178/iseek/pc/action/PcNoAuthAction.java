@@ -39,6 +39,7 @@ public class PcNoAuthAction extends JsonBaseActionSupport{
 		PcService pcService = ServiceCacheFactory.getService(PcService.class);
         return renderObjectResult(pcService.getInfoPageBO());
 	}
+
 	
 	
 	

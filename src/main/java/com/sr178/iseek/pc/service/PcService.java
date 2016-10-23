@@ -3,7 +3,7 @@ package com.sr178.iseek.pc.service;
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -15,6 +15,7 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -25,13 +26,16 @@ import com.google.common.collect.Lists;
 import com.sr178.common.jdbc.bean.SqlParamBean;
 import com.sr178.game.framework.exception.ServiceException;
 import com.sr178.game.framework.log.LogSystem;
+import com.sr178.iseek.common.session.IseekSession;
 import com.sr178.iseek.pc.bean.InfoPageBO;
 import com.sr178.iseek.pc.bean.InfoPageLinksBO;
 import com.sr178.iseek.pc.bean.LoginBO;
+import com.sr178.iseek.pc.bean.NoticeBO;
 import com.sr178.iseek.pc.bean.UpdateBO;
 import com.sr178.iseek.pc.bean.UpdatePackageBO;
 import com.sr178.iseek.pc.bo.News;
 import com.sr178.iseek.pc.bo.NewsConfig;
+import com.sr178.iseek.pc.bo.Notice;
 import com.sr178.iseek.pc.bo.User;
 import com.sr178.iseek.pc.bo.Version;
 import com.sr178.iseek.pc.dao.ChargeConfigDao;
@@ -57,12 +61,16 @@ public class PcService {
 	public static final String AND = "and";
 	public static final String OR = "or";
 
-  	private Cache<String,String> userTransferKeys = CacheBuilder.newBuilder().maximumSize(20000).build();
+  	private Cache<String,IseekSession> iseekSessions = CacheBuilder.newBuilder().expireAfterAccess(24, TimeUnit.HOURS).maximumSize(20000).build();
   	
-  	private Cache<String,Date> userWrongPasswordDate = CacheBuilder.newBuilder().maximumSize(2000).build();
+  	private Cache<String,Date> userWrongPasswordDate = CacheBuilder.newBuilder().expireAfterAccess(1, TimeUnit.HOURS).maximumSize(20000).build();
   	
-  	private Cache<String,Integer> userWrongPasswordTimes = CacheBuilder.newBuilder().maximumSize(2000).build();
+  	private Cache<String,Integer> userWrongPasswordTimes = CacheBuilder.newBuilder().expireAfterAccess(1, TimeUnit.HOURS).maximumSize(20000).build();
+  	
+  	private Cache<String,String> userPcWebToken = CacheBuilder.newBuilder().expireAfterWrite(3, TimeUnit.MINUTES).maximumSize(20000).build();
 
+  	public static int globalMaxNoticeKey;
+  	
   	@Autowired
   	private ChargeConfigDao chargeConfigDao;
   	@Autowired
@@ -110,12 +118,12 @@ public class PcService {
 	 * @return
 	 */
 	private boolean checkAhthStr(String userId,String authStr){
-		String transferKey = userTransferKeys.getIfPresent(userId);
-		if(Strings.isNullOrEmpty(transferKey)){
+		IseekSession session = iseekSessions.getIfPresent(userId);
+		if(session==null){
 			return false;
 		}
 		String authDecryptStr = null;
-		authDecryptStr = decrypt(authStr, transferKey);
+		authDecryptStr = decrypt(authStr, session.getTrasferKey());
 		if(authDecryptStr!=null){
 			LogSystem.info("解密后的authStr = ["+authDecryptStr+"]");
 			return true;
@@ -146,7 +154,7 @@ public class PcService {
 			byte[] result = cipher.doFinal(encryptStr.getBytes("utf-8"));
 			if ((null != result) && (result.length > 0))
 			{
-			   ciphertext = Base64.getEncoder().encodeToString(result);
+			   ciphertext = Base64.encodeBase64String(result);
 			}
 		} catch (Exception e) {
 			 LogSystem.error(e, "AES加密失败，加密字符串="+encryptStr+"，加密key为="+key32);
@@ -167,7 +175,7 @@ public class PcService {
 			key = new SecretKeySpec(key32.getBytes("utf-8"), "AES");
 			Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
 			cipher.init(2, key);
-			byte[] result = cipher.doFinal(Base64.getDecoder().decode(authStr));
+			byte[] result = cipher.doFinal(Base64.decodeBase64(authStr));
 			if ((null != result) && (result.length > 0))
 			{
 				decryptStr = new String(result, "utf-8");
@@ -237,7 +245,9 @@ public class PcService {
 		}
 		String encryptStr = transferKey+userName+DateUtils.DateToString(new Date(), "yyyyMMddhhmmss");
         result.setLogin_ret_str(encrypt(encryptStr, clientKey));
-        userTransferKeys.put(user.getUserId()+"", transferKey);
+        IseekSession session = new IseekSession(transferKey,userName);
+        session.setMaxNoticeKey(globalMaxNoticeKey);
+        iseekSessions.put(user.getUserId()+"", session);
         //清理密码错误留下的记录
         userWrongPasswordDate.invalidate(user.getUserId()+"");
         userWrongPasswordTimes.invalidate(user.getUserId()+"");
@@ -295,7 +305,73 @@ public class PcService {
 		return result;
 	}
 	
-
+	/**
+	 * 生成pc token
+	 * @param userId
+	 * @return
+	 */
+	public String getssostr(String userId){
+		String ssoStr = "";
+		try {
+			ssoStr = MD5Security.md5_32_Big(userId+UUID.randomUUID().toString());
+		} catch (Exception e) {
+			LogSystem.error(e, "生成pc token失败！");
+		}
+		userPcWebToken.put(ssoStr, userId);
+		return ssoStr;
+	}
+	
+	/**
+	 * 获取用户消息（10秒轮训一次）
+	 * @param userId
+	 * @return
+	 */
+	public List<NoticeBO> getnotice(String userId){
+		IseekSession session = iseekSessions.getIfPresent(userId);
+		if(session!=null){
+			List<NoticeBO> list = session.getNotices();
+			session.resetNoticeList();
+			//添加最新公告
+			if(session.getMaxNoticeKey()<globalMaxNoticeKey){
+				Notice notice =  getMaxKeyNotice();
+				NoticeBO bo = new NoticeBO(3, notice.getNoticeContent(), notice.getNoticeUrl());
+				list.add(bo);
+				session.setMaxNoticeKey(globalMaxNoticeKey);
+			}
+			return list;
+		}
+		return new ArrayList<NoticeBO>();
+	}
+	/**
+	 * 给某个用户添加消息
+	 * @param userId
+	 * @param notice
+	 */
+	public void addNotice(String userId,NoticeBO notice){
+		IseekSession session = iseekSessions.getIfPresent(userId);
+		if(session!=null){
+		  session.addNoticeBO(notice);
+		}
+	}
+	/**
+	 * 获取最新的公告信息
+	 * @return
+	 */
+	public Notice getMaxKeyNotice(){
+		return noticeDao.getFirstOne(" order by id desc");
+	}
+	/**
+	 * 服务器启动加载当前最新的消息
+	 */
+	public void loadMaxNoticeKey(){
+		Notice notice = getMaxKeyNotice();
+		if(notice==null){
+			globalMaxNoticeKey = 0;
+		}else{
+			globalMaxNoticeKey = notice.getId();
+		}
+	}
+	
 	public static void main(String[] args) throws Exception {
 		String decryptLoginStr = "6A38719F22424b2d94227923E966F9AC"+"dogdog7788dddd"+"20161018132220";
 		

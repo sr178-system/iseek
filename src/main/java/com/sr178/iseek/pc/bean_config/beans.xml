@@ -26,7 +26,6 @@
     <bean id="versionDao" class="com.sr178.iseek.pc.dao.VersionDao"></bean>
     
     
-    
+    <bean id="loadMaxNoticeKeyPlugin" class="com.sr178.iseek.pc.plugin.LoadMaxNoticeKeyPlugin"></bean>
     <bean id="pcService" class="com.sr178.iseek.pc.service.PcService"></bean>
-    
 </beans>

@@ -43,7 +43,10 @@ public class PcUserInterceptor extends AbstractInterceptor {
 				appAction.renderErrorResult("秘钥失效或未登陆！");
 				return "json";
 			}
+			//将userid视为tokenid
+			appAction.setTokenId(userId);
 		}
+		
 		String result = actionInvocation.invoke();
 		return result;
 	}
