@@ -27,16 +27,20 @@ import com.sr178.common.jdbc.bean.SqlParamBean;
 import com.sr178.game.framework.exception.ServiceException;
 import com.sr178.game.framework.log.LogSystem;
 import com.sr178.iseek.common.session.IseekSession;
+import com.sr178.iseek.pc.bean.FriendBO;
 import com.sr178.iseek.pc.bean.InfoPageBO;
 import com.sr178.iseek.pc.bean.InfoPageLinksBO;
 import com.sr178.iseek.pc.bean.LoginBO;
 import com.sr178.iseek.pc.bean.NoticeBO;
 import com.sr178.iseek.pc.bean.UpdateBO;
 import com.sr178.iseek.pc.bean.UpdatePackageBO;
+import com.sr178.iseek.pc.bean.UserInfoBO;
+import com.sr178.iseek.pc.bo.Friend;
 import com.sr178.iseek.pc.bo.News;
 import com.sr178.iseek.pc.bo.NewsConfig;
 import com.sr178.iseek.pc.bo.Notice;
 import com.sr178.iseek.pc.bo.User;
+import com.sr178.iseek.pc.bo.UserFriends;
 import com.sr178.iseek.pc.bo.Version;
 import com.sr178.iseek.pc.dao.ChargeConfigDao;
 import com.sr178.iseek.pc.dao.FilesDao;
@@ -49,6 +53,7 @@ import com.sr178.iseek.pc.dao.PaymentOrderDao;
 import com.sr178.iseek.pc.dao.RegQuestionDao;
 import com.sr178.iseek.pc.dao.UserDao;
 import com.sr178.iseek.pc.dao.UserFilesDao;
+import com.sr178.iseek.pc.dao.UserFriendsDao;
 import com.sr178.iseek.pc.dao.UserMessageDao;
 import com.sr178.iseek.pc.dao.UserNoticeStatusDao;
 import com.sr178.iseek.pc.dao.VersionDao;
@@ -99,6 +104,8 @@ public class PcService {
   	private UserNoticeStatusDao userNoticeStatusDao;
   	@Autowired
   	private VersionDao versionDao;
+  	@Autowired
+  	private UserFriendsDao userFriendsDao;
 	/**
 	 * 查看是否登录了
 	 * 
@@ -369,6 +376,80 @@ public class PcService {
 			globalMaxNoticeKey = 0;
 		}else{
 			globalMaxNoticeKey = notice.getId();
+		}
+	}
+	
+	/**
+	 * 获取用户信息
+	 * @param userId
+	 * @return
+	 */
+	public UserInfoBO getUserInfo(long userId){
+		User user = userDao.get(new SqlParamBean("user_id", userId));
+		 return createUserBO(user);
+	}
+	
+	
+	private UserInfoBO createUserBO(User user){
+		UserInfoBO bo = new UserInfoBO();
+		if(user!=null){
+			bo.setEmail(user.getEmail());
+			bo.setLogin_name(user.getLoginName());
+			bo.setMember_expiry_day(user.getMemberExpiryDay().getTime());
+			bo.setMobile(user.getMobile());
+			bo.setNickname(user.getNickName());
+			bo.setSex(user.getSex());
+			bo.setShare_compress(user.getShareCompress());
+		}
+		return bo;
+	}
+	/**
+	 * 获取好友列表
+	 * @param userId
+	 * @return
+	 */
+	public List<FriendBO> getFriendBOList(long userId){
+		List<Friend> list = userFriendsDao.getFriendList(userId);
+		return createFriendBOList(list);
+	}
+	/**
+	 * 
+	 * @param list
+	 * @return
+	 */
+	private List<FriendBO> createFriendBOList(List<Friend> list){
+		List<FriendBO> result = Lists.newArrayList();
+		for(Friend friend:list){
+			result.add(new FriendBO(friend.getUserId(), friend.getLoginName(), friend.getNickName()));
+		}
+		return result;
+	}
+	
+	/**
+	 * 取消或关注好友
+	 * @param userId   用户id
+	 * @param friendId  好哟uid
+	 * @param isFriend 1关注  2取消关注
+	 */
+	public void setFriends(long userId,long friendId,String isFriend){
+		if(userId==friendId){
+			throw new ServiceException(2, "自己不能关注自己！");
+		}
+		
+		if("1".equals(isFriend)){//关注好友
+			 UserFriends userFriends = userFriendsDao.get(new SqlParamBean("user_id", userId),new SqlParamBean("and", "friend_id", friendId));
+			 if(userFriends!=null){
+				 throw new ServiceException(1, "已是好友！请勿重复关注");
+			 }
+			 UserFriends friends = new UserFriends();
+			 friends.setCreatedTime(new Date());
+			 friends.setFriendId(friendId);
+			 friends.setUserId(userId);
+			 userFriendsDao.add(friends);
+		}else if("2".equals(isFriend)){//取消关注好友
+			userFriendsDao.delete(new SqlParamBean("user_id", userId),new SqlParamBean("and", "friend_id", friendId));
+		}else{
+			throw new ServiceException(3, "isFriend传输错误，只能是1或2！收到的为"+isFriend);
 		}
 	}
 	
