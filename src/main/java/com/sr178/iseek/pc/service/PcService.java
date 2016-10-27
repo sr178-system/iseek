@@ -540,6 +540,10 @@ public class PcService {
 	public void upFiles(String files){
 		LogSystem.info("json String = "+files);
 		List<UpFileBO> upFileBOs = JSON.parseArray(files, UpFileBO.class);
+		List<Files> list = Lists.newArrayList();
+		for(UpFileBO upFileBO:upFileBOs){
+			
+		}
 		
 	}
 	
