@@ -11,6 +11,14 @@
 		
 		<action name="getssostr" class="com.sr178.iseek.pc.action.PcAction" method="getssostr" />
 		<action name="getnotice" class="com.sr178.iseek.pc.action.PcAction" method="getnotice" />
+		<action name="getuserinfo" class="com.sr178.iseek.pc.action.PcAction" method="getuserinfo" />
+		<action name="getfriends" class="com.sr178.iseek.pc.action.PcAction" method="getfriends" />
+		<action name="setfriend" class="com.sr178.iseek.pc.action.PcAction" method="setfriend" />
+		<action name="seekfile" class="com.sr178.iseek.pc.action.PcAction" method="seekfile" />
+		<action name="getfileowners" class="com.sr178.iseek.pc.action.PcAction" method="getfileowners" />
+		<action name="seekfilebyuser" class="com.sr178.iseek.pc.action.PcAction" method="seekfilebyuser" />
+		<action name="putfilesinfo" class="com.sr178.iseek.pc.action.PcAction" method="putfilesinfo" />
+		<action name="getsysnotice" class="com.sr178.iseek.pc.action.PcAction" method="getsysnotice" />
 	</package>
 	
 	

@@ -1,5 +1,6 @@
 package com.sr178.iseek.common.session;
 
+import java.util.Date;
 import java.util.List;
 
 import com.google.common.collect.Lists;

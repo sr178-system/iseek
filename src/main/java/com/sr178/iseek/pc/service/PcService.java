@@ -5,7 +5,9 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -19,6 +21,7 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.alibaba.fastjson.JSON;
 import com.google.common.base.Strings;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -27,19 +30,25 @@ import com.sr178.common.jdbc.bean.SqlParamBean;
 import com.sr178.game.framework.exception.ServiceException;
 import com.sr178.game.framework.log.LogSystem;
 import com.sr178.iseek.common.session.IseekSession;
+import com.sr178.iseek.pc.bean.FileUserBO;
+import com.sr178.iseek.pc.bean.FilesBO;
 import com.sr178.iseek.pc.bean.FriendBO;
 import com.sr178.iseek.pc.bean.InfoPageBO;
 import com.sr178.iseek.pc.bean.InfoPageLinksBO;
 import com.sr178.iseek.pc.bean.LoginBO;
 import com.sr178.iseek.pc.bean.NoticeBO;
+import com.sr178.iseek.pc.bean.UpFileBO;
 import com.sr178.iseek.pc.bean.UpdateBO;
 import com.sr178.iseek.pc.bean.UpdatePackageBO;
+import com.sr178.iseek.pc.bean.UserFilesBO;
 import com.sr178.iseek.pc.bean.UserInfoBO;
+import com.sr178.iseek.pc.bo.Files;
 import com.sr178.iseek.pc.bo.Friend;
 import com.sr178.iseek.pc.bo.News;
 import com.sr178.iseek.pc.bo.NewsConfig;
 import com.sr178.iseek.pc.bo.Notice;
 import com.sr178.iseek.pc.bo.User;
+import com.sr178.iseek.pc.bo.UserFileTemp;
 import com.sr178.iseek.pc.bo.UserFriends;
 import com.sr178.iseek.pc.bo.Version;
 import com.sr178.iseek.pc.dao.ChargeConfigDao;
@@ -452,6 +461,88 @@ public class PcService {
 			throw new ServiceException(3, "isFriend传输错误，只能是1或2！收到的为"+isFriend);
 		}
 	}
+	
+	/**
+	 * 搜索文件
+	 * @param key_word
+	 * @param file_type
+	 * @return
+	 */
+	public List<FilesBO> seekFileList(long userId,String key_word,String file_type,String style_type){
+		//判断是否在会员有效期内
+		User user = userDao.get(new SqlParamBean("user_id", userId));
+		if(user.getMemberExpiryDay()==null||user.getMemberExpiryDay().getTime()<new Date().getTime()){
+			throw new ServiceException(1, "会员已过期！");
+		}
+		if(user.getShareFileCount()<10){
+			throw new ServiceException(2, "共享文件个数必须大于等于10个！");
+		}
+		List<Files> list = userFilesDao.seekFiles(key_word, file_type, style_type);
+		if(list!=null&&list.size()>0){
+			return createdFilesBOList(list);
+		}
+		return Lists.newArrayList();
+	}
+	
+	
+	private List<FilesBO> createdFilesBOList(List<Files> list){
+		List<FilesBO>  result = Lists.newArrayList();
+		for(Files files:list){
+			FilesBO bo = new FilesBO(files.getId(), files.getHash(), files.getType(), files.getName(), files.getSize(), files.getTimeSpan(), files.getKbps(), files.getSrcCount());
+			result.add(bo);
+		}
+		return result;
+	}
+	/**
+	 * 获取文件所有者信息
+	 * @param userId
+	 * @param fileId
+	 * @return
+	 */
+	public List<FileUserBO> getfileowners(long userId,long fileId){
+		List<User> ownerList = userFilesDao.getFileOwnerList(fileId);
+		return createFileUserBO(userId, ownerList);
+	}
+	
+	private List<FileUserBO> createFileUserBO(long userId,List<User> ownerList){
+		List<UserFriends> list = userFriendsDao.getList(new SqlParamBean("user_id", userId));
+		Map<Long,Long> friendsMap = new HashMap<Long,Long>();
+		for(UserFriends friends:list){
+			friendsMap.put(friends.getFriendId(), 0l);
+		}
+		List<FileUserBO> result = Lists.newArrayList();
+		for(User user:ownerList){
+			FileUserBO  bo = new FileUserBO(user.getUserId(), user.getLoginName(), user.getNickName(), user.getShareFileCount(), friendsMap.containsKey(user.getUserId())?1:2);
+			result.add(bo);
+		}
+		return result;
+	}
+	/**
+	 * 获取用户文件列表
+	 * @param userId
+	 * @return
+	 */
+	public List<UserFilesBO> getUserFilesBO(long userId){
+		List<UserFileTemp> tempList = userFilesDao.getUserFileTempInfo(userId);
+		return creatUserFilesBO(tempList);
+	}
+	
+	private List<UserFilesBO> creatUserFilesBO(List<UserFileTemp> tempList){
+		List<UserFilesBO> result = new ArrayList<UserFilesBO>();
+		for(UserFileTemp files:tempList){
+			UserFilesBO bo = new UserFilesBO(files.getId(), files.getHash(), files.getType(), files.getName(), files.getSize(), files.getTimeSpan(), files.getKbps(), files.getSrcCount(),files.getSubDir(),files.getShareDir());
+			result.add(bo);
+		}
+		return result;
+	}
+	
+	
+	public void upFiles(String files){
+		LogSystem.info("json String = "+files);
+		List<UpFileBO> upFileBOs = JSON.parseArray(files, UpFileBO.class);
+		
+	}
+	
 	
 	public static void main(String[] args) throws Exception {
 		String decryptLoginStr = "6A38719F22424b2d94227923E966F9AC"+"dogdog7788dddd"+"20161018132220";
