@@ -16,6 +16,8 @@ public class Files{
 	private int kbps;
 	private int srcCount;
 	private Date createdTime;
+	private int searchType;
+	private String indexHashTypeSizeTimeSpanKbps;//hash、type、size、time_span、Kbps都相同的文件
 	public void setId(long id){
 	this.id=id;
 	}
@@ -70,5 +72,35 @@ public class Files{
 	public Date getCreatedTime(){
 		return createdTime;
 	}
+	public int getSearchType() {
+		return searchType;
+	}
+	public void setSearchType(int searchType) {
+		this.searchType = searchType;
+	}
+	public String getIndexHashTypeSizeTimeSpanKbps() {
+		return indexHashTypeSizeTimeSpanKbps;
+	}
+	public void setIndexHashTypeSizeTimeSpanKbps(String indexHashTypeSizeTimeSpanKbps) {
+		this.indexHashTypeSizeTimeSpanKbps = indexHashTypeSizeTimeSpanKbps;
+	}
+	public Files(String hash, String name, int type, long size, int timeSpan, int kbps, int srcCount, Date createdTime,
+			int searchType, String indexHashTypeSizeTimeSpanKbps) {
+		super();
+		this.hash = hash;
+		this.name = name;
+		this.type = type;
+		this.size = size;
+		this.timeSpan = timeSpan;
+		this.kbps = kbps;
+		this.srcCount = srcCount;
+		this.createdTime = createdTime;
+		this.searchType = searchType;
+		this.indexHashTypeSizeTimeSpanKbps = indexHashTypeSizeTimeSpanKbps;
+	}
+	public Files() {
+		super();
+	}
+	
 }
 

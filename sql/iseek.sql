@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50624
 File Encoding         : 65001
 
-Date: 2016-10-19 16:38:40
+Date: 2016-10-28 18:29:35
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -48,6 +48,7 @@ CREATE TABLE `charge_config` (
 -- ----------------------------
 -- Records of charge_config
 -- ----------------------------
+INSERT INTO `charge_config` VALUES ('28', '10');
 
 -- ----------------------------
 -- Table structure for files
@@ -58,17 +59,21 @@ CREATE TABLE `files` (
   `hash` varchar(32) NOT NULL COMMENT '文件MD5',
   `name` varchar(512) NOT NULL,
   `type` int(11) NOT NULL COMMENT '1：MP3，2：Wav，3：压缩文件',
+  `search_type` int(11) NOT NULL COMMENT '1：音频文件，2：压缩文件 用户搜索优化 ',
   `size` bigint(20) NOT NULL COMMENT '文件大小',
   `time_span` int(11) NOT NULL DEFAULT '0' COMMENT '可选，音乐时间长度',
   `kbps` int(11) NOT NULL DEFAULT '0' COMMENT '可选，音乐比特率',
   `src_count` int(11) NOT NULL DEFAULT '0' COMMENT '源数量 即该文件关联的用户数量',
   `created_time` datetime NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `index_hash_type_size_time_span_kbps` varchar(32) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `file_hash` (`index_hash_type_size_time_span_kbps`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of files
 -- ----------------------------
+INSERT INTO `files` VALUES ('1', '1', '1', '1', '0', '1', '0', '0', '0', '2016-10-27 12:09:29', '');
 
 -- ----------------------------
 -- Table structure for mobile_verify
@@ -212,11 +217,12 @@ CREATE TABLE `user` (
   `pass_word` varchar(512) NOT NULL,
   `mobile` varchar(32) NOT NULL COMMENT '手机号码',
   `email` varchar(128) DEFAULT NULL COMMENT '邮箱',
-  `member_expiry_day` datetime DEFAULT NULL COMMENT '会员到期日期',
+  `member_expiry_day` date DEFAULT NULL COMMENT '会员到期日期',
   `status` int(11) NOT NULL COMMENT '账户状态 0 正常   1被封号',
   `share_compress` int(11) NOT NULL DEFAULT '2' COMMENT '2不共享压缩包  1共享压缩包',
   `share_file_count` int(11) unsigned zerofill NOT NULL DEFAULT '00000000000' COMMENT '共享文件个数',
   `last_login_time` datetime DEFAULT NULL COMMENT '最后登录时间',
+  `transfer_key` varchar(32) DEFAULT NULL COMMENT '上次登录生成的登录key',
   `created_time` datetime NOT NULL COMMENT '用户创建日期',
   PRIMARY KEY (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -235,15 +241,19 @@ CREATE TABLE `user_files` (
   `name` varchar(512) NOT NULL COMMENT '文件名',
   `share_dir` varchar(512) NOT NULL COMMENT '文件所在的，软件设置的共享目录，两级目录间用“\\”隔开，路径最后要带上“\\”',
   `sub_dir` varchar(512) NOT NULL COMMENT '软件设置的共享目录之下的相对路径，两级目录间用“\\”隔开，路径最后要带上“\\”',
-  `search_stype` varchar(128) NOT NULL COMMENT '用户搜索风格类型的字段，取sub_dir第一个斜杠之前的内容 精确搜索',
+  `search_type` varchar(128) NOT NULL COMMENT '用户搜索风格类型的字段，取sub_dir第一个斜杠之前的内容 精确搜索',
   `search_zj` varchar(128) NOT NULL COMMENT '用于搜索专辑的关键字  是sub_dir第一个斜杠后面的内容 用户搜索优化，模糊搜索',
   `created_time` datetime NOT NULL,
-  UNIQUE KEY `user_id,file_id` (`user_id`,`file_id`)
+  UNIQUE KEY `user_id,file_id` (`user_id`,`file_id`),
+  KEY `search_type` (`search_type`),
+  FULLTEXT KEY `search_zj` (`search_zj`),
+  FULLTEXT KEY `name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of user_files
 -- ----------------------------
+INSERT INTO `user_files` VALUES ('1', '1', '1', '1', '1', '1', '1', '2016-10-27 12:09:15');
 
 -- ----------------------------
 -- Table structure for user_friends
@@ -255,7 +265,7 @@ CREATE TABLE `user_friends` (
   `friend_id` bigint(20) NOT NULL,
   `created_time` datetime NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `user_id` (`user_id`)
+  UNIQUE KEY `user_id,friend_id` (`user_id`,`friend_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------

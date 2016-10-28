@@ -1,6 +1,5 @@
 package com.sr178.iseek.common.session;
 
-import java.util.Date;
 import java.util.List;
 
 import com.google.common.collect.Lists;
@@ -61,4 +60,5 @@ public class IseekSession {
 	public void setMaxNoticeKey(int maxNoticeKey) {
 		this.maxNoticeKey = maxNoticeKey;
 	}
+	
 }

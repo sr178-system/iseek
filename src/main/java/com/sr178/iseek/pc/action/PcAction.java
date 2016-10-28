@@ -2,6 +2,8 @@ package com.sr178.iseek.pc.action;
 
 
 import com.sr178.game.framework.context.ServiceCacheFactory;
+import com.sr178.iseek.pc.bean.SystemNoticeBO;
+import com.sr178.iseek.pc.bo.Notice;
 import com.sr178.iseek.pc.service.PcService;
 import com.sr178.module.web.action.JsonBaseActionSupport;
 
@@ -92,6 +94,7 @@ public class PcAction extends JsonBaseActionSupport {
 	 */
 	public String putfilesinfo(){
 		PcService pcService = ServiceCacheFactory.getService(PcService.class);
+		pcService.upFiles(Long.valueOf(super.getTokenId()), files);
 		return this.renderSuccessResult();
 	}
 	/**
@@ -100,10 +103,11 @@ public class PcAction extends JsonBaseActionSupport {
 	 */
 	public String getsysnotice(){
         PcService pcService = ServiceCacheFactory.getService(PcService.class);
-		
-		
-		return null;
+		Notice notice = pcService.getMaxKeyNotice();
+		SystemNoticeBO bo = new SystemNoticeBO(notice.getNoticeContent(), notice.getNoticeUrl(), notice.getCreatedTime().getTime());
+		return this.renderObjectResult(bo);
 	}
+	
 	public String getFriend_id() {
 		return friend_id;
 	}

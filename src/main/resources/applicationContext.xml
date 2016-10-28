@@ -18,4 +18,10 @@
 		</property>
 	</bean>
     <import resource="applicationContext-jdbc.xml" />
+    
+    
+   <!-- 每日早上10点分执行 -->
+   <bean id="remindExpireSchduler" class="com.sr178.iseek.pc.schduler.RemindExpireSchduler">
+          <property name="cronExpression" value="0 0 10 * * ?"></property>
+   </bean>
 </beans>

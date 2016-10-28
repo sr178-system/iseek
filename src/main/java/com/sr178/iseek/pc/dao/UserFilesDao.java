@@ -79,4 +79,8 @@ public class UserFilesDao extends IseekDaoBase<UserFiles> {
 		String sql = "select f.id,f.hash,f.type,f.size,f.time_span,f.kbps,f.src_count,uf.name,uf.sub_dir,uf.share_dir,uf.created_time from user_files uf left join files f on uf.file_id=f.id where uf.user_id=? ";
 		return super.getJdbc().getList(sql, UserFileTemp.class,SqlParameter.Instance().withLong(userId));
 	}
+	
+	public void insertLists(List<UserFiles> list){
+		super.getJdbc().insert(list);
+	}
 }

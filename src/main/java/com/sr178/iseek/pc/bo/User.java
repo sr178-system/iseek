@@ -19,6 +19,7 @@ public class User{
 	private int shareCompress;
 	private int shareFileCount;
 	private Date lastLoginTime;
+	private String transferKey;
 	private Date createdTime;
 	public void setUserId(long userId){
 	this.userId=userId;
@@ -97,6 +98,12 @@ public class User{
 	}
 	public Date getCreatedTime(){
 		return createdTime;
+	}
+	public String getTransferKey() {
+		return transferKey;
+	}
+	public void setTransferKey(String transferKey) {
+		this.transferKey = transferKey;
 	}
 }
 

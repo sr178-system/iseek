@@ -63,5 +63,21 @@ public class UserFiles{
 	public Date getCreatedTime(){
 		return createdTime;
 	}
+	public UserFiles(long userId, long fileId, String name, String shareDir, String subDir, String searchStype,
+			String searchZj, Date createdTime) {
+		super();
+		this.userId = userId;
+		this.fileId = fileId;
+		this.name = name;
+		this.shareDir = shareDir;
+		this.subDir = subDir;
+		this.searchStype = searchStype;
+		this.searchZj = searchZj;
+		this.createdTime = createdTime;
+	}
+	public UserFiles() {
+		super();
+	}
+	
 }
 

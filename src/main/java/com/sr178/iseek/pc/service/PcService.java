@@ -20,6 +20,7 @@ import javax.crypto.spec.SecretKeySpec;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.alibaba.fastjson.JSON;
 import com.google.common.base.Strings;
@@ -42,6 +43,7 @@ import com.sr178.iseek.pc.bean.UpdateBO;
 import com.sr178.iseek.pc.bean.UpdatePackageBO;
 import com.sr178.iseek.pc.bean.UserFilesBO;
 import com.sr178.iseek.pc.bean.UserInfoBO;
+import com.sr178.iseek.pc.bo.ChargeConfig;
 import com.sr178.iseek.pc.bo.Files;
 import com.sr178.iseek.pc.bo.Friend;
 import com.sr178.iseek.pc.bo.News;
@@ -49,6 +51,7 @@ import com.sr178.iseek.pc.bo.NewsConfig;
 import com.sr178.iseek.pc.bo.Notice;
 import com.sr178.iseek.pc.bo.User;
 import com.sr178.iseek.pc.bo.UserFileTemp;
+import com.sr178.iseek.pc.bo.UserFiles;
 import com.sr178.iseek.pc.bo.UserFriends;
 import com.sr178.iseek.pc.bo.Version;
 import com.sr178.iseek.pc.dao.ChargeConfigDao;
@@ -66,6 +69,7 @@ import com.sr178.iseek.pc.dao.UserFriendsDao;
 import com.sr178.iseek.pc.dao.UserMessageDao;
 import com.sr178.iseek.pc.dao.UserNoticeStatusDao;
 import com.sr178.iseek.pc.dao.VersionDao;
+import com.sr178.module.utils.DateStyle;
 import com.sr178.module.utils.DateUtils;
 import com.sr178.module.utils.MD5Security;
 import com.sr178.module.utils.ParamCheck;
@@ -75,7 +79,7 @@ public class PcService {
 	public static final String AND = "and";
 	public static final String OR = "or";
 
-  	private Cache<String,IseekSession> iseekSessions = CacheBuilder.newBuilder().expireAfterAccess(24, TimeUnit.HOURS).maximumSize(20000).build();
+  	private Cache<String,IseekSession> iseekSessions = CacheBuilder.newBuilder().expireAfterAccess(24, TimeUnit.HOURS).maximumSize(200000).build();
   	
   	private Cache<String,Date> userWrongPasswordDate = CacheBuilder.newBuilder().expireAfterAccess(1, TimeUnit.HOURS).maximumSize(20000).build();
   	
@@ -135,13 +139,28 @@ public class PcService {
 	 */
 	private boolean checkAhthStr(String userId,String authStr){
 		IseekSession session = iseekSessions.getIfPresent(userId);
+		String transferKey = null;
+		boolean isReLogin = false;
+		User user = null;
 		if(session==null){
-			return false;
+			user = userDao.get(new SqlParamBean("user_id", Long.valueOf(userId)));
+			if(user==null||Strings.isNullOrEmpty(user.getTransferKey())){
+				return false;
+			}
+			transferKey = user.getTransferKey();
+			isReLogin = true;
+		}else{
+			transferKey = session.getTrasferKey();
 		}
 		String authDecryptStr = null;
-		authDecryptStr = decrypt(authStr, session.getTrasferKey());
+		authDecryptStr = decrypt(authStr, transferKey);
 		if(authDecryptStr!=null){
 			LogSystem.info("解密后的authStr = ["+authDecryptStr+"]");
+			 if(isReLogin){
+				 session = new IseekSession(transferKey, user.getLoginName()); 
+			     session.setMaxNoticeKey(globalMaxNoticeKey);
+			     iseekSessions.put(user.getUserId()+"", session);
+			 }
 			return true;
 		}else{
 			return false;
@@ -267,7 +286,35 @@ public class PcService {
         //清理密码错误留下的记录
         userWrongPasswordDate.invalidate(user.getUserId()+"");
         userWrongPasswordTimes.invalidate(user.getUserId()+"");
+        //更新用户登录时间
+        userDao.updateUserLoginTime(user.getUserId(), new Date());
+        //会员过期提醒
+        sendMemberExpiryNotice(user.getUserId(), user);
 		return result;
+	}
+	/**
+	 * 发送会员过期提醒
+	 * @param userId
+	 * @param user
+	 */
+	public void sendMemberExpiryNotice(long userId,User user){
+		if(user == null){
+			user = userDao.get(new SqlParamBean("user_id", userId));
+		}
+		 //会员过期提醒
+        ChargeConfig chargeConfig = chargeConfigDao.getFirstOne("");
+        if(chargeConfig!=null){//查看会员是否到达需要发送消息提醒
+        	int rday = DateUtils.getIntervalDays(user.getMemberExpiryDay(), getTodayld());
+        	if(rday<=chargeConfig.getRemindDay()){
+        		NoticeBO noticeBo = new NoticeBO(2, "您的会员还有"+rday+"天过期，请注意及时充值", "");
+        		this.addNotice(user.getUserId()+"", noticeBo);
+        	}
+        }
+	}
+	
+	private Date getTodayld(){
+		String date = DateUtils.DateToString(new Date(), "yyyy-MM-dd");
+		return DateUtils.StringToDate(date,DateStyle.YYYY_MM_DD);
 	}
 	/**
 	 * 版本检查
@@ -535,18 +582,81 @@ public class PcService {
 		}
 		return result;
 	}
-	
-	
-	public void upFiles(String files){
+	/**
+	 * 上传文件
+	 * @param userId
+	 * @param files
+	 */
+	@Transactional
+	public void upFiles(long userId,String files){
+		User user = userDao.get(new SqlParamBean("user_id", userId));
+		boolean isCanShareCompress = user.getShareCompress()==1?true:false;
 		LogSystem.info("json String = "+files);
 		List<UpFileBO> upFileBOs = JSON.parseArray(files, UpFileBO.class);
-		List<Files> list = Lists.newArrayList();
+		List<UserFiles> userFileList = Lists.newArrayList();
 		for(UpFileBO upFileBO:upFileBOs){
+			int searchType = 0;
+			if(upFileBO.getType()==1||upFileBO.getType()==2){
+				searchType = 1;
+			}else if(upFileBO.getType()==3){
+				if(!isCanShareCompress){
+					throw new ServiceException(2,"该用户不能共享压缩包文件，type="+upFileBO.getType());
+				}
+				searchType = 2;
+			}else{
+				throw new ServiceException(1,"不存在的文件类型，type="+upFileBO.getType());
+			}
+			String indexHashTypeSizeTimeSpanKbps="";
+			try {
+				indexHashTypeSizeTimeSpanKbps = MD5Security.md5_32_Big(upFileBO.getHash()+upFileBO.getType()+upFileBO.getSize()+upFileBO.getTime_span()+upFileBO.getKbps());
+			} catch (Exception e) {
+				throw new ServiceException(-1, "MD5加密错误");
+			}
+			Files f = new Files(upFileBO.getHash(), upFileBO.getName(), upFileBO.getType(), upFileBO.getSize(), upFileBO.getTime_span(), upFileBO.getKbps(), 1, new Date(), searchType, indexHashTypeSizeTimeSpanKbps);
+			String[] array = upFileBO.getSub_dir().split("\\", 2);
+			String searchStype = "";
+			String searchZj = "";
 			
+			searchStype = array[0];
+			if(array.length>1){
+				searchZj = array[1];
+			}
+			UserFiles userFiles = new UserFiles(userId, 0, upFileBO.getName(), upFileBO.getShare_dir(), upFileBO.getSub_dir(), searchStype, searchZj, new Date());
+			//如果文件存在 更新引用数量  不存在直接添加并设置userFiles中的文件id
+			addFile(f, userFiles);
+			userFileList.add(userFiles);
 		}
 		
+		List<UserFiles> oldUserFiles = userFilesDao.getList(new SqlParamBean("user_id", userId));
+		for(UserFiles useroldFiles:oldUserFiles){
+			filesDao.decreaseSrcCount(useroldFiles.getFileId());
+		}
+		//整体删除
+		userFilesDao.delete(new SqlParamBean("user_id", userId));
+		//批量插入
+		userFilesDao.insertLists(userFileList);
+		//更新用户的共享文件个数
+		userDao.updateUserShareFileCount(userId, userFileList.size());
 	}
 	
+	private void addFile(Files f,UserFiles userFiles){
+			Files files = filesDao.get(new SqlParamBean("index_hash_type_size_time_span_kbps", f.getIndexHashTypeSizeTimeSpanKbps()));
+			if(files==null){
+				f.setSrcCount(1);
+				long fileId = filesDao.addBackKeyLong(f);
+				userFiles.setFileId(fileId);
+			}else{
+				filesDao.increaseSrcCount(files.getId());
+			}
+	}
+	
+	/**
+	 * 获取在线用户Map
+	 * @return
+	 */
+	public Map<String,IseekSession> getAllOnlineUserMap(){
+		return iseekSessions.asMap();
+	}
 	
 	public static void main(String[] args) throws Exception {
 		String decryptLoginStr = "6A38719F22424b2d94227923E966F9AC"+"dogdog7788dddd"+"20161018132220";
