@@ -24,7 +24,7 @@
     <bean id="userMessageDao" class="com.sr178.iseek.pc.dao.UserMessageDao"></bean>
     <bean id="userNoticeStatusDao" class="com.sr178.iseek.pc.dao.UserNoticeStatusDao"></bean>
     <bean id="versionDao" class="com.sr178.iseek.pc.dao.VersionDao"></bean>
-    
+    <bean id="userFriendsDao" class="com.sr178.iseek.pc.dao.UserFriendsDao"></bean>
     
     <bean id="loadMaxNoticeKeyPlugin" class="com.sr178.iseek.pc.plugin.LoadMaxNoticeKeyPlugin"></bean>
     <bean id="pcService" class="com.sr178.iseek.pc.service.PcService"></bean>

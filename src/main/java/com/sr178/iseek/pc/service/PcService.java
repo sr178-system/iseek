@@ -19,6 +19,7 @@ import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.lang.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,6 +47,7 @@ import com.sr178.iseek.pc.bean.UserInfoBO;
 import com.sr178.iseek.pc.bo.ChargeConfig;
 import com.sr178.iseek.pc.bo.Files;
 import com.sr178.iseek.pc.bo.Friend;
+import com.sr178.iseek.pc.bo.MobileVerify;
 import com.sr178.iseek.pc.bo.News;
 import com.sr178.iseek.pc.bo.NewsConfig;
 import com.sr178.iseek.pc.bo.Notice;
@@ -180,7 +182,7 @@ public class PcService {
 	 * @throws BadPaddingException 
 	 * @throws IllegalBlockSizeException 
 	 */
-	private static String encrypt(String encryptStr,String key32){
+	public static String encrypt(String encryptStr,String key32){
 		String ciphertext = null;
 		try {
 			SecretKeySpec key = new SecretKeySpec(key32.getBytes("utf-8"), "AES");
@@ -193,6 +195,7 @@ public class PcService {
 			}
 		} catch (Exception e) {
 			 LogSystem.error(e, "AES加密失败，加密字符串="+encryptStr+"，加密key为="+key32);
+			 throw new ServiceException(1001,"加密失败");
 		}
 		
 		return ciphertext;
@@ -203,7 +206,7 @@ public class PcService {
 	 * @param key32
 	 * @return
 	 */
-	private static String decrypt(String authStr,String key32) {
+	public static String decrypt(String authStr,String key32) {
 		String decryptStr = null;
 		SecretKeySpec key;
 		try {
@@ -217,6 +220,7 @@ public class PcService {
 			}
 		} catch (Exception e) {
 			 LogSystem.error(e, "AES解密失败，解密字符串="+authStr+"，解密key为="+key32);
+			 throw new ServiceException(1002,"解密失败");
 		}
 		return decryptStr;
 	}
@@ -225,8 +229,23 @@ public class PcService {
      * @param dataBasePassword
      * @return
      */
+	private static final String DATABASE_PASSWORD_KEY = "6A38719F22424b2d94227923E966F9AC";
 	private String getTruePassword(String dataBasePassword){
-			return decrypt(dataBasePassword, "6A38719F22424b2d94227923E966F9AC");
+			return decrypt(dataBasePassword,DATABASE_PASSWORD_KEY);
+	}
+	/**
+	 * 客户端传输过来的密码 加密存入数据库中
+	 * @param clientTransferPassword     变换后的密码  =   HEX(MD5("5X#6423D79C74b6b+实际输入的密码+AB8471%VAED8A76E"))   Base64(AES("变换后的密码", KEY("CEEF0B3D241F4f3798FF89384BE7ACA1"), "AES/CFB/NoPadding")
+	 * @return
+	 */
+	private String getDatabasePassword(String clientTransferPassword){
+		String afterTransferKey = decrypt(clientTransferPassword, "CEEF0B3D241F4f3798FF89384BE7ACA1");
+		if(afterTransferKey!=null){
+			return encrypt(clientTransferPassword, DATABASE_PASSWORD_KEY);
+		}else{
+			throw new ServiceException(1000, "客户端密码解密失败！");
+		}
+		
 	}
 	/**
 	 * 登录
@@ -234,10 +253,11 @@ public class PcService {
 	 * @param userName
 	 * @param passWord
 	 */
+	@Transactional
 	public LoginBO login(String userName, String loginStr) {
 		ParamCheck.checkString(userName, 1, "用户名不能为空");
 		ParamCheck.checkString(loginStr, 2, "密码不能为空");
-		User user = userDao.get(new SqlParamBean("user_name", userName));
+		User user = userDao.get(new SqlParamBean("login_name", userName));
 		if (user == null) {
 			throw new ServiceException(3, "用户名不存在");
 		}
@@ -283,6 +303,9 @@ public class PcService {
         IseekSession session = new IseekSession(transferKey,userName);
         session.setMaxNoticeKey(globalMaxNoticeKey);
         iseekSessions.put(user.getUserId()+"", session);
+        
+        //保存当前登录传输key
+        userDao.updateTransferKey(user.getUserId(), transferKey);
         //清理密码错误留下的记录
         userWrongPasswordDate.invalidate(user.getUserId()+"");
         userWrongPasswordTimes.invalidate(user.getUserId()+"");
@@ -291,6 +314,92 @@ public class PcService {
         //会员过期提醒
         sendMemberExpiryNotice(user.getUserId(), user);
 		return result;
+	}
+	
+	private static final long CODE_EXPIRE_TIME = 10*60*1000;//验证码过期时间 10分钟
+	/**
+	 * 验证手机短信
+	 * @param mobile
+	 * @param code
+	 */
+	public void verifyMobileCode(String mobile,String code){
+		MobileVerify mobileVerify = mobileVerifyDao.get(new SqlParamBean("mobile", mobile));
+		if(mobileVerify==null||mobileVerify.getUpdatedTime()==null||mobileVerify.getUpdatedTime().getTime()+CODE_EXPIRE_TIME<new Date().getTime()||mobileVerify.getVerifyCode()==null||!mobileVerify.getVerifyCode().equals(code)){
+			throw new ServiceException(1,"验证失败，请重试！");
+		}else{
+			mobileVerifyDao.updateSuccess(mobile);
+		}
+	}
+	/**
+	 * 注册
+	 * @param loginName
+	 * @param password
+	 * @param nickName
+	 * @param sex
+	 * @param email
+	 * @param mobile
+	 */
+	public void reg(String loginName,String password,String nickName,int sex,String email,String mobile){
+		ParamCheck.checkString(loginName, 1, "登录名不能为空");
+		ParamCheck.checkString(password, 2, "密码不能为空");
+		ParamCheck.checkString(nickName, 3, "昵称不能为空");
+		ParamCheck.checkString(email, 4, "邮箱不能为空");
+		ParamCheck.checkString(mobile, 5, "手机号码不能为空");
+		
+		if(sex!=1&&sex!=2){
+			throw new ServiceException(6, "性别错误！");
+		}
+		
+		MobileVerify mobileVerify = mobileVerifyDao.get(new SqlParamBean("mobile", mobile));
+		if(mobileVerify==null||mobileVerify.getStatus()!=1){
+			throw new ServiceException(7, "手机号码没有通过验证！");
+		}
+		
+		User user = userDao.get(new SqlParamBean("login_name", loginName));
+		if(user!=null){
+			throw new ServiceException(8, "用户名已存在！");
+		}
+		user = userDao.get(new SqlParamBean("mobile", mobile));
+		if(user!=null){
+			throw new ServiceException(9, "手机号已注册！");
+		}
+		String dataBasePass = getDatabasePassword(password);
+		user = new User();
+		user.setCreatedTime(new Date());
+		user.setEmail(email);
+		user.setLastLoginTime(null);
+		user.setLoginName(loginName);
+		user.setMemberExpiryDay(null);
+		user.setMobile(mobile);
+		user.setNickName(nickName);
+		user.setPassWord(dataBasePass);
+		user.setSex(sex);
+		user.setShareCompress(2);
+		user.setShareFileCount(0);
+		user.setStatus(0);
+		userDao.add(user);
+	}
+	
+	private static final char[] chars = new char[]{'0','1','2','3','4','5','6','7','8','9'};
+	public String sendMobileVerify(String mobile){
+		String randomString = RandomStringUtils.random(6, chars);
+		if(sendSms(mobile, randomString)){
+			//发送短信
+			if(mobileVerifyDao.updateVerifyCode(mobile, randomString)){
+				
+			}else{
+				throw new ServiceException(2,"数据更新失败，请重试！");
+			}
+		}else{
+			throw new ServiceException(1,"短信发送失败！");
+		}
+		return randomString;
+	}
+	
+	
+	public boolean sendSms(String mobile,String code){
+		LogSystem.info("给手机"+mobile+"发送短信，验证码为:"+code);
+		return true;
 	}
 	/**
 	 * 发送会员过期提醒
@@ -663,26 +772,19 @@ public class PcService {
 	
 	public static void main(String[] args) throws Exception {
 		String decryptLoginStr = "6A38719F22424b2d94227923E966F9AC"+"dogdog7788dddd"+"20161018132220";
-		
 		String clientKey = decryptLoginStr.substring(0, 32);
  		String time = decryptLoginStr.substring(decryptLoginStr.length()-14,decryptLoginStr.length());
  		String loginUserName = decryptLoginStr.substring(32, decryptLoginStr.length()-14);
- 		
  		System.out.println(clientKey);
  		System.out.println(time);
  		System.out.println(loginUserName);
 		
-		
 		String md516 = MD5Security.md5_16_Big(UUID.randomUUID().toString());
-		
 		String hex32 = Hex.encodeHexString(md516.getBytes("utf-8"));
-		
 		String aesStr = encrypt(md516, md516);
 		System.out.println(md516);
 		System.out.println(hex32);
 		System.out.println(aesStr);
 		System.out.println(decrypt(aesStr, md516));
-		
-		
 	}
 }

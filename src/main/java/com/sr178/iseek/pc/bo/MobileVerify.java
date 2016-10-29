@@ -9,6 +9,8 @@ import java.util.Date;
 public class MobileVerify{
 	private String mobile;
 	private String verifyCode;
+	private int status;
+	private Date updatedTime;
 	private Date createdTime;
 	public void setMobile(String mobile){
 	this.mobile=mobile;
@@ -27,6 +29,18 @@ public class MobileVerify{
 	}
 	public Date getCreatedTime(){
 		return createdTime;
+	}
+	public Date getUpdatedTime() {
+		return updatedTime;
+	}
+	public void setUpdatedTime(Date updatedTime) {
+		this.updatedTime = updatedTime;
+	}
+	public int getStatus() {
+		return status;
+	}
+	public void setStatus(int status) {
+		this.status = status;
 	}
 }
 

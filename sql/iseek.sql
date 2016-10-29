@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50624
 File Encoding         : 65001
 
-Date: 2016-10-28 18:29:35
+Date: 2016-10-29 12:13:05
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -82,6 +82,8 @@ DROP TABLE IF EXISTS `mobile_verify`;
 CREATE TABLE `mobile_verify` (
   `mobile` varchar(16) NOT NULL,
   `verify_code` varchar(8) NOT NULL,
+  `status` int(11) NOT NULL DEFAULT '0' COMMENT '0 初始化  1 验证通过 2验证失败',
+  `updated_time` datetime DEFAULT NULL,
   `created_time` datetime NOT NULL,
   PRIMARY KEY (`mobile`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -89,6 +91,7 @@ CREATE TABLE `mobile_verify` (
 -- ----------------------------
 -- Records of mobile_verify
 -- ----------------------------
+INSERT INTO `mobile_verify` VALUES ('15919820372', '043902', '1', '2016-10-29 12:11:51', '2016-10-29 12:02:15');
 
 -- ----------------------------
 -- Table structure for news
@@ -225,11 +228,12 @@ CREATE TABLE `user` (
   `transfer_key` varchar(32) DEFAULT NULL COMMENT '上次登录生成的登录key',
   `created_time` datetime NOT NULL COMMENT '用户创建日期',
   PRIMARY KEY (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of user
 -- ----------------------------
+INSERT INTO `user` VALUES ('2', 'dogdog7788', '潮哥', '1', '5Q1GCo16YUphqSlTcYj2PojggkE6KQLNSTiK1eDezMnTAXAsClDIwa9Yak8KvA/++uFH67+pV6TRCeReiySbsookJRbEqz1b4G7DUx/2Uvk=', '15919820372', 'dogdog7788@qq.com', null, '0', '2', '00000000000', null, null, '2016-10-29 12:11:51');
 
 -- ----------------------------
 -- Table structure for user_files

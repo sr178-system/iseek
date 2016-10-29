@@ -28,4 +28,16 @@ public class UserDao extends IseekDaoBase<User> {
 		String sql = "update "+super.getTable()+" set last_login_time = ? where user_id=? limit 1";
 		return super.getJdbc().update(sql, SqlParameter.Instance().withObject(loginTime).withLong(userId))>0;
 	}
+	
+	/**
+	 * 设置当前登录传输key
+	 * @param userId
+	 * @param transferKey
+	 * @return
+	 */
+	public boolean updateTransferKey(long userId,String transferKey){
+		String sql = "update " + super.getTable() +" set transfer_key = ? where user_id=? limit 1";
+		return super.getJdbc().update(sql, SqlParameter.Instance().withString(transferKey).withLong(userId))>0;
+		
+	}
 }
