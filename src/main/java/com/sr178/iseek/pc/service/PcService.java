@@ -378,6 +378,8 @@ public class PcService {
 		user.setShareFileCount(0);
 		user.setStatus(0);
 		userDao.add(user);
+		//重置验证码信息
+		mobileVerifyDao.resetCode(mobile);
 	}
 	
 	private static final char[] chars = new char[]{'0','1','2','3','4','5','6','7','8','9'};
