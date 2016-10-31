@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+   <head>
+		<title>资讯管理</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta http-equiv="X-UA-Compatible" content="edge,IE=8"/>
+		<!-- 引入 Bootstrap -->
+		<link rel="stylesheet" href="../css/bootstrap.min.css">  			
+		<link rel="stylesheet" href="../css/reg-2.css">  	
+		<link rel="stylesheet" href="../css/message.css"> 		
+		<script src="../js/jquery.min.js"></script>	
+		<script src="../js/bootstrap.min.js"></script>
+		<script type="text/javascript">
+		$(function () { 
+			 $("#checkbox").click(function(){
+			    var isChecked = $(this).prop("checked");
+			    $("input[type='checkbox']").prop("checked", isChecked);
+			    if(isChecked){
+			    	$("input[type='checkbox']").parent("label").addClass("active-box");
+			    }else{
+			    	$("input[type='checkbox']").parent("label").removeClass("active-box");
+			    }
+			})
+		    $(".chebox-label").click(function(){
+		    	//alert($(this).children("input[type='checkbox']").prop("checked"))
+			    if($(this).children("input[type='checkbox']").prop("checked")){
+			    	$(this).addClass("active-box");
+			    }else{
+			    	$(this).removeClass("active-box");
+			    }			    				    	
+		    })			 
+		})
+		</script>		
+   </head>
+<body>
+<div class="">
+	<div class="page-header">
+	    <a href="javascript:;" class="custom-font-14">首页</a> > 	    
+	    <a href="javascript:;" class="custom-font-14 font-color">资讯管理</a>
+	</div>	
+</div>
+<div class="">
+<form class="form-horizontal" role="form" method="post">
+	<div class="form-group">
+ 		<label class="col-sm-12 control-label text-left p5 font-weight" style="padding-left:0;">
+ 			<span style="color:#f00404"> * </span>资讯页大图：
+ 		</label>
+		<div class="col-sm-4 image-1"></div>	
+		<div class="col-sm-1" style="padding-top:80px;"><button type="button" class="btn btn-default">上传</button></div>	
+	</div>	
+	<div class="form-group">
+		<label class="col-sm-12 control-label text-left p5 font-weight" style="padding-left:0;">
+			<span style="color:#f00404"> * </span>资讯页小图：
+		</label>
+		<div class="col-sm-4 image-2"></div>
+		<div class="col-sm-1" style="padding-top:103px;"><button type="button" class="btn btn-default">上传</button></div>		
+	</div>
+	<div class="row">
+		<div class="col-xs-6">
+			<p class="text-left">
+				<label class="chebox-label"><input type="checkbox" id="checkbox"/></label>
+				<button type="button" class="btn btn-default">删除</button>
+			</p>
+			<table class="table table-bordered table-hover text-center">							
+				<thead>
+					<tr>					
+						<td class="text-left">更新日期</td>
+						<td>显示文字 </td>
+						<td>链接URL</td>					
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td class="text-left">
+							<label class="chebox-label"><input type="checkbox"/></label>2016.09.01
+						</td>
+						<td>全球狂欢节.重装上阵,一触即发!</td>
+						<td>http://aaa.com/aaa</td>										
+					</tr>
+					<tr>
+						<td class="text-left">
+							<label class="chebox-label"><input type="checkbox"/></label>2016.09.01
+						</td>
+						<td>全球狂欢节.重装上阵,一触即发!</td>
+						<td>http://aaa.com/aaa</td>										
+					</tr>
+
+				</tbody>				
+			</table>
+		</div>
+		<div class="col-xs-6">
+			<div class="form-group">
+				<label class="col-sm-12 control-label text-left p5 font-weight"><span style="color:#f00404"> * </span>显示文字：：</label>
+				<div class="col-sm-8">
+					<input type="text" name="nkname" id="nkname" class="form-control" placeholder=""/>
+				</div>		
+			</div>	
+			<div class="form-group">
+				<label class="col-sm-12 control-label text-left p5 font-weight"><span style="color:#f00404"> * </span>链接URL：：</label>
+				<div class="col-sm-8">
+					<input type="text" name="nkname" id="nkname" class="form-control" placeholder=""/>
+				</div>		
+			</div>					
+			<div class="" style="padding-left: 15px;padding-top: 0px;">		
+				<button type="submit" class="btn btn-default">添加</button>	
+			</div>
+		</div>
+	</div>		
+</form>
+</div>
+</body>
+</html>

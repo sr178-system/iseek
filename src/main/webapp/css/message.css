@@ -1,0 +1,64 @@
+		.col-sm-2{
+			width: 13% !important;
+		}
+		.form-group{
+			margin-left: 0 !important;
+			margin-right: 0 !important;
+		}
+		.text-left{
+			text-align: left !important;
+		}
+		.p5{
+			padding-bottom: 5px !important;		
+		}
+		.font-weight{
+			font-weight: 400 !important;
+		}
+		.image-1 {
+		    background: url('../image/image-1.png') no-repeat top;
+		    width: 328px;
+		    height: 114px;
+		    background-size: cover;
+		}
+		.image-2 {
+		    background: url('../image/image-2.png') no-repeat top;
+		    width: 180px;
+		    height: 138px;
+		    background-size: cover;
+		}		
+		.table thead{background-color: #d5f2ff}
+		.table > tbody tr:nth-child(even) > td {background-color: #fff;}
+		.table > tbody tr:nth-child(odd) > td {background-color: #f6f6f6;}  
+		.table tfoot{background-color: #e6e6e6;}
+		.btn{padding:2px 12px !important;}
+		.top-td{
+			background-color: #353b4b;
+		}
+		.add-btn{
+			background-color:#65c3df !important;
+			border-color: #65c3df !important;
+		}
+		.cus-btn{
+			margin:0 10px !important;
+		}
+		.td-font-color{
+			color: #ff6c6c !important;
+		}
+		.end-font-color{
+			color: #65c3df;
+		}
+		.chebox-label{
+		    width: 20px;
+		    height: 20px;
+		    /* box-sizing: border-box; */
+		    background: url('../image/chebox.png') no-repeat left;
+		    background-position: 0% 100%;
+		    margin-bottom: -4px;
+		    margin-right: 10px;
+		}
+		.active-box{
+			background-position: 0% 0%;
+		}
+		.chebox-label input[type='checkbox']{
+		display: none;
+		}		

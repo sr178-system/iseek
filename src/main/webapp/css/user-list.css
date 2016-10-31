@@ -1,0 +1,113 @@
+body{font-family: '微软雅黑'}
+.page-header{
+	margin-top:20px !important; 			
+}
+.custom-font-14{
+	font-size: 14px !important;
+	color: #1b1e26 !important;
+	text-decoration: none !important;
+}
+.font-color{
+	color: #65c3df !important;
+}
+.font-16{
+	font-size: 16px;
+}
+.font-14{
+	font-size: 14px;
+}
+.table thead{background-color: #d5f2ff}
+.table > tbody tr:nth-child(even) > td {background-color: #fff;}
+.table > tbody tr:nth-child(odd) > td {background-color: #f6f6f6;}  
+.table tfoot{background-color: #e6e6e6;}
+.btn{padding:2px 12px !important;}
+.form-control{
+    width: 40px !important;
+    height: 25px !important;
+    display: initial !important;
+    margin: 0 7px !important;
+}
+.top-td{
+	background-color: #353b4b;
+}
+.add-btn{
+	background-color:#65c3df !important;
+	border-color: #65c3df !important;
+}
+.cus-btn{
+	margin:0 10px !important;
+}
+.td-font-color{
+	color: #ff6c6c !important;
+}
+.end-font-color{
+	color: #65c3df;
+}
+.tow-td{
+	background-color: #e6e6e6;
+}
+.w110{
+	width: 110px !important;
+	padding: 0 5px;
+	margin-right: 5px;
+}
+.type-rea {
+    background: #fff url('../image/type.png') no-repeat right;
+    border: 1px solid #a5a4a4;
+    background-position: 95% 50%;
+    padding: 0 10px;
+    box-sizing: border-box;
+    width: 130px;
+    height: 26px;
+}
+.font-weight{
+	font-weight: 400;
+}
+.type-nav {
+     display: none; 
+    width: 130px;
+    position: absolute;
+    right: 0;
+    top: 20px;
+    border: 1px solid #a5a4a4;
+    background: #fff;
+}
+.dropdown-type{
+	display: initial;
+	position: relative;
+	margin-right: 30px;
+}
+ul,li{
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+.type-nav li {
+    line-height: 30px;
+    padding: 0 10px;
+    cursor: pointer;
+}
+.type-nav li:hover{
+	background-color: #f6f6f6;
+}
+.m0{
+	margin-right: 0px !important;
+}
+.gr-font-color{
+	color: #489e0e;
+}
+.chebox-label{
+    width: 20px;
+    height: 20px;
+    /* box-sizing: border-box; */
+    background: url('../image/chebox.png') no-repeat left;
+    background-position: 0% 100%;
+    margin-bottom: -4px;
+    margin-right: 10px;
+}
+.active-box{
+	background-position: 0% 0%;
+}
+.chebox-label input[type='checkbox']{
+display: none;
+}

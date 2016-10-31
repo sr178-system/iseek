@@ -1,0 +1,130 @@
+body{font-family: '微软雅黑'}
+.page-header{
+	margin-top:20px !important; 			
+}
+.custom-font-14{
+	font-size: 14px !important;
+	color: #1b1e26 !important;
+	text-decoration: none !important;
+}
+.font-color{
+	color: #65c3df !important;
+}
+.font-16{
+	font-size: 16px;
+}
+.font-14{
+	font-size: 14px;
+}
+.custom-navbar-inverse{
+    background-color: #f2f2f2;
+    border-color: #f2f2f2;
+    border-radius: 0;
+    border: 0;
+    min-height: 59px;
+    height: 59px;
+    position: absolute;
+    width: 100%;
+    z-index: 9999;
+}
+.custom-navbar-header{
+	width: 123px;
+	background: url(../image/admin-bg.png);
+	background-size: cover;
+	vertical-align: middle;
+	height: 36px;
+	box-sizing: border-box;
+	margin-top: 13px;
+	margin-left: 0 !important;
+}
+.custom-left, .custom-right{
+	background-image: none!important;        	
+}
+.custom-item img{
+	margin:0 auto !important;
+}
+.carousel-indicators{
+	bottom:0 !important;
+}
+.jumbotron{
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+}
+.container{
+	width: 100% !important;
+	padding: 0 20px !important;
+}
+.a-font-color{
+	color: #666666 !important;
+}
+.font-bul{
+	color: #65c3df !important;
+    padding: 15px 5px !important;	
+}
+.row{padding-top:59px !important;margin:0;}
+.row .col-xs-2{padding-left: 0;padding-right: 0}
+.navbar-inverse-cus{
+	background-color: #191818;
+    border-color: #191818;
+    border-radius: 0 !important;
+}
+.nav-ul,.nav-ul li{
+	width: 100%;
+}
+.nav-ul{
+padding-top: 50px;
+}
+.active {
+    border-left: 3px solid #65c3df;
+}
+.navbar-inverse .navbar-nav>.active>a, .navbar-inverse .navbar-nav>.active>a:focus, .navbar-inverse .navbar-nav>.active>a:hover .nav a:hover{
+    color: #fff;
+    background-color: #222222 !important;
+}
+.nav-icon{
+    background: url('../image/server.png') no-repeat left;    
+}
+.active .service-icon{
+	background: url('../image/server.png') no-repeat left; 
+	background-position: 17% -7%;
+}
+.service-icon{	
+	background: url('../image/user-icon.png') no-repeat left; 
+	background-position: 17% -7%;
+}
+.active .user-icon{
+	background: url('../image/user-icon.png') no-repeat left; 
+	background-position: 17% 21%;
+}
+.user-icon{
+	background-position: 17% 21%;
+}
+.active .pay-icon{
+	background: url('../image/pay-icon.png') no-repeat left; 
+	background-position: 17% 50%;
+}
+.pay-icon{
+	background-position: 17% 50%;
+}
+.active .sys-icon{
+	background: url('../image/sys-icon.png') no-repeat left; 
+	background-position: 17% 80%;
+}
+.sys-icon{
+	background-position: 17% 80%;
+}
+.active .msg-icon{
+	background: url('../image/msg-icon.png') no-repeat left; 	
+	background-position: 17% 109%;
+}
+.msg-icon{
+	background-position: 17% 109%;
+}
+.last-li{
+	border-bottom:2px solid #222222;
+}
+.col-xs-10{
+	padding-left: 35px !important;
+}

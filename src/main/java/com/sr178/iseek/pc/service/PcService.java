@@ -51,6 +51,7 @@ import com.sr178.iseek.pc.bo.MobileVerify;
 import com.sr178.iseek.pc.bo.News;
 import com.sr178.iseek.pc.bo.NewsConfig;
 import com.sr178.iseek.pc.bo.Notice;
+import com.sr178.iseek.pc.bo.RegQuestion;
 import com.sr178.iseek.pc.bo.User;
 import com.sr178.iseek.pc.bo.UserFileTemp;
 import com.sr178.iseek.pc.bo.UserFiles;
@@ -494,6 +495,15 @@ public class PcService {
 		userPcWebToken.put(ssoStr, userId);
 		return ssoStr;
 	}
+	/**
+	 * 通过ssoStr获取用户ID
+	 * @param ssoStr
+	 * @return
+	 */
+	public String getUserIdBySsoStr(String ssoStr){
+		String userId = userPcWebToken.getIfPresent(ssoStr);
+		return userId;
+	}
 	
 	/**
 	 * 获取用户消息（10秒轮训一次）
@@ -768,6 +778,15 @@ public class PcService {
 	public Map<String,IseekSession> getAllOnlineUserMap(){
 		return iseekSessions.asMap();
 	}
+	
+	/**
+	 * 获取所有注册问题
+	 * @return
+	 */
+	public List<RegQuestion> getRegQuestionList(){
+		return regQuestionDao.getAll();
+	}
+	
 	
 	
 	

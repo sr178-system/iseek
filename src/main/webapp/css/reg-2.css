@@ -1,0 +1,54 @@
+body{font-family: '微软雅黑'}
+.custom-font-14{
+	font-size: 14px !important;
+	color: #1b1e26 !important;
+	text-decoration: none !important;
+}
+.font-color{
+	color: #65c3df !important;
+}
+.font-16{
+	font-size: 16px;
+}
+.font-14{
+	font-size: 14px;
+}			
+.font-weight{
+	font-weight: bold;
+}
+.font-weight-p{
+	color: #ff6c6c !important;
+	margin:35px auto 50px; 				
+}
+.checkbox-inline{
+	width: 150px;
+	background: url('../image/radio-icon.png') no-repeat left;
+	background-position: 0 1px;
+	padding-top: 0 !important;
+}
+.radio-checked{
+	background-position: 0 -20px;
+}
+.checkbox-inline input[type='radio']{
+	display: none;
+}
+.radio-margin{
+	margin-bottom: 55px;
+}
+.btn-primary{
+	background-color: #65c3df;
+	border-color: #65c3df;
+}
+.footer {
+    height: 40px;
+    margin-top: 10px;
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+}
+.col-sm-2{
+    width: 9% !important;
+    text-align: left !important;
+    font-weight: 400 !important;
+    padding-right: 0 !important;
+}	

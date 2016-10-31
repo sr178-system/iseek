@@ -22,6 +22,14 @@
 	</package>
 	
 	
+	<package name="pcweb" extends="pcWebAuthInterceptor" namespace="/">
+		 <action name="reg1" class="com.sr178.iseek.pc.action.PcWebNoAuthAction" method="answerQuestion" >
+		    <result name="success">/reg-1.jsp</result>
+		 </action>
+	</package>
+	
+	
+	
 	<package name="pcAuthInterceptor" extends="myInterceptor">
 		<interceptors>
 			<!-- 认证拦截器-->
@@ -33,12 +41,19 @@
 			</interceptor-stack>
 		</interceptors>
 		<default-interceptor-ref name="pcStack" />
-		<global-results>
-			<result type="json" name="json">  
-                <!-- 这里指定将被Struts2序列化的属性，该属性在action中必须有对应的getter方法 -->  
-                <param name="root">dataMap</param>  
-            </result>  
-		</global-results>
+	</package>
+	
+	<package name="pcWebAuthInterceptor" extends="myInterceptor">
+		<interceptors>
+			<!-- 认证拦截器-->
+			<interceptor name="pcWebInterceptor"
+				class="com.sr178.iseek.pc.interceptor.PcWebInterceptor" />
+			<interceptor-stack name="pcWebStack">
+				<interceptor-ref name="pcWebInterceptor" />
+				<interceptor-ref name="myStack" />
+			</interceptor-stack>
+		</interceptors>
+		<default-interceptor-ref name="pcWebStack" />
 	</package>
 	
 </struts>
