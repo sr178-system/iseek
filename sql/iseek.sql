@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50624
 File Encoding         : 65001
 
-Date: 2016-10-29 12:13:05
+Date: 2016-10-31 19:08:08
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -202,11 +202,15 @@ CREATE TABLE `reg_question` (
   `answer_four` varchar(64) NOT NULL,
   `right_answer` varchar(16) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of reg_question
 -- ----------------------------
+INSERT INTO `reg_question` VALUES ('1', '你是男是女？', '男', '女', '是男是女', '非男非女', '4');
+INSERT INTO `reg_question` VALUES ('2', '你最喜欢的人是谁？', '凤姐', '芙蓉姐姐', 'TFBOYS', '刘德华', '4');
+INSERT INTO `reg_question` VALUES ('3', '你最喜欢的体育项目？', '排球', '篮球', '足球', '游泳', '4');
+INSERT INTO `reg_question` VALUES ('4', '杨过和小龙女最后生了几个孩子？', '1个', '2个', '3个', '0个', '4');
 
 -- ----------------------------
 -- Table structure for user
