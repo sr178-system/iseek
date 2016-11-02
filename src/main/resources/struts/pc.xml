@@ -26,6 +26,16 @@
 		 <action name="reg1" class="com.sr178.iseek.pc.action.PcWebNoAuthAction" method="answerQuestion" >
 		    <result name="success">/reg-1.jsp</result>
 		 </action>
+		 <action name="reg2" class="com.sr178.iseek.pc.action.PcWebNoAuthAction" method="mobileVerify" >
+		    <result name="success">/reg-2.jsp</result>
+		 </action>		 
+		 <action name="reg3" class="com.sr178.iseek.pc.action.PcWebNoAuthAction" method="reg" >
+		    <result name="success">/reg-3.jsp</result>
+		    <result name="ok">/reg-4.jsp</result>
+		 </action>
+		 
+		 <action name="sendSms" class="com.sr178.iseek.pc.action.PcWebNoAuthAction" method="sendSms" >
+		 </action>
 	</package>
 	
 	

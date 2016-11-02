@@ -1,3 +1,6 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ include file="/common/taglib.jsp"%>
 <!DOCTYPE html>
 <html>
    <head>
@@ -6,27 +9,66 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta http-equiv="X-UA-Compatible" content="edge,IE=8"/>
 		<!-- 引入 Bootstrap -->
-		<link rel="stylesheet" href="css/bootstrap.min.css">  	
-		<link rel="stylesheet" href="css/bootstrapValidator.css">  		
-		<link rel="stylesheet" href="css/reg-2.css">  			
-		<script src="js/jquery.min.js"></script>	
-		<script src="js/bootstrap.min.js"></script>
-		<script src="js/bootstrapValidator.js"></script>		
+		<link rel="stylesheet" href="/css/bootstrap.min.css">  	
+		<link rel="stylesheet" href="/css/bootstrapValidator.css">  		
+		<link rel="stylesheet" href="/css/reg-2.css">  			
+		<script src="/js/jquery.min.js"></script>	
+		<script src="/js/bootstrap.min.js"></script>
+		<script src="/js/bootstrapValidator.js"></script>		
 		<script type="text/javascript">
 		$(function(){
 			$("#send-code").click(function(){
 			    var phone = document.getElementById('mobile').value;
 			    if(!phone){
-			        $(".modal-body").text("手机号码不能为空~")
-			        $('#prompt-dialog').modal('show')	
+			    	print("手机号码不能为空！");
 			        return false; 		    	
 			    }else if(!(/^1[34578]\d{9}$/.test(phone))){ 
 			        //alert("手机号码有误，请重填");  
-			        $(".modal-body").text("请输入正确的手机号码~")
-			        $('#prompt-dialog').modal('show')
+			        print("请输入正确的手机号码！");
 			        return false; 
 			    }
+				var sendData =  {
+						mobile: phone,
+		                xx: 1
+		            };
+				$.post('sendSms',sendData,function(data){
+					//print(JSON.stringify(data));
+					if(data.flag==0){
+						print("发送成功！验证码为="+data.rc.verifyCode);
+					}else{
+						print("发送错误："+data.msg);
+					}
+				});
 			})
+			
+			
+			$("#goon").click(function(){
+			    var phone = document.getElementById('mobile').value;
+			    var code = document.getElementById('code').value;
+			    if(!phone){
+			    	print("手机号码不能为空！");
+			        return false; 		    	
+			    }else if(!(/^1[34578]\d{9}$/.test(phone))){ 
+			        //alert("手机号码有误，请重填");  
+			        print("请输入正确的手机号码！");
+			        return false; 
+			    }
+			   
+				var sendData =  {
+						mobile: phone,
+		                verifyCode: code,
+		                st:1
+		            };
+				$.post('reg2',sendData,function(data){
+					if(data.flag==0){
+						print("验证成功！");
+						window.location.href="/reg3?mobile="+phone; 
+					}else{
+						print("验证码错误!");
+					}
+				});
+			})
+			
 		    // validate form
 		    $("form.required-validate").each(function() {
 		        var $form = $(this);
@@ -69,8 +111,8 @@
 		                         message: '验证码不能为空'
 		                     },
 		                     stringLength: {
-		                         min: 4,
-		                         max: 4,
+		                         min: 6,
+		                         max: 6,
 		                         message: '请输入正确长度的验证码'
 		                     }
 		                     // regexp: {
@@ -89,6 +131,7 @@
 		</script>
    </head>
 <body>
+<jsp:include page="/common/dialog.jsp" flush="true"></jsp:include>
 <div class="header">
 	<iframe frameborder=0 scrolling="no" border=0 width=100% height=60 src="header.html"></iframe>
 </div>
@@ -99,7 +142,7 @@
 	</div>	
 </div>
 <div class="container">
-<form class="form-horizontal"  role="form" method="post">
+<form class="form-horizontal"  role="form" method="post" action="reg2?st=1">
 	<div class="form-group">
 		<label for="mobile" class="col-sm-2 control-label">手机号码：</label>
 		<div class="col-sm-3">
@@ -115,7 +158,7 @@
 		</div>
 	</div>
 	<div class="page-header"></div>
-	<button type="submit" class="btn btn-primary">继续</button>
+	<button type="button" class="btn btn-primary" id="goon" name="goon">继续</button>
 </form>
 </div>
 <div class="footer">
@@ -123,21 +166,6 @@
 		<p>Copyright ©i-Seek. All Rights Reserved.    京ICP证080047号    京公网安备11000002000006号</p>
 	</div> -->
 	<iframe frameborder=0 scrolling="no" border=0 width=100% height=60 src="footer.html"></iframe>
-</div>
-<!-- 模态框（Modal）对话框 -->
-<div class="modal fade" id="prompt-dialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog" style="width:245px;">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title" id="myModalLabel">友情提示</h4>
-            </div>
-            <div class="modal-body">手机号码不能为空！</div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>                
-            </div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal -->
 </div>
 </body>
 </html>

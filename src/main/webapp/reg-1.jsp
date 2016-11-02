@@ -12,6 +12,7 @@
 		<link rel="stylesheet" href="css/bootstrap.min.css">  
 		<script src="js/jquery.min.js"></script>
 		<script src="js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="/scripts/jquery.easyui.min.js"></script>
 		<style type="text/css">
 			body{font-family: '微软雅黑'}
 			.page-header{
@@ -84,6 +85,9 @@
 			    color: #a4a4a4;
 			    font-size: 13px;
 			}			
+			.ptext{ 
+		border-bottom:1px solid #ccc; padding: 25px 20px; color: #333;
+		 }
 		</style>
 		<script type="text/javascript">
 		var map=[];
@@ -100,11 +104,11 @@
 			$('#goon').click(function(){
 				for(var i in map){
 					if(map[i]!="ok"){
-						alert("回答不正确！");
+						print("回答不正确！");
 						return;
 					}
 				}
-				window.location.href="http://www.baidu.com"; 
+				window.location.href="/reg2"; 
 			});
 		});
 		
@@ -112,6 +116,7 @@
 		</script>
    </head>
 <body>
+<jsp:include page="/common/dialog.jsp" flush="true"></jsp:include>
 <div class="header">
 	<iframe frameborder=0 scrolling="no" border=0 width=100% height=60 src="header.html"></iframe>
 </div>
