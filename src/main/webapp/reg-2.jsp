@@ -20,11 +20,11 @@
 			$("#send-code").click(function(){
 			    var phone = document.getElementById('mobile').value;
 			    if(!phone){
-			    	print("手机号码不能为空！");
+			    	print_s("手机号码不能为空！");
 			        return false; 		    	
 			    }else if(!(/^1[34578]\d{9}$/.test(phone))){ 
 			        //alert("手机号码有误，请重填");  
-			        print("请输入正确的手机号码！");
+			        print_s("请输入正确的手机号码！");
 			        return false; 
 			    }
 				var sendData =  {
@@ -34,9 +34,9 @@
 				$.post('sendSms',sendData,function(data){
 					//print(JSON.stringify(data));
 					if(data.flag==0){
-						print("发送成功！验证码为="+data.rc.verifyCode);
+						print_s("发送成功！验证码为="+data.rc.verifyCode);
 					}else{
-						print("发送错误："+data.msg);
+						print_s("发送错误："+data.msg);
 					}
 				});
 			})
@@ -46,11 +46,11 @@
 			    var phone = document.getElementById('mobile').value;
 			    var code = document.getElementById('code').value;
 			    if(!phone){
-			    	print("手机号码不能为空！");
+			    	print_s("手机号码不能为空！");
 			        return false; 		    	
 			    }else if(!(/^1[34578]\d{9}$/.test(phone))){ 
 			        //alert("手机号码有误，请重填");  
-			        print("请输入正确的手机号码！");
+			        print_s("请输入正确的手机号码！");
 			        return false; 
 			    }
 			   
@@ -61,10 +61,10 @@
 		            };
 				$.post('reg2',sendData,function(data){
 					if(data.flag==0){
-						print("验证成功！");
-						window.location.href="/reg3?mobile="+phone; 
+						print_s("验证成功！",function(){window.location.href="/reg3?mobile="+phone; });
+						
 					}else{
-						print("验证码错误!");
+						alert("验证码错误!");
 					}
 				});
 			})
@@ -131,7 +131,6 @@
 		</script>
    </head>
 <body>
-<jsp:include page="/common/dialog.jsp" flush="true"></jsp:include>
 <div class="header">
 	<iframe frameborder=0 scrolling="no" border=0 width=100% height=60 src="header.html"></iframe>
 </div>
@@ -142,7 +141,7 @@
 	</div>	
 </div>
 <div class="container">
-<form class="form-horizontal"  role="form" method="post" action="reg2?st=1">
+<form class="form-horizontal"  role="form">
 	<div class="form-group">
 		<label for="mobile" class="col-sm-2 control-label">手机号码：</label>
 		<div class="col-sm-3">

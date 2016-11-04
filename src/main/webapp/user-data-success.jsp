@@ -1,7 +1,10 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ include file="/common/taglib.jsp"%>
 <!DOCTYPE html>
 <html>
    <head>
-		<title>用户注册</title>
+		<title>个人设置</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta http-equiv="X-UA-Compatible" content="edge,IE=8"/>
@@ -46,7 +49,7 @@
 			}
 			.reg-suc {
 			    background: url(image/reg-icon.png) no-repeat left;
-			    background-position: 25% 50%;
+			    background-position: 3% 50%;
 			    padding-left: 85px;
 			    height: 60px;
 			    line-height: 60px;
@@ -58,31 +61,22 @@
    </head>
 <body>
 <div class="header">
-	<iframe frameborder=0 scrolling="no" border=0 width=100% height=60 src="header.html"></iframe>
+	<iframe frameborder=0 scrolling="no" border=0 width=100% height=60 src="user-header.html"></iframe>
 </div>
 <div class="container">
 	<div class="page-header">
-	    <a href="javascript:;" class="custom-font-14">用户注册</a> > 
-	    <a href="javascript:;" class="custom-font-14 font-color">注册成功</a>
+	    <a href="javascript:;" class="custom-font-14">个人设置</a> > 	    
+	    <a href="javascript:;" class="custom-font-14 font-color">成功</a>
 	</div>	
 </div>
 <div class="container padding-60">
 	<div class="row">
 		<div class="col-xs-4"></div>
 		<div class="col-xs-4 text-center">
-			<h2 class="reg-suc">注册成功</h2>
+			<h2 class="reg-suc">个人信息修改成功！</h2>
 		</div>
 		<div class="col-xs-4"></div>
 	</div>
-	<div class="row padding-60">
-		<div class="col-xs-3"></div>
-		<div class="col-xs-6 text-center">
-			<p class="font-14 custom-font-14">感谢您注册 i-Seek！</p>
-			<p class="font-14 custom-font-14">请妥善保管登录名、密码，登录 i-Seek 客户端，开启您的音乐分享之旅吧！</p>
-		</div>
-		<div class="col-xs-3"></div>
-	</div>	
-	
 </div>
 <div class="footer">
 	<iframe frameborder=0 scrolling="no" border=0 width=100% height=60 src="footer.html"></iframe>

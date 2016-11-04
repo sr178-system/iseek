@@ -104,7 +104,7 @@
 			$('#goon').click(function(){
 				for(var i in map){
 					if(map[i]!="ok"){
-						print("回答不正确！");
+						print_s("回答不正确！");
 						return;
 					}
 				}
@@ -116,7 +116,6 @@
 		</script>
    </head>
 <body>
-<jsp:include page="/common/dialog.jsp" flush="true"></jsp:include>
 <div class="header">
 	<iframe frameborder=0 scrolling="no" border=0 width=100% height=60 src="header.html"></iframe>
 </div>

@@ -12,7 +12,7 @@ public class UserFiles{
 	private String name;
 	private String shareDir;
 	private String subDir;
-	private String searchStype;
+	private String searchType;
 	private String searchZj;
 	private Date createdTime;
 	public void setUserId(long userId){
@@ -45,12 +45,6 @@ public class UserFiles{
 	public String getSubDir(){
 		return subDir;
 	}
-	public void setSearchStype(String searchStype){
-	this.searchStype=searchStype;
-	}
-	public String getSearchStype(){
-		return searchStype;
-	}
 	public void setSearchZj(String searchZj){
 	this.searchZj=searchZj;
 	}
@@ -63,7 +57,14 @@ public class UserFiles{
 	public Date getCreatedTime(){
 		return createdTime;
 	}
-	public UserFiles(long userId, long fileId, String name, String shareDir, String subDir, String searchStype,
+	
+	public String getSearchType() {
+		return searchType;
+	}
+	public void setSearchType(String searchType) {
+		this.searchType = searchType;
+	}
+	public UserFiles(long userId, long fileId, String name, String shareDir, String subDir, String searchType,
 			String searchZj, Date createdTime) {
 		super();
 		this.userId = userId;
@@ -71,7 +72,7 @@ public class UserFiles{
 		this.name = name;
 		this.shareDir = shareDir;
 		this.subDir = subDir;
-		this.searchStype = searchStype;
+		this.searchType = searchType;
 		this.searchZj = searchZj;
 		this.createdTime = createdTime;
 	}

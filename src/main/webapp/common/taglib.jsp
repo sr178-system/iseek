@@ -17,3 +17,4 @@
 			+ path + "/";
 	request.setAttribute("basePath", basePath);
 %>
+<jsp:include page="/common/dialog.jsp" flush="true"></jsp:include>

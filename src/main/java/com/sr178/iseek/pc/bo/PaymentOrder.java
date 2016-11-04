@@ -12,9 +12,11 @@ public class PaymentOrder{
 	private long userId;
 	private double amount;
 	private int status;
-	private int payUserId;
+	private long payUserId;
 	private int payType;
 	private String bankOrderId;
+	private int num;
+	private double price;
 	private Date updatedTime;
 	private Date createdTime;
 	public void setId(int id){
@@ -47,11 +49,11 @@ public class PaymentOrder{
 	public int getStatus(){
 		return status;
 	}
-	public void setPayUserId(int payUserId){
-	this.payUserId=payUserId;
-	}
-	public int getPayUserId(){
+	public long getPayUserId() {
 		return payUserId;
+	}
+	public void setPayUserId(long payUserId) {
+		this.payUserId = payUserId;
 	}
 	public void setPayType(int payType){
 	this.payType=payType;
@@ -76,6 +78,34 @@ public class PaymentOrder{
 	}
 	public Date getCreatedTime(){
 		return createdTime;
+	}
+	public PaymentOrder(String orderId, long userId, double amount, int status, int payUserId, int payType,
+			String bankOrderId, Date updatedTime, Date createdTime) {
+		super();
+		this.orderId = orderId;
+		this.userId = userId;
+		this.amount = amount;
+		this.status = status;
+		this.payUserId = payUserId;
+		this.payType = payType;
+		this.bankOrderId = bankOrderId;
+		this.updatedTime = updatedTime;
+		this.createdTime = createdTime;
+	}
+	public PaymentOrder() {
+		super();
+	}
+	public int getNum() {
+		return num;
+	}
+	public void setNum(int num) {
+		this.num = num;
+	}
+	public double getPrice() {
+		return price;
+	}
+	public void setPrice(double price) {
+		this.price = price;
 	}
 }
 

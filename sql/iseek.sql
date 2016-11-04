@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50624
 File Encoding         : 65001
 
-Date: 2016-10-31 19:08:08
+Date: 2016-11-04 18:18:39
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -68,12 +68,23 @@ CREATE TABLE `files` (
   `index_hash_type_size_time_span_kbps` varchar(32) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `file_hash` (`index_hash_type_size_time_span_kbps`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of files
 -- ----------------------------
 INSERT INTO `files` VALUES ('1', '1', '1', '1', '0', '1', '0', '0', '0', '2016-10-27 12:09:29', '');
+INSERT INTO `files` VALUES ('12', 'hash1', '吻别.mp3', '1', '1', '102400', '1500', '80', '1', '2016-11-04 14:04:28', '8A317824B3F1BA6D621CC054FF60F412');
+INSERT INTO `files` VALUES ('13', 'hash2', '爱你一万年.wav', '2', '1', '102400', '1500', '80', '1', '2016-11-04 14:04:28', 'F2D4A6AC2614D0E0394E95A79C4FE942');
+INSERT INTO `files` VALUES ('14', 'hash3', '一起跳舞.mp3', '1', '1', '102400', '1500', '80', '1', '2016-11-04 14:04:28', '6BE83952783AE00739B80CCEA0520348');
+INSERT INTO `files` VALUES ('15', 'hash4', '危城.mp3', '1', '1', '102400', '1500', '80', '1', '2016-11-04 14:04:28', '8EB1FD5B98C995932E434EA8636DBD13');
+INSERT INTO `files` VALUES ('16', 'hash5', '工具.zip', '1', '1', '102400', '1500', '80', '0', '2016-11-04 14:04:28', '05279D9EB4F2CFBEFDD712A138611C73');
+INSERT INTO `files` VALUES ('19', 'hash5', '工具.zip', '3', '2', '102400', '1500', '80', '1', '2016-11-04 14:12:20', '4F84565C71B708E905DFE87D66D7A5DD');
+INSERT INTO `files` VALUES ('20', 'hash6', '吻别6.mp3', '1', '1', '102400', '1500', '80', '1', '2016-11-04 14:19:50', 'A8A24E3364CD076E8562C543F9C78B38');
+INSERT INTO `files` VALUES ('21', 'hash7', '爱你一万年7.wav', '2', '1', '102400', '1500', '80', '1', '2016-11-04 14:19:50', 'B41A13D2BA4C4EB083DA5FD3208692D5');
+INSERT INTO `files` VALUES ('22', 'hash8', '一起跳舞8.mp3', '1', '1', '102400', '1500', '80', '1', '2016-11-04 14:19:50', '5CACE83F399124F90B6FD26C13EFBF9B');
+INSERT INTO `files` VALUES ('23', 'hash9', '危城9.mp3', '1', '1', '102400', '1500', '80', '1', '2016-11-04 14:19:50', '16CA51D5823BED6AE1A0DA2491AA64E2');
+INSERT INTO `files` VALUES ('24', 'hash10', '工具10.zip', '3', '2', '102400', '1500', '80', '1', '2016-11-04 14:19:50', '1A3B2913A7965D1DDB2BBBA43E5F256F');
 
 -- ----------------------------
 -- Table structure for mobile_verify
@@ -81,7 +92,7 @@ INSERT INTO `files` VALUES ('1', '1', '1', '1', '0', '1', '0', '0', '0', '2016-1
 DROP TABLE IF EXISTS `mobile_verify`;
 CREATE TABLE `mobile_verify` (
   `mobile` varchar(16) NOT NULL,
-  `verify_code` varchar(8) NOT NULL,
+  `verify_code` varchar(8) DEFAULT NULL,
   `status` int(11) NOT NULL DEFAULT '0' COMMENT '0 初始化  1 验证通过 2验证失败',
   `updated_time` datetime DEFAULT NULL,
   `created_time` datetime NOT NULL,
@@ -91,7 +102,8 @@ CREATE TABLE `mobile_verify` (
 -- ----------------------------
 -- Records of mobile_verify
 -- ----------------------------
-INSERT INTO `mobile_verify` VALUES ('15919820372', '043902', '1', '2016-10-29 12:11:51', '2016-10-29 12:02:15');
+INSERT INTO `mobile_verify` VALUES ('13534277314', null, '0', null, '2016-11-04 13:33:51');
+INSERT INTO `mobile_verify` VALUES ('15919820372', null, '0', null, '2016-10-29 12:02:15');
 
 -- ----------------------------
 -- Table structure for news
@@ -139,11 +151,13 @@ CREATE TABLE `notice` (
   `notice_url` varchar(512) NOT NULL,
   `created_time` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of notice
 -- ----------------------------
+INSERT INTO `notice` VALUES ('1', '你好', 'http://www.baidu.com', '2016-11-04 14:22:39');
+INSERT INTO `notice` VALUES ('2', '公告2', 'http://www.google.com', '2016-11-04 14:23:32');
 
 -- ----------------------------
 -- Table structure for payment_log
@@ -175,9 +189,11 @@ CREATE TABLE `payment_order` (
   `user_id` bigint(20) NOT NULL,
   `amount` decimal(10,2) NOT NULL COMMENT '该笔订单的交易额',
   `status` int(11) NOT NULL DEFAULT '0',
-  `pay_user_id` int(11) DEFAULT NULL,
+  `pay_user_id` bigint(20) DEFAULT NULL,
   `pay_type` int(11) DEFAULT NULL,
   `bank_order_id` varchar(128) DEFAULT NULL,
+  `num` int(64) DEFAULT NULL COMMENT '购买会员的月份数',
+  `price` decimal(10,0) DEFAULT NULL COMMENT '价格',
   `updated_time` datetime DEFAULT NULL,
   `created_time` datetime NOT NULL,
   PRIMARY KEY (`id`),
@@ -231,13 +247,15 @@ CREATE TABLE `user` (
   `last_login_time` datetime DEFAULT NULL COMMENT '最后登录时间',
   `transfer_key` varchar(32) DEFAULT NULL COMMENT '上次登录生成的登录key',
   `created_time` datetime NOT NULL COMMENT '用户创建日期',
-  PRIMARY KEY (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+  PRIMARY KEY (`user_id`),
+  KEY `login_name` (`login_name`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of user
 -- ----------------------------
-INSERT INTO `user` VALUES ('2', 'dogdog7788', '潮哥', '1', '5Q1GCo16YUphqSlTcYj2PojggkE6KQLNSTiK1eDezMnTAXAsClDIwa9Yak8KvA/++uFH67+pV6TRCeReiySbsookJRbEqz1b4G7DUx/2Uvk=', '15919820372', 'dogdog7788@qq.com', null, '0', '2', '00000000000', null, null, '2016-10-29 12:11:51');
+INSERT INTO `user` VALUES ('6', 'dogdog7788', '潮哥', '1', 'e4swai3oAzhfLYeKPRQHx1DS0nEbAHyLKK5NbQhvjnmKJCUWxKs9W+Buw1Mf9lL5', '15919820372', 'dogdog7788@qq.com', '2016-12-01', '0', '1', '00000000010', '2016-11-04 13:20:23', 'CAAC92F78774F4BC22DC657FEA7DB748', '2016-11-03 15:11:38');
+INSERT INTO `user` VALUES ('7', 'fiona', '小明', '1', 'mExY8fmqBhwdQCPOwPYxmswu2ES2Nxhdmr5ZFQO8gM6KJCUWxKs9W+Buw1Mf9lL5', '13534277314', '601712235@qq.com', null, '0', '2', '00000000000', null, null, '2016-11-04 13:34:27');
 
 -- ----------------------------
 -- Table structure for user_files
@@ -262,6 +280,17 @@ CREATE TABLE `user_files` (
 -- Records of user_files
 -- ----------------------------
 INSERT INTO `user_files` VALUES ('1', '1', '1', '1', '1', '1', '1', '2016-10-27 12:09:15');
+INSERT INTO `user_files` VALUES ('6', '12', '吻别.mp3', '\\我的文档\\我的音乐\\张学友\\', '流行音乐\\抒情歌曲\\', '流行音乐', '抒情歌曲\\', '2016-11-04 14:19:50');
+INSERT INTO `user_files` VALUES ('6', '13', '爱你一万年.wav', '\\我的文档\\我的音乐\\刘德华\\', '流行音乐\\抒情歌曲\\', '流行音乐', '抒情歌曲\\', '2016-11-04 14:19:50');
+INSERT INTO `user_files` VALUES ('6', '14', '一起跳舞.mp3', '\\我的文档\\我的音乐\\黎明\\', '流行音乐\\抒情歌曲\\', '流行音乐', '抒情歌曲\\', '2016-11-04 14:19:50');
+INSERT INTO `user_files` VALUES ('6', '15', '危城.mp3', '\\我的文档\\我的音乐\\郭富城\\', '流行音乐\\抒情歌曲\\', '流行音乐', '抒情歌曲\\', '2016-11-04 14:19:50');
+INSERT INTO `user_files` VALUES ('6', '19', '工具.zip', '\\我的文档\\我的音乐\\工具集\\', '工具\\好用的工具\\', '工具', '好用的工具\\', '2016-11-04 14:19:50');
+INSERT INTO `user_files` VALUES ('6', '20', '吻别6.mp3', '\\我的文档\\我的音乐\\张学友\\', '流行音乐\\抒情歌曲\\', '流行音乐', '抒情歌曲\\', '2016-11-04 14:19:50');
+INSERT INTO `user_files` VALUES ('6', '21', '爱你一万年7.wav', '\\我的文档\\我的音乐\\刘德华\\', '流行音乐\\抒情歌曲\\', '流行音乐', '抒情歌曲\\', '2016-11-04 14:19:50');
+INSERT INTO `user_files` VALUES ('6', '22', '一起跳舞8.mp3', '\\我的文档\\我的音乐\\黎明\\', '流行音乐\\抒情歌曲\\', '流行音乐', '抒情歌曲\\', '2016-11-04 14:19:50');
+INSERT INTO `user_files` VALUES ('6', '23', '危城9.mp3', '\\我的文档\\我的音乐\\郭富城\\', '流行音乐\\抒情歌曲\\', '流行音乐', '抒情歌曲\\', '2016-11-04 14:19:50');
+INSERT INTO `user_files` VALUES ('6', '24', '工具10.zip', '\\我的文档\\我的音乐\\工具集\\', '工具\\好用的工具\\', '工具', '好用的工具\\', '2016-11-04 14:19:50');
+INSERT INTO `user_files` VALUES ('7', '24', '工具10.zip', '\\我的文档\\我的音乐\\工具集\\', '工具\\好用的工具\\', '工具', '好用的工具\\', '2016-11-04 14:19:50');
 
 -- ----------------------------
 -- Table structure for user_friends
@@ -274,11 +303,12 @@ CREATE TABLE `user_friends` (
   `created_time` datetime NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `user_id,friend_id` (`user_id`,`friend_id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of user_friends
 -- ----------------------------
+INSERT INTO `user_friends` VALUES ('2', '6', '7', '2016-11-04 14:38:33');
 
 -- ----------------------------
 -- Table structure for user_message

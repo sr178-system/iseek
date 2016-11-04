@@ -3,6 +3,7 @@ package com.sr178.iseek.pc.service;
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -10,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -18,7 +20,6 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.lang.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -51,6 +52,7 @@ import com.sr178.iseek.pc.bo.MobileVerify;
 import com.sr178.iseek.pc.bo.News;
 import com.sr178.iseek.pc.bo.NewsConfig;
 import com.sr178.iseek.pc.bo.Notice;
+import com.sr178.iseek.pc.bo.PaymentOrder;
 import com.sr178.iseek.pc.bo.RegQuestion;
 import com.sr178.iseek.pc.bo.User;
 import com.sr178.iseek.pc.bo.UserFileTemp;
@@ -76,6 +78,10 @@ import com.sr178.module.utils.DateStyle;
 import com.sr178.module.utils.DateUtils;
 import com.sr178.module.utils.MD5Security;
 import com.sr178.module.utils.ParamCheck;
+
+import cn.submsg.pay.alipay.directpay.config.AlipayConfig;
+import cn.submsg.pay.alipay.directpay.utils.AlipayNotify;
+import cn.submsg.pay.alipay.directpay.utils.AlipaySubmit;
 
 
 public class PcService {
@@ -240,8 +246,8 @@ public class PcService {
 	 * @return
 	 */
 	private String getDatabasePassword(String clientTransferPassword){
-		String afterTransferKey = decrypt(clientTransferPassword, "CEEF0B3D241F4f3798FF89384BE7ACA1");
-		if(afterTransferKey!=null){
+//		String afterTransferKey = decrypt(clientTransferPassword, "CEEF0B3D241F4f3798FF89384BE7ACA1");
+		if(clientTransferPassword!=null){
 			return encrypt(clientTransferPassword, DATABASE_PASSWORD_KEY);
 		}else{
 			throw new ServiceException(1000, "客户端密码解密失败！");
@@ -326,7 +332,7 @@ public class PcService {
 	public void verifyMobileCode(String mobile,String code){
 		MobileVerify mobileVerify = mobileVerifyDao.get(new SqlParamBean("mobile", mobile));
 		if(mobileVerify==null||mobileVerify.getUpdatedTime()==null||mobileVerify.getUpdatedTime().getTime()+CODE_EXPIRE_TIME<new Date().getTime()||mobileVerify.getVerifyCode()==null||!mobileVerify.getVerifyCode().equals(code)){
-			throw new ServiceException(1,"验证失败，请重试！");
+			throw new ServiceException(101,"验证失败，请重试！");
 		}else{
 			mobileVerifyDao.updateSuccess(mobile);
 		}
@@ -340,6 +346,7 @@ public class PcService {
 	 * @param email
 	 * @param mobile
 	 */
+	@Transactional
 	public void reg(String loginName,String password,String nickName,int sex,String email,String mobile){
 		ParamCheck.checkString(loginName, 1, "登录名不能为空");
 		ParamCheck.checkString(password, 2, "密码不能为空");
@@ -364,6 +371,7 @@ public class PcService {
 		if(user!=null){
 			throw new ServiceException(9, "手机号已注册！");
 		}
+		password = password.toUpperCase();
 		String dataBasePass = getDatabasePassword(password);
 		user = new User();
 		user.setCreatedTime(new Date());
@@ -386,7 +394,7 @@ public class PcService {
 	private static final char[] chars = new char[]{'0','1','2','3','4','5','6','7','8','9'};
 	public String sendMobileVerify(String mobile){
 		String randomString = RandomStringUtils.random(6, chars);
-		if(sendSms(mobile, randomString)){
+		if(sendSms(mobile, randomString,1)){
 			//发送短信
 			if(mobileVerifyDao.updateVerifyCode(mobile, randomString)){
 				
@@ -399,9 +407,11 @@ public class PcService {
 		return randomString;
 	}
 	
-	
-	public boolean sendSms(String mobile,String code){
-		LogSystem.info("给手机"+mobile+"发送短信，验证码为:"+code);
+	private static final String[] sms_template = new String[]{"您的注册验证码为@code","您的新密码为@code","您正在修改手机号码，验证码为@code"};
+	public boolean sendSms(String mobile,String code,int type){
+		String template = sms_template[type-1];
+		String smsContent = template.replace("@code", code);
+		LogSystem.info("给手机"+mobile+"发送短信，内容为:"+smsContent);
 		return true;
 	}
 	/**
@@ -412,6 +422,9 @@ public class PcService {
 	public void sendMemberExpiryNotice(long userId,User user){
 		if(user == null){
 			user = userDao.get(new SqlParamBean("user_id", userId));
+		}
+		if(user.getMemberExpiryDay()==null){
+			return;
 		}
 		 //会员过期提醒
         ChargeConfig chargeConfig = chargeConfigDao.getFirstOne("");
@@ -572,7 +585,9 @@ public class PcService {
 		if(user!=null){
 			bo.setEmail(user.getEmail());
 			bo.setLogin_name(user.getLoginName());
-			bo.setMember_expiry_day(user.getMemberExpiryDay().getTime());
+			if(user.getMemberExpiryDay()!=null){
+				bo.setMember_expiry_day(user.getMemberExpiryDay().getTime());
+			}
 			bo.setMobile(user.getMobile());
 			bo.setNickname(user.getNickName());
 			bo.setSex(user.getSex());
@@ -713,7 +728,18 @@ public class PcService {
 		User user = userDao.get(new SqlParamBean("user_id", userId));
 		boolean isCanShareCompress = user.getShareCompress()==1?true:false;
 		LogSystem.info("json String = "+files);
-		List<UpFileBO> upFileBOs = JSON.parseArray(files, UpFileBO.class);
+		
+		if(Strings.isNullOrEmpty(files)){
+			throw new ServiceException(4, "上传数据为空！files="+files);
+		}
+		
+		List<UpFileBO> upFileBOs = null;
+		try {
+			upFileBOs = JSON.parseArray(files, UpFileBO.class);
+		} catch (Exception e) {
+			throw new ServiceException(3, "json解析失败,files="+files);
+		}
+		
 		List<UserFiles> userFileList = Lists.newArrayList();
 		for(UpFileBO upFileBO:upFileBOs){
 			int searchType = 0;
@@ -734,7 +760,7 @@ public class PcService {
 				throw new ServiceException(-1, "MD5加密错误");
 			}
 			Files f = new Files(upFileBO.getHash(), upFileBO.getName(), upFileBO.getType(), upFileBO.getSize(), upFileBO.getTime_span(), upFileBO.getKbps(), 1, new Date(), searchType, indexHashTypeSizeTimeSpanKbps);
-			String[] array = upFileBO.getSub_dir().split("\\", 2);
+			String[] array = upFileBO.getSub_dir().split("\\\\", 2);
 			String searchStype = "";
 			String searchZj = "";
 			
@@ -768,6 +794,7 @@ public class PcService {
 				userFiles.setFileId(fileId);
 			}else{
 				filesDao.increaseSrcCount(files.getId());
+				userFiles.setFileId(files.getId());
 			}
 	}
 	
@@ -786,26 +813,312 @@ public class PcService {
 	public List<RegQuestion> getRegQuestionList(){
 		return regQuestionDao.getAll();
 	}
-	
-	
-	
-	
+	/**
+	 * 重置密码
+	 * @return
+	 */
+	public String resetPassword(String loginName,String mobile){
+		User user = userDao.get(new SqlParamBean("login_name", loginName),new SqlParamBean("and", "mobile", mobile));
+		if(user==null){
+			throw new ServiceException(1,"不正确的用户名及手机号码！");
+		}
+		String randomPassword = RandomStringUtils.random(8, chars);
+		this.sendSms(mobile, randomPassword,2);
+		return randomPassword;
+	}
+	/**
+	 * 获取用户信息
+	 * @param userId
+	 * @return
+	 */
+	public User getUser(long userId){
+		return userDao.get(new SqlParamBean("user_id", userId));
+	}
+	/**
+	 * 更新用户信息
+	 * @param userId
+	 * @param oldPassword
+	 * @param newPassword
+	 * @param nickname
+	 * @param sex
+	 * @param email
+	 */
+	public void updateUserInfo(long userId,String oldPassword,String newPassword,String nickname,int sex,String email){
+		ParamCheck.checkString(nickname, 1, "昵称不能为空");
+		ParamCheck.checkString(email, 2, "邮箱不能为空");
+		User user = userDao.get(new SqlParamBean("user_id", userId));
+		if(user==null){
+			throw new ServiceException(3,"用户不存在");
+		}
+		
+		if(sex!=1&&sex!=2){
+			throw new ServiceException(7, "性别填写错误！");
+		}
+		
+		String newPasswordDatabase = null;
+		if(!Strings.isNullOrEmpty(oldPassword)){
+			if(!this.getTruePassword(user.getPassWord()).equals(oldPassword.toUpperCase())){
+				throw new ServiceException(4,"原始密码不正确");
+			}
+			ParamCheck.checkString(newPassword, 5, "新密码不能为空");
+			newPasswordDatabase = this.getDatabasePassword(newPassword.toUpperCase());
+		}
+		if(!userDao.updateUserInfo(userId, nickname, email, sex, newPasswordDatabase)){
+			throw new ServiceException(5,"修改失败！");
+		}
+	}
+	/**
+	 * 更换手机号码
+	 * @param userId
+	 * @param oldCode
+	 * @param newMobile
+	 * @param newCode
+	 */
+	public void changeMobile(long userId,String oldCode,String newMobile,String newCode){
+		ParamCheck.checkString(oldCode, 1, "旧手机验证码不能为空");
+		ParamCheck.checkString(newMobile, 2, "新手机好吗不能为空");
+		ParamCheck.checkString(newCode, 3, "新手机验证码不能为空");
+		User user = userDao.get(new SqlParamBean("user_id", userId));
+		if(user==null){
+			throw new ServiceException(4,"用户不存在");
+		}
+		this.verifyMobileCode(user.getMobile(), oldCode);
+		this.verifyMobileCode(newMobile, newCode);
+		
+		if(!userDao.updateUserMobile(userId, newMobile)){
+			throw new ServiceException(5,"修改失败！");
+		}
+	}
+	 /**
+     * 创建订单
+     * @param userId
+     * @param productId
+     * @param num
+     * @param invoiceId
+     * @return
+     */
+    public String creatOrder(long userId,int month){
+    	String orderId = generatorPayOrder();
+    	User user = userDao.get(new SqlParamBean("user_id", userId));
+    	if(user==null){
+    		throw new ServiceException(1, "用户不存在,userId="+userId);
+    	}
+    	ChargeConfig chargeConfig = chargeConfigDao.getFirstOne("");
+    	double feePerMonth = 28d;
+    	if(chargeConfig!=null){
+    		feePerMonth = chargeConfig.getFeePerMonth();
+    	}
+    	PaymentOrder paymentOrder = new PaymentOrder(orderId, userId, feePerMonth*month, 0, 0, 0, "", null, new Date());
+    	paymentOrder.setNum(month);
+    	paymentOrder.setPrice(feePerMonth);
+    	if(!paymentOrderDao.add(paymentOrder)){
+    		throw new ServiceException(2, "创建订单失败！");
+    	}
+    	return orderId;
+    }
+    
+    
+    //订单序列号
+    private static AtomicInteger sequence = new AtomicInteger(1000);
+    /**
+     * 创建订单
+     * @return
+     */
+    private String generatorPayOrder(){
+    	String orderNum = "ISK";
+    	SimpleDateFormat sdf=new SimpleDateFormat("yyyyMMddHHmmss");
+    	orderNum = orderNum + sdf.format(new Date());
+    	int num = sequence.incrementAndGet();
+    	if(num>9999){
+    		num = 1000;
+    		sequence.set(1000);
+    	}
+    	orderNum = orderNum+num;
+    	return orderNum;
+    }
+    
+	/**
+	 * 充值成功后发货
+	 * @param orderId
+	 * @param payType
+	 * @param bankOrderId
+	 * @param payUserId
+	 * @return
+	 */
+	public boolean afterOrderSuccess(String orderId,int payType,String bankOrderId,long payUserId){
+		PaymentOrder order = paymentOrderDao.get(new SqlParamBean("order_id", orderId));
+		if(order==null){
+			LogSystem.warn("支付错误，订单号不存在：orderid="+orderId);
+			return false;
+		}
+		if(paymentOrderDao.updateOrderToSuccess(orderId, payType, bankOrderId, payUserId)){//更新成功
+			LogSystem.info("订单状态更新成功，开始发货");
+			User user = userDao.get(new SqlParamBean("user_id", order.getUserId()));
+			boolean result = false;
+			if(user!=null){
+				Date now = null;
+				if(user.getMemberExpiryDay()!=null){
+					now = new Date();
+				}else{
+					now = user.getMemberExpiryDay();
+				}
+				Date newMemberExpireTime = DateUtils.addDay(now, 31);
+				result = userDao.updateMemberExpireTime(order.getUserId(), newMemberExpireTime);
+			}else{
+				LogSystem.warn("支付回调用户找不到-userId="+order.getUserId()+",orderId="+orderId);
+			}
+			if(!result){
+				LogSystem.info("支付错误，［"+orderId+"］,userId="+order.getUserId());
+				return false;
+			}else{
+				//发送消息
+				NoticeBO noticeBo = new NoticeBO(1, "您充值的"+order.getNum()+"个月会员，已到账成功！请注意查看", "");
+				this.addNotice(order.getUserId()+"", noticeBo);
+			}
+			LogSystem.info("发货成功！处理完毕，orderId="+orderId);
+			return true;
+		}else{
+			LogSystem.info("重复发货，不处理！orderId="+orderId);
+			return false;
+		}
+	}
+	/**
+	 * ali即时到帐支付 请求
+	 * @param orderId
+	 * @return
+	 */
+	public String alipayRequest(String orderId){
+		   //商户订单号，商户网站订单系统中唯一订单号，必填
+        String out_trade_no = orderId;
+        PaymentOrder order = paymentOrderDao.get(new SqlParamBean("order_id", orderId));
+        //订单名称，必填
+        String subject = "购买Iseek"+order.getNum()+"个月会员";
+        //付款金额，必填
+        String total_fee = order.getAmount()+"";
+        //商品描述，可空
+        String body = subject;
+		//////////////////////////////////////////////////////////////////////////////////
+		//把请求参数打包成数组
+		Map<String, String> sParaTemp = new HashMap<String, String>();
+		sParaTemp.put("service", AlipayConfig.service);
+        sParaTemp.put("partner", AlipayConfig.partner);
+        sParaTemp.put("seller_id", AlipayConfig.seller_id);
+        sParaTemp.put("_input_charset", AlipayConfig.input_charset);
+		sParaTemp.put("payment_type", AlipayConfig.payment_type);
+		sParaTemp.put("notify_url", AlipayConfig.notify_url);
+		sParaTemp.put("return_url", AlipayConfig.return_url);
+		sParaTemp.put("anti_phishing_key", AlipayConfig.anti_phishing_key);
+		sParaTemp.put("exter_invoke_ip", AlipayConfig.exter_invoke_ip);
+		sParaTemp.put("out_trade_no", out_trade_no);
+		sParaTemp.put("subject", subject);
+		sParaTemp.put("total_fee", total_fee);
+		sParaTemp.put("body", body);
+		//其他业务参数根据在线开发文档，添加参数.文档地址:https://doc.open.alipay.com/doc2/detail.htm?spm=a219a.7629140.0.0.O9yorI&treeId=62&articleId=103740&docType=1
+        //如sParaTemp.put("参数名","参数值");
+		//建立请求
+		String sHtmlText = AlipaySubmit.buildRequest(sParaTemp,"get","确认");
+		return sHtmlText;
+	}
+	/**
+	 * 支付宝异步回调
+	 * @param out_trade_no
+	 * @param trade_no
+	 * @param trade_status
+	 * @param seller_id
+	 * @param params
+	 * @return
+	 */
+	public boolean aliPayNotify(String out_trade_no, String trade_no, String trade_status, String seller_id,
+			Map<String, String> params) {
+		try {
+			// 获取支付宝的通知返回参数，可参考技术文档中页面跳转同步通知参数列表(以上仅供参考)//
+			if (AlipayNotify.verify(params)) {// 验证成功
+				//////////////////////////////////////////////////////////////////////////////////////////
+				// 请在这里加上商户的业务逻辑程序代码
+				// ——请根据您的业务逻辑来编写程序（以下代码仅作参考）——
+				if (trade_status.equals("TRADE_FINISHED")) {
+					// 判断该笔订单是否在商户网站中已经做过处理
+					// 如果没有做过处理，根据订单号（out_trade_no）在商户网站的订单系统中查到该笔订单的详细，并执行商户的业务程序
+					// 请务必判断请求时的total_fee、seller_id与通知时获取的total_fee、seller_id为一致的
+					// 如果有做过处理，不执行商户的业务程序
+					// 注意：
+					// 退款日期超过可退款期限后（如三个月可退款），支付宝系统发送该交易状态通知
+					LogSystem.info("一个状态为退款的状态，没有做任何处理"+out_trade_no);
+				} else if (trade_status.equals("TRADE_SUCCESS")) {
+					// 判断该笔订单是否在商户网站中已经做过处理
+					// 如果没有做过处理，根据订单号（out_trade_no）在商户网站的订单系统中查到该笔订单的详细，并执行商户的业务程序
+					// 请务必判断请求时的total_fee、seller_id与通知时获取的total_fee、seller_id为一致的
+					// 如果有做过处理，不执行商户的业务程序
+					if (seller_id.equals(AlipayConfig.seller_id)) {
+						afterOrderSuccess(out_trade_no, 1, trade_no, 0);
+					}
+					LogSystem.info("订单成功处理完毕！");
+					// 注意：
+					// 付款完成后，支付宝系统发送该交易状态通知
+				}
+				// ——请根据您的业务逻辑来编写程序（以上代码仅作参考）——
+				return true; // 请不要修改或删除
+				//////////////////////////////////////////////////////////////////////////////////////////
+			} else {// 验证失败
+				return false;
+			}
+		} catch (Exception e) {
+			LogSystem.error(e, "异常回调！～～");
+			return false;
+		}
+	}
 	
 	public static void main(String[] args) throws Exception {
-		String decryptLoginStr = "6A38719F22424b2d94227923E966F9AC"+"dogdog7788dddd"+"20161018132220";
-		String clientKey = decryptLoginStr.substring(0, 32);
- 		String time = decryptLoginStr.substring(decryptLoginStr.length()-14,decryptLoginStr.length());
- 		String loginUserName = decryptLoginStr.substring(32, decryptLoginStr.length()-14);
- 		System.out.println(clientKey);
- 		System.out.println(time);
- 		System.out.println(loginUserName);
+		String clientKey = "6A38719F22424b2d94227923E966F9AC";
+		String decryptLoginStr = clientKey+"dogdog7788"+"20161018132220";
 		
-		String md516 = MD5Security.md5_16_Big(UUID.randomUUID().toString());
-		String hex32 = Hex.encodeHexString(md516.getBytes("utf-8"));
-		String aesStr = encrypt(md516, md516);
-		System.out.println(md516);
-		System.out.println(hex32);
-		System.out.println(aesStr);
-		System.out.println(decrypt(aesStr, md516));
+		
+		String databaseStr = "mExY8fmqBhwdQCPOwPYxmswu2ES2Nxhdmr5ZFQO8gM6KJCUWxKs9W+Buw1Mf9lL5";
+		String databaseKey = decrypt(databaseStr,DATABASE_PASSWORD_KEY);
+		
+		System.out.println(databaseKey);
+		
+		String loginStr = encrypt(decryptLoginStr, databaseKey);
+		
+		System.out.println(loginStr);
+		
+		System.out.println(decrypt(loginStr,databaseKey));
+//		clientKey = decryptLoginStr.substring(0, 32);
+//		
+// 		String time = decryptLoginStr.substring(decryptLoginStr.length()-14,decryptLoginStr.length());
+// 		
+// 		
+// 		String loginUserName = decryptLoginStr.substring(32, decryptLoginStr.length()-14);
+// 		System.out.println(clientKey);
+// 		System.out.println(time);
+// 		System.out.println(loginUserName);
+//		
+//		String md516 = MD5Security.md5_16_Big(UUID.randomUUID().toString());
+//		String hex32 = Hex.encodeHexString(md516.getBytes("utf-8"));
+//		String aesStr = encrypt(md516, md516);
+//		System.out.println(md516);
+//		System.out.println(hex32);
+//		System.out.println(aesStr);
+//		System.out.println(decrypt(aesStr, md516));
+//		
+//		System.out.println(MD5Security.md5_32_Big("5X#6423D79C74b6b"+"111111"+"AB8471%VAED8A76E"));
+		
+		System.out.println(encrypt("dogdog7788"+"20161018132220", "CAAC92F78774F4BC22DC657FEA7DB748"));
+		List<UpFileBO> list = Lists.newArrayList();
+		UpFileBO upFileBO1 = new UpFileBO("hash1", 1, "吻别.mp3", 102400l, 1500, 80, "\\我的文档\\我的音乐\\张学友\\", "流行音乐\\抒情歌曲\\");
+		UpFileBO upFileBO2 = new UpFileBO("hash2", 2, "爱你一万年.wav", 102400l, 1500, 80, "\\我的文档\\我的音乐\\刘德华\\", "流行音乐\\抒情歌曲\\");
+		UpFileBO upFileBO3 = new UpFileBO("hash3", 1, "一起跳舞.mp3", 102400l, 1500, 80, "\\我的文档\\我的音乐\\黎明\\", "流行音乐\\抒情歌曲\\");
+		UpFileBO upFileBO4 = new UpFileBO("hash4", 1, "危城.mp3", 102400l, 1500, 80, "\\我的文档\\我的音乐\\郭富城\\", "流行音乐\\抒情歌曲\\");
+		UpFileBO upFileBO5 = new UpFileBO("hash5", 3, "工具.zip", 102400l, 1500, 80, "\\我的文档\\我的音乐\\工具集\\", "工具\\好用的工具\\");
+		
+		UpFileBO upFileBO6 = new UpFileBO("hash6", 1, "吻别6.mp3", 102400l, 1500, 80, "\\我的文档\\我的音乐\\张学友\\", "流行音乐\\抒情歌曲\\");
+		UpFileBO upFileBO7 = new UpFileBO("hash7", 2, "爱你一万年7.wav", 102400l, 1500, 80, "\\我的文档\\我的音乐\\刘德华\\", "流行音乐\\抒情歌曲\\");
+		UpFileBO upFileBO8 = new UpFileBO("hash8", 1, "一起跳舞8.mp3", 102400l, 1500, 80, "\\我的文档\\我的音乐\\黎明\\", "流行音乐\\抒情歌曲\\");
+		UpFileBO upFileBO9 = new UpFileBO("hash9", 1, "危城9.mp3", 102400l, 1500, 80, "\\我的文档\\我的音乐\\郭富城\\", "流行音乐\\抒情歌曲\\");
+		UpFileBO upFileBO10 = new UpFileBO("hash10", 3, "工具10.zip", 102400l, 1500, 80, "\\我的文档\\我的音乐\\工具集\\", "工具\\好用的工具\\");
+		list.add(upFileBO1);list.add(upFileBO2);list.add(upFileBO3);list.add(upFileBO4);list.add(upFileBO5);
+		list.add(upFileBO6);list.add(upFileBO7);list.add(upFileBO8);list.add(upFileBO9);list.add(upFileBO10);
+		System.out.println(JSON.toJSONString(list));
+		
 	}
 }

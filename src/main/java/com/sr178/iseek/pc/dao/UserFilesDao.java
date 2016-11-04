@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.google.common.base.Strings;
 import com.sr178.common.jdbc.SqlParameter;
+import com.sr178.game.framework.exception.ServiceException;
 import com.sr178.game.framework.log.LogSystem;
 import com.sr178.iseek.common.dao.IseekDaoBase;
 import com.sr178.iseek.pc.bo.Files;
@@ -17,7 +18,7 @@ public class UserFilesDao extends IseekDaoBase<UserFiles> {
 	public List<Files> seekFiles(String keyWorld,String fileType,String style_type){
 		LogSystem.info("keyWorlds="+keyWorld+",fileType="+fileType+",style_type="+style_type+"");
 		if(Strings.isNullOrEmpty(keyWorld)){
-			throw new RuntimeException("keyWorld不能为空！");
+			throw new ServiceException(100,"搜索关键字不能为空！");
 		}
 		StringBuffer sqlBuffer = new StringBuffer();
 		if(fileType.equals("1")){//音频文件
@@ -41,7 +42,7 @@ public class UserFilesDao extends IseekDaoBase<UserFiles> {
 		}else if(fileType.equals("3")){//文件专辑
 			sqlBuffer.append("select * from files ");
 			if(Strings.isNullOrEmpty(style_type)){
-			   sqlBuffer.append(" where id in(select file_id from user_files where search_zj like '%"+keyWorld+"%'");
+			   sqlBuffer.append(" where id in(select file_id from user_files where search_zj like '%"+keyWorld+"%')");
 			}else{
 				 sqlBuffer.append(" where id in(select file_id from user_files where search_zj like '%"+keyWorld+"%' and search_type='"+style_type+"')");
 			}

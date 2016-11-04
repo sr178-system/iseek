@@ -58,4 +58,20 @@ public class UpFileBO {
 	public void setSub_dir(String sub_dir) {
 		this.sub_dir = sub_dir;
 	}
+	public UpFileBO(String hash, int type, String name, long size, int time_span, int kbps, String share_dir,
+			String sub_dir) {
+		super();
+		this.hash = hash;
+		this.type = type;
+		this.name = name;
+		this.size = size;
+		this.time_span = time_span;
+		this.kbps = kbps;
+		this.share_dir = share_dir;
+		this.sub_dir = sub_dir;
+	}
+	public UpFileBO() {
+		super();
+	}
+	
 }

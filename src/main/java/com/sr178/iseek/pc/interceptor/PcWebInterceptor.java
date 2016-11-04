@@ -36,11 +36,18 @@ public class PcWebInterceptor extends AbstractInterceptor {
 			Map<String,Object> map = actionInvocation.getInvocationContext().getParameters();
 			Object ssoStrObject = map.get("sso_str");
 			String ssoStr = ssoStrObject==null?null:((String[])ssoStrObject)[0];//用户id
+			
+			if(ssoStr==null){
+				appAction.setCode(8888);
+				appAction.setDesc("用户登录回话已过期");
+				return "glober_error";
+			}
 			//校验是否登录用户
 			String userId = aus.getUserIdBySsoStr(ssoStr);
 			if(userId!=null){
 				//将userid视为tokenid
-				appAction.setTokenId(userId);
+				appAction.setUserId(Long.valueOf(userId));
+				appAction.setTokenId(ssoStr);
 			}else{
 				appAction.setCode(8888);
 				appAction.setDesc("用户登录回话已过期");

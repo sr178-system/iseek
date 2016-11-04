@@ -31,10 +31,15 @@
 		 </action>		 
 		 <action name="reg3" class="com.sr178.iseek.pc.action.PcWebNoAuthAction" method="reg" >
 		    <result name="success">/reg-3.jsp</result>
-		    <result name="ok">/reg-4.jsp</result>
+		    <result name="ok" type="redirect">/reg-4.jsp</result>
 		 </action>
 		 
 		 <action name="sendSms" class="com.sr178.iseek.pc.action.PcWebNoAuthAction" method="sendSms" >
+		 </action>
+		 
+		 <action name="updateuser" class="com.sr178.iseek.pc.action.PcWebAction" method="updateUserInfo" >
+		    <result name="success">/user-data.jsp</result>
+		    <result name="ok" type="redirect">/user-data-success.jsp</result>
 		 </action>
 	</package>
 	

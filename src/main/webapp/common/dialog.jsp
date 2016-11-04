@@ -17,7 +17,13 @@
 </div>
 
 <script>
-   function print(msg){
+   function print_s(msg,e){
+	   
+		 $('#prompt-dialog').on('hidden.bs.modal', function () {
+		      if(e){
+		    	  e();
+		      }
+		      });
 	   $(".modal-body").text(msg)
        $('#prompt-dialog').modal('show');
    }

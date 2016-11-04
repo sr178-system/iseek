@@ -1,6 +1,7 @@
 package com.sr178.iseek.pc.action;
 
 
+import com.google.common.base.Strings;
 import com.sr178.game.framework.context.ServiceCacheFactory;
 import com.sr178.iseek.pc.bean.SystemNoticeBO;
 import com.sr178.iseek.pc.bo.Notice;
@@ -66,6 +67,11 @@ public class PcAction extends JsonBaseActionSupport {
 	 */
 	public String seekfile(){
 		PcService pcService = ServiceCacheFactory.getService(PcService.class);
+		
+		if(Strings.isNullOrEmpty(file_type)){
+			file_type="0";
+		}
+		
 		return this.renderListResult(pcService.seekFileList(Long.valueOf(super.getTokenId()), key_word, file_type, stype_type));
 	}
 	private long file_id;
@@ -104,7 +110,10 @@ public class PcAction extends JsonBaseActionSupport {
 	public String getsysnotice(){
         PcService pcService = ServiceCacheFactory.getService(PcService.class);
 		Notice notice = pcService.getMaxKeyNotice();
-		SystemNoticeBO bo = new SystemNoticeBO(notice.getNoticeContent(), notice.getNoticeUrl(), notice.getCreatedTime().getTime());
+		SystemNoticeBO bo = null;
+		if(notice!=null){
+			bo = new SystemNoticeBO(notice.getNoticeContent(), notice.getNoticeUrl(), notice.getCreatedTime().getTime());
+		}
 		return this.renderObjectResult(bo);
 	}
 	
