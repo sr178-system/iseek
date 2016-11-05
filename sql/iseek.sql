@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50624
 File Encoding         : 65001
 
-Date: 2016-11-04 18:18:39
+Date: 2016-11-05 12:54:51
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -48,7 +48,7 @@ CREATE TABLE `charge_config` (
 -- ----------------------------
 -- Records of charge_config
 -- ----------------------------
-INSERT INTO `charge_config` VALUES ('28', '10');
+INSERT INTO `charge_config` VALUES ('25', '10');
 
 -- ----------------------------
 -- Table structure for files
@@ -102,7 +102,8 @@ CREATE TABLE `mobile_verify` (
 -- ----------------------------
 -- Records of mobile_verify
 -- ----------------------------
-INSERT INTO `mobile_verify` VALUES ('13534277314', null, '0', null, '2016-11-04 13:33:51');
+INSERT INTO `mobile_verify` VALUES ('13507418135', '628522', '0', '2016-11-05 11:56:24', '2016-11-05 11:46:41');
+INSERT INTO `mobile_verify` VALUES ('13534277314', '733700', '0', '2016-11-05 11:48:23', '2016-11-04 13:33:51');
 INSERT INTO `mobile_verify` VALUES ('15919820372', null, '0', null, '2016-10-29 12:02:15');
 
 -- ----------------------------
@@ -173,11 +174,12 @@ CREATE TABLE `payment_log` (
   `created_time` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of payment_log
 -- ----------------------------
+INSERT INTO `payment_log` VALUES ('1', '6', 'ISK201611051251211001', '25.00', '2016-12-01 00:00:00', '2016-12-06 12:52:46', '2016-11-05 12:52:46');
 
 -- ----------------------------
 -- Table structure for payment_order
@@ -199,11 +201,14 @@ CREATE TABLE `payment_order` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `order_id` (`order_id`),
   KEY `user_id` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of payment_order
 -- ----------------------------
+INSERT INTO `payment_order` VALUES ('1', 'ISK201611051234571001', '6', '150.00', '0', '0', '0', '', '6', '25', null, '2016-11-05 12:34:57');
+INSERT INTO `payment_order` VALUES ('2', 'ISK201611051235311002', '6', '25.00', '0', '0', '0', '', '1', '25', null, '2016-11-05 12:35:32');
+INSERT INTO `payment_order` VALUES ('3', 'ISK201611051251211001', '6', '25.00', '1', '0', '1', '2016110521001004480233730337', '1', '25', null, '2016-11-05 12:51:22');
 
 -- ----------------------------
 -- Table structure for reg_question
@@ -254,7 +259,7 @@ CREATE TABLE `user` (
 -- ----------------------------
 -- Records of user
 -- ----------------------------
-INSERT INTO `user` VALUES ('6', 'dogdog7788', '潮哥', '1', 'e4swai3oAzhfLYeKPRQHx1DS0nEbAHyLKK5NbQhvjnmKJCUWxKs9W+Buw1Mf9lL5', '15919820372', 'dogdog7788@qq.com', '2016-12-01', '0', '1', '00000000010', '2016-11-04 13:20:23', 'CAAC92F78774F4BC22DC657FEA7DB748', '2016-11-03 15:11:38');
+INSERT INTO `user` VALUES ('6', 'dogdog7788', '潮哥', '1', 'mExY8fmqBhwdQCPOwPYxmswu2ES2Nxhdmr5ZFQO8gM6KJCUWxKs9W+Buw1Mf9lL5', '13507418135', 'dogdog7788@qq.com', '2016-12-06', '0', '1', '00000000010', '2016-11-04 13:20:23', 'CAAC92F78774F4BC22DC657FEA7DB748', '2016-11-03 15:11:38');
 INSERT INTO `user` VALUES ('7', 'fiona', '小明', '1', 'mExY8fmqBhwdQCPOwPYxmswu2ES2Nxhdmr5ZFQO8gM6KJCUWxKs9W+Buw1Mf9lL5', '13534277314', '601712235@qq.com', null, '0', '2', '00000000000', null, null, '2016-11-04 13:34:27');
 
 -- ----------------------------
