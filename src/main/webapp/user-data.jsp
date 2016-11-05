@@ -292,7 +292,7 @@
 		<div class="col-sm-3">
 			<input type="text" class="form-control" id="mobile" name="mobile" value="${user.mobile}" readonly="readonly" />
 		</div>
-		<a href="javascript:;" class="btn btn-default" id="send-code">更换</a>
+		<a href="/editmobile?sso_str=${tokenId}" class="btn btn-default" id="send-code">更换</a>
 	</div>	
 	<div class="form-group">
 		<label for="email" class="col-sm-2 control-label">邮  箱：</label>
