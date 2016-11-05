@@ -81,4 +81,14 @@ public class UserDao extends IseekDaoBase<User> {
 		String sql = "update " + super.getTable() +" set member_expiry_day = ? where user_id=? limit 1";
 		return super.getJdbc().update(sql, SqlParameter.Instance().withObject(date).withLong(userId))>0;
 	}
+	/**
+	 * 修改用户密码
+	 * @param userId
+	 * @param password
+	 * @return
+	 */
+	public boolean updateUserPassword(long userId,String password){
+		String sql = "update " + super.getTable() +" set pass_word = ? where user_id=? limit 1";
+		return super.getJdbc().update(sql, SqlParameter.Instance().withString(password).withLong(userId))>0;		
+	}
 }

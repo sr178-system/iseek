@@ -22,7 +22,7 @@ public class PcServiceTest extends DaoTest {
 		}
 		
 		//发送验证码
-		String code = pcService.sendMobileVerify(mobile);
+		String code = pcService.sendMobileVerify(mobile,1);
 		//验证验证码
 		pcService.verifyMobileCode(mobile, code);
 		

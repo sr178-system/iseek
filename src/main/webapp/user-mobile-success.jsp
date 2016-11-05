@@ -1,3 +1,6 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ include file="/common/taglib.jsp"%>
 <!DOCTYPE html>
 <html>
    <head>
@@ -62,7 +65,8 @@
 </div>
 <div class="container">
 	<div class="page-header">
-	    <a href="javascript:;" class="custom-font-14">个人设置</a> > 	    
+	    <a href="javascript:;" class="custom-font-14">个人设置</a> > 
+	    <a href="javascript:;" class="custom-font-14">更好手机号</a> > 
 	    <a href="javascript:;" class="custom-font-14 font-color">成功</a>
 	</div>	
 </div>
@@ -70,7 +74,7 @@
 	<div class="row">
 		<div class="col-xs-4"></div>
 		<div class="col-xs-4 text-center">
-			<h2 class="reg-suc">个人信息修改成功！</h2>
+			<h2 class="reg-suc">手机号码更换成功！</h2>
 		</div>
 		<div class="col-xs-4"></div>
 	</div>

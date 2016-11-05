@@ -52,6 +52,7 @@ import com.sr178.iseek.pc.bo.MobileVerify;
 import com.sr178.iseek.pc.bo.News;
 import com.sr178.iseek.pc.bo.NewsConfig;
 import com.sr178.iseek.pc.bo.Notice;
+import com.sr178.iseek.pc.bo.PaymentLog;
 import com.sr178.iseek.pc.bo.PaymentOrder;
 import com.sr178.iseek.pc.bo.RegQuestion;
 import com.sr178.iseek.pc.bo.User;
@@ -71,8 +72,6 @@ import com.sr178.iseek.pc.dao.RegQuestionDao;
 import com.sr178.iseek.pc.dao.UserDao;
 import com.sr178.iseek.pc.dao.UserFilesDao;
 import com.sr178.iseek.pc.dao.UserFriendsDao;
-import com.sr178.iseek.pc.dao.UserMessageDao;
-import com.sr178.iseek.pc.dao.UserNoticeStatusDao;
 import com.sr178.iseek.pc.dao.VersionDao;
 import com.sr178.module.utils.DateStyle;
 import com.sr178.module.utils.DateUtils;
@@ -94,7 +93,7 @@ public class PcService {
   	
   	private Cache<String,Integer> userWrongPasswordTimes = CacheBuilder.newBuilder().expireAfterAccess(1, TimeUnit.HOURS).maximumSize(20000).build();
   	
-  	private Cache<String,String> userPcWebToken = CacheBuilder.newBuilder().expireAfterWrite(3, TimeUnit.MINUTES).maximumSize(20000).build();
+  	private Cache<String,String> userPcWebToken = CacheBuilder.newBuilder().expireAfterAccess(3, TimeUnit.MINUTES).maximumSize(20000).build();
 
   	public static int globalMaxNoticeKey;
   	
@@ -120,10 +119,6 @@ public class PcService {
   	private UserDao userDao;
   	@Autowired
   	private UserFilesDao userFilesDao;
-  	@Autowired
-  	private UserMessageDao userMessageDao;
-  	@Autowired
-  	private UserNoticeStatusDao userNoticeStatusDao;
   	@Autowired
   	private VersionDao versionDao;
   	@Autowired
@@ -332,7 +327,7 @@ public class PcService {
 	public void verifyMobileCode(String mobile,String code){
 		MobileVerify mobileVerify = mobileVerifyDao.get(new SqlParamBean("mobile", mobile));
 		if(mobileVerify==null||mobileVerify.getUpdatedTime()==null||mobileVerify.getUpdatedTime().getTime()+CODE_EXPIRE_TIME<new Date().getTime()||mobileVerify.getVerifyCode()==null||!mobileVerify.getVerifyCode().equals(code)){
-			throw new ServiceException(101,"验证失败，请重试！");
+			throw new ServiceException(101,"验证错误或已过期！");
 		}else{
 			mobileVerifyDao.updateSuccess(mobile);
 		}
@@ -392,9 +387,9 @@ public class PcService {
 	}
 	
 	private static final char[] chars = new char[]{'0','1','2','3','4','5','6','7','8','9'};
-	public String sendMobileVerify(String mobile){
+	public String sendMobileVerify(String mobile,int type){
 		String randomString = RandomStringUtils.random(6, chars);
-		if(sendSms(mobile, randomString,1)){
+		if(sendSms(mobile, randomString,type)){
 			//发送短信
 			if(mobileVerifyDao.updateVerifyCode(mobile, randomString)){
 				
@@ -434,6 +429,19 @@ public class PcService {
         		NoticeBO noticeBo = new NoticeBO(2, "您的会员还有"+rday+"天过期，请注意及时充值", "");
         		this.addNotice(user.getUserId()+"", noticeBo);
         	}
+        }
+	}
+	/**
+	 * 获取会员每月费用
+	 * @return
+	 */
+	public double getFeePerMonth(){
+		 //会员过期提醒
+        ChargeConfig chargeConfig = chargeConfigDao.getFirstOne("");
+        if(chargeConfig==null){
+        	return 25d;
+        }else{
+        	return chargeConfig.getFeePerMonth();
         }
 	}
 	
@@ -816,14 +824,22 @@ public class PcService {
 	/**
 	 * 重置密码
 	 * @return
+	 * @throws Exception 
 	 */
-	public String resetPassword(String loginName,String mobile){
+	public String resetPassword(String loginName,String mobile) throws Exception{
 		User user = userDao.get(new SqlParamBean("login_name", loginName),new SqlParamBean("and", "mobile", mobile));
 		if(user==null){
 			throw new ServiceException(1,"不正确的用户名及手机号码！");
 		}
 		String randomPassword = RandomStringUtils.random(8, chars);
-		this.sendSms(mobile, randomPassword,2);
+		boolean result = this.sendSms(mobile, randomPassword,2);
+		if(result){
+			String password = MD5Security.md5_32_Big("5X#6423D79C74b6b"+randomPassword+"AB8471%VAED8A76E");
+			String dataBasePassowrd = this.getDatabasePassword(password);
+			userDao.updateUserPassword(user.getUserId(), dataBasePassowrd);
+		}else{
+			throw new ServiceException(2, "短信发送错误");
+		}
 		return randomPassword;
 	}
 	/**
@@ -874,7 +890,7 @@ public class PcService {
 	 * @param newMobile
 	 * @param newCode
 	 */
-	public void changeMobile(long userId,String oldCode,String newMobile,String newCode){
+	public void changeMobile(long userId,String oldMobile,String oldCode,String newMobile,String newCode){
 		ParamCheck.checkString(oldCode, 1, "旧手机验证码不能为空");
 		ParamCheck.checkString(newMobile, 2, "新手机好吗不能为空");
 		ParamCheck.checkString(newCode, 3, "新手机验证码不能为空");
@@ -882,12 +898,24 @@ public class PcService {
 		if(user==null){
 			throw new ServiceException(4,"用户不存在");
 		}
+		if(!user.getMobile().equals(oldMobile)){
+			throw new ServiceException(7,"原来的手机号码填写不正确！");
+		}
+		
+		User userMobile = userDao.get(new SqlParamBean("mobile", newMobile));
+		if(userMobile!=null){
+			throw new ServiceException(5, "新手机号已被注册！");
+		}
 		this.verifyMobileCode(user.getMobile(), oldCode);
 		this.verifyMobileCode(newMobile, newCode);
-		
 		if(!userDao.updateUserMobile(userId, newMobile)){
-			throw new ServiceException(5,"修改失败！");
+			throw new ServiceException(6,"修改失败！");
 		}
+		
+		//重置验证码信息
+		mobileVerifyDao.resetCode(oldMobile);
+		//重置验证码信息
+		mobileVerifyDao.resetCode(newMobile);
 	}
 	 /**
      * 创建订单
@@ -904,7 +932,7 @@ public class PcService {
     		throw new ServiceException(1, "用户不存在,userId="+userId);
     	}
     	ChargeConfig chargeConfig = chargeConfigDao.getFirstOne("");
-    	double feePerMonth = 28d;
+    	double feePerMonth = 25d;
     	if(chargeConfig!=null){
     		feePerMonth = chargeConfig.getFeePerMonth();
     	}
@@ -955,14 +983,18 @@ public class PcService {
 			LogSystem.info("订单状态更新成功，开始发货");
 			User user = userDao.get(new SqlParamBean("user_id", order.getUserId()));
 			boolean result = false;
+			Date beforVipTime = null;
+			Date afterVipTime = null;
 			if(user!=null){
+				beforVipTime = user.getMemberExpiryDay();
 				Date now = null;
 				if(user.getMemberExpiryDay()!=null){
 					now = new Date();
 				}else{
 					now = user.getMemberExpiryDay();
 				}
-				Date newMemberExpireTime = DateUtils.addDay(now, 31);
+				Date newMemberExpireTime = DateUtils.addDay(now, 31*order.getNum());
+				afterVipTime = newMemberExpireTime;
 				result = userDao.updateMemberExpireTime(order.getUserId(), newMemberExpireTime);
 			}else{
 				LogSystem.warn("支付回调用户找不到-userId="+order.getUserId()+",orderId="+orderId);
@@ -974,6 +1006,15 @@ public class PcService {
 				//发送消息
 				NoticeBO noticeBo = new NoticeBO(1, "您充值的"+order.getNum()+"个月会员，已到账成功！请注意查看", "");
 				this.addNotice(order.getUserId()+"", noticeBo);
+				//写充值成功日志
+				PaymentLog log = new PaymentLog();
+				log.setUserId(order.getUserId());
+				log.setOrderId(orderId);
+				log.setCreatedTime(new Date());
+				log.setBeforVipTime(beforVipTime);
+				log.setAfterVipTime(afterVipTime);
+				log.setAmount(order.getAmount());
+				paymentLogDao.add(log);
 			}
 			LogSystem.info("发货成功！处理完毕，orderId="+orderId);
 			return true;
@@ -994,7 +1035,7 @@ public class PcService {
         //订单名称，必填
         String subject = "购买Iseek"+order.getNum()+"个月会员";
         //付款金额，必填
-        String total_fee = order.getAmount()+"";
+        String total_fee = "0.1";//order.getAmount()+"";
         //商品描述，可空
         String body = subject;
 		//////////////////////////////////////////////////////////////////////////////////
@@ -1067,7 +1108,18 @@ public class PcService {
 			return false;
 		}
 	}
-	
+	/**
+	 * 根据订单号 获取用户信息
+	 * @param orderId
+	 * @return
+	 */
+	public User getUserByPayOrder(String orderId){
+        PaymentOrder order = paymentOrderDao.get(new SqlParamBean("order_id", orderId));
+        if(order==null){
+        	throw new ServiceException(1,"订单不存在！");
+        }
+        return this.getUser(order.getUserId());
+	}
 	public static void main(String[] args) throws Exception {
 		String clientKey = "6A38719F22424b2d94227923E966F9AC";
 		String decryptLoginStr = clientKey+"dogdog7788"+"20161018132220";

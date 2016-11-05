@@ -42,16 +42,18 @@ public class PcWebAction extends BaseActionSupport {
 			return "ok";
 		}
 	}
-	
+	private String mobile;
 	private String oldCode;
 	private String newMobile;
 	private String newCode;
 	public String changeMobile(){
+		PcService pcService = ServiceCacheFactory.getService(PcService.class);
 		if(st==0){
+			User user = pcService.getUser(super.getUserId());
+			mobile = user.getMobile();
 			return SUCCESS;
 		}else{
-			PcService pcService = ServiceCacheFactory.getService(PcService.class);
-			pcService.changeMobile(super.getUserId(), oldCode, newMobile, newCode);
+			pcService.changeMobile(super.getUserId(),mobile, oldCode, newMobile, newCode);
 			return "ok";
 		}
 	}
@@ -60,13 +62,16 @@ public class PcWebAction extends BaseActionSupport {
      * @return
      */
 	private int month;
+	private double feePerMonth;
 	public String creatOrder() throws IOException{
+		PcService pcService = ServiceCacheFactory.getService(PcService.class);
 		if(st==0){
+			feePerMonth = pcService.getFeePerMonth();
+			user = pcService.getUser(super.getUserId());
 			return SUCCESS;
 		}else{
 			HttpServletResponse response = ServletActionContext.getResponse();
 			response.setContentType("text/html; charset=UTF-8");
-			PcService pcService = ServiceCacheFactory.getService(PcService.class);
 			String orderId = pcService.creatOrder(super.getUserId(),month);
 			response.getWriter().println("<!DOCTYPE html><html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><title>支付宝即时到账交易接口</title></head>");
 			String html = pcService.alipayRequest(orderId);
@@ -141,5 +146,16 @@ public class PcWebAction extends BaseActionSupport {
 	public void setUser(User user) {
 		this.user = user;
 	}
-	
+	public String getMobile() {
+		return mobile;
+	}
+	public void setMobile(String mobile) {
+		this.mobile = mobile;
+	}
+	public double getFeePerMonth() {
+		return feePerMonth;
+	}
+	public void setFeePerMonth(double feePerMonth) {
+		this.feePerMonth = feePerMonth;
+	}
 }

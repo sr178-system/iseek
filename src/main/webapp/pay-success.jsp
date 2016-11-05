@@ -1,3 +1,6 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ include file="/common/taglib.jsp"%>
 <!DOCTYPE html>
 <html>
    <head>
@@ -98,9 +101,9 @@
 		<div class="col-xs-9 padding-left">
 			<div class="jumbotron jum-padding">
 				<div class="row">
-					<div class="col-xs-4"><label class="font-16">登陆名：<span>admin</span></label></div>
-					<div class="col-xs-4"><label class="font-16">昵  称：<span>白菜哥</span></label></div>
-					<div class="col-xs-4"><label class="font-16">会员到期：<span>2016.12.31</span></label></div>
+					<div class="col-xs-4"><label class="font-16">登陆名：<span>${user.loginName}</span></label></div>
+					<div class="col-xs-4"><label class="font-16">昵  称：<span>${user.nickName}</span></label></div>
+					<div class="col-xs-4"><label class="font-16">会员到期：<span><fmt:formatDate value="${user.memberExpiryDay}" pattern="yyyy.MM.dd"/></span></label></div>
 				</div>
 			</div>
 			<div class=" padding-60">
@@ -114,7 +117,7 @@
 				<div class="row padding-60">
 					<div class="col-xs-3"></div>
 					<div class="col-xs-6 text-center">
-						<p class="font-14 custom-font-14">您充值后的会员有效期至 2017.12.31。</p>					
+						<p class="font-14 custom-font-14">您充值后的会员有效期至 <fmt:formatDate value="${user.memberExpiryDay}" pattern="yyyy.MM.dd"/>。</p>					
 					</div>
 					<div class="col-xs-3"></div>
 				</div>					

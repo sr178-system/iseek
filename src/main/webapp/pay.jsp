@@ -1,3 +1,6 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ include file="/common/taglib.jsp"%>
 <!DOCTYPE html>
 <html>
    <head>
@@ -111,12 +114,12 @@
 		<div class="col-xs-9 padding-left">
 			<div class="jumbotron jum-padding">
 				<div class="row">
-					<div class="col-xs-4"><label class="font-16">登陆名：<span>admin</span></label></div>
-					<div class="col-xs-4"><label class="font-16">昵  称：<span>白菜哥</span></label></div>
-					<div class="col-xs-4"><label class="font-16">会员到期：<span>2016.12.31</span></label></div>
+					<div class="col-xs-4"><label class="font-16">登陆名：<span>${user.loginName}</span></label></div>
+					<div class="col-xs-4"><label class="font-16">昵  称：<span>${user.nickName}</span></label></div>
+					<div class="col-xs-4"><label class="font-16">会员到期：<span><fmt:formatDate value="${user.memberExpiryDay}" pattern="yyyy.MM.dd"/></span></label></div>
 				</div>
 			</div>
-			<form name="pay" action="#" method="post">
+			<form name="pay" action="pay?st=1&sso_str=${tokenId}" method="post">
 				<div class="radio-group row">
 					<div class="col-xs-2 col-xs-cus">
 						<label for="problem-2" class="font-weight">续费时长：</label>
@@ -124,31 +127,31 @@
 					<div class="col-xs-10">
 						<div class="radio radio-margin" style="margin-top:0;">
 							<label class="checkbox-inline radio-checked">
-								<input type="radio" name="problem-2" id="problem-2-1" checked> 12个月
+								<input type="radio" name="month" id="problem-2-1" value="12" checked> 12个月
 							</label>
 							<label class="font-14"><del>600元</del></label>
-							<label class="font-14" style="padding-left:130px"><p style="color:#ff6c6c">300元</p></label>
+							<label class="font-14" style="padding-left:130px"><p style="color:#ff6c6c"><fmt:formatNumber value="${12*feePerMonth}" pattern="0"/>元</p></label>
 						</div>
 						<div class="radio radio-margin">
 							<label class="checkbox-inline">
-								<input type="radio" name="problem-2" id="problem-2-2"> 6个月
+								<input type="radio" name="month" id="problem-2-2" value="6"> 6个月
 							</label>
 							<label class="font-14"><del>300元</del></label>
-							<label class="font-14" style="padding-left:130px"><p style="color:#ff6c6c">150元</p></label>						
+							<label class="font-14" style="padding-left:130px"><p style="color:#ff6c6c"><fmt:formatNumber value="${4*feePerMonth}" pattern="0"/>元</p></label>						
 						</div>
 						<div class="radio radio-margin">
 							<label class="checkbox-inline">
-								<input type="radio" name="problem-2" id="problem-2-3"> 3个月
+								<input type="radio" name="month" id="problem-2-3" value="3"> 3个月
 							</label>
 							<label class="font-14"><del>180元</del></label>
-							<label class="font-14" style="padding-left:130px"><p style="color:#ff6c6c">75元</p></label>						
+							<label class="font-14" style="padding-left:130px"><p style="color:#ff6c6c"><fmt:formatNumber value="${3*feePerMonth}" pattern="0"/>元</p></label>						
 						</div>
 						<div class="radio radio-margin">
 							<label class="checkbox-inline">
-								<input type="radio" name="problem-2" id="problem-2-4"> 1个月
+								<input type="radio" name="month" id="problem-2-4" value="1"> 1个月
 							</label>	
 							<label class="font-14"><del>60元</del></label>
-							<label class="font-14" style="padding-left:130px"><p style="color:#ff6c6c">25元</p></label>							
+							<label class="font-14" style="padding-left:130px"><p style="color:#ff6c6c"><fmt:formatNumber value="${1*feePerMonth}" pattern="0"/>元</p></label>							
 						</div>	
 					</div>
 				</div>	
@@ -166,7 +169,7 @@
 					</div>
 				</div>	
 				<div class="page-header"></div>	
-				<button type="button" class="btn btn-primary">去 支 付</button>		
+				<button type="submit" class="btn btn-primary">去 支 付</button>		
 			</form>	
 		</div>
 	</div>

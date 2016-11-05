@@ -10,6 +10,7 @@ import org.apache.struts2.ServletActionContext;
 
 import com.sr178.game.framework.context.ServiceCacheFactory;
 import com.sr178.iseek.pc.bo.RegQuestion;
+import com.sr178.iseek.pc.bo.User;
 import com.sr178.iseek.pc.service.PcService;
 import com.sr178.module.web.action.JsonBaseActionSupport;
 
@@ -50,10 +51,11 @@ public class PcWebNoAuthAction extends JsonBaseActionSupport {
 	 * 发送短信验证码
 	 * @return
 	 */
+	private int type=1;
 	public String sendSms(){
 		this.setErrorResult("json");
 		PcService pcService = ServiceCacheFactory.getService(PcService.class);
-		return this.renderKeyValueResult("verifyCode", pcService.sendMobileVerify(mobile));
+		return this.renderKeyValueResult("verifyCode", pcService.sendMobileVerify(mobile,type));
 	}
 	
 	private String username;
@@ -78,8 +80,9 @@ public class PcWebNoAuthAction extends JsonBaseActionSupport {
 	/**
 	 * 重置密码
 	 * @return
+	 * @throws Exception 
 	 */
-	public String resetPassword(){
+	public String resetPassword() throws Exception{
 		if(st==0){
 			return SUCCESS;
 		}else{
@@ -120,6 +123,7 @@ public class PcWebNoAuthAction extends JsonBaseActionSupport {
        return null;
 	}
 	
+	private User user;
 	/**
 	 * 返回
 	 * @return
@@ -142,6 +146,9 @@ public class PcWebNoAuthAction extends JsonBaseActionSupport {
 		}
 		PcService pcService = ServiceCacheFactory.getService(PcService.class);
 		pcService.aliPayNotify(out_trade_no, trade_no, trade_status, seller_id, params);
+		
+		user = pcService.getUserByPayOrder(out_trade_no);
+		
 		return SUCCESS;
 	}
 	/**
@@ -208,5 +215,53 @@ public class PcWebNoAuthAction extends JsonBaseActionSupport {
 	}
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	public int getType() {
+		return type;
+	}
+
+	public void setType(int type) {
+		this.type = type;
+	}
+
+	public String getOut_trade_no() {
+		return out_trade_no;
+	}
+
+	public void setOut_trade_no(String out_trade_no) {
+		this.out_trade_no = out_trade_no;
+	}
+
+	public String getTrade_no() {
+		return trade_no;
+	}
+
+	public void setTrade_no(String trade_no) {
+		this.trade_no = trade_no;
+	}
+
+	public String getTrade_status() {
+		return trade_status;
+	}
+
+	public void setTrade_status(String trade_status) {
+		this.trade_status = trade_status;
+	}
+
+	public String getSeller_id() {
+		return seller_id;
+	}
+
+	public void setSeller_id(String seller_id) {
+		this.seller_id = seller_id;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
 	}
 }

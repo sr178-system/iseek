@@ -41,6 +41,27 @@
 		    <result name="success">/user-data.jsp</result>
 		    <result name="ok" type="redirect">/user-data-success.jsp</result>
 		 </action>
+		 
+		 <action name="resetpass" class="com.sr178.iseek.pc.action.PcWebNoAuthAction" method="resetPassword" >
+		    <result name="success">/reset-pass.jsp</result>
+		    <result name="ok" type="redirect">/reset-success.jsp</result>
+		 </action>
+		 
+		 <action name="editmobile" class="com.sr178.iseek.pc.action.PcWebAction" method="changeMobile" >
+		    <result name="success">/user-mobile.jsp</result>
+		    <result name="ok" type="redirect">/user-mobile-success.jsp</result>
+		 </action>
+		 
+		 <action name="pay" class="com.sr178.iseek.pc.action.PcWebAction" method="creatOrder" >
+		    <result name="success">/pay.jsp</result>
+		 </action>
+		 
+		 <action name="aliPayReturn" class="com.sr178.iseek.pc.action.PcWebNoAuthAction" method="aliPayReturn" >
+		    <result name="success">/pay-success.jsp</result>
+		 </action>
+		 
+		 <action name="aliPaynotify" class="com.sr178.iseek.pc.action.PcWebNoAuthAction" method="aliPaynotify" >
+		 </action>
 	</package>
 	
 	

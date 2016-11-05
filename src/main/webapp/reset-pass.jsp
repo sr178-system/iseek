@@ -1,3 +1,6 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ include file="/common/taglib.jsp"%>
 <!DOCTYPE html>
 <html>
    <head>
@@ -11,7 +14,13 @@
 		<link rel="stylesheet" href="css/reg-2.css">  			
 		<script src="js/jquery.min.js"></script>	
 		<script src="js/bootstrap.min.js"></script>
-		<script src="js/bootstrapValidator.js"></script>		
+		<script src="js/bootstrapValidator.js"></script>	
+		<script type="text/javascript">
+			var code = '${code}';
+			if(code!=0){
+				print_s("[${desc}]",function(){history.go(-1);});
+			}
+		</script>	
 		<script type="text/javascript">
 		$(function(){
 		    // validate form
@@ -68,8 +77,8 @@
 		         }
 		     }).on('success.form.bv', function (e) {
 				// Prevent form submission
-				e.preventDefault();
-				console.log('send');	
+				//e.preventDefault();
+				//console.log('send');	
 			});
 		 });
 		</script>
@@ -85,7 +94,7 @@
 	</div>	
 </div>
 <div class="container">
-<form class="form-horizontal"  role="form" method="post">
+<form class="form-horizontal"  role="form" method="post" action="resetpass?st=1">
 	<div class="form-group">
 		<label for="username" class="col-sm-2 control-label">登陆名：</label>
 		<div class="col-sm-3">
@@ -107,21 +116,6 @@
 		<p>Copyright ©i-Seek. All Rights Reserved.    京ICP证080047号    京公网安备11000002000006号</p>
 	</div> -->
 	<iframe frameborder=0 scrolling="no" border=0 width=100% height=60 src="footer.html"></iframe>
-</div>
-<!-- 模态框（Modal）对话框 -->
-<div class="modal fade" id="prompt-dialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog" style="width:245px;">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title" id="myModalLabel">友情提示</h4>
-            </div>
-            <div class="modal-body">手机号码不能为空！</div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>                
-            </div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal -->
 </div>
 </body>
 </html>
