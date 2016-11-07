@@ -97,6 +97,9 @@
 			.btn-primary{
 				background-color: #65c3df;
 				border-color: #65c3df;
+			}
+			.lw-100{
+			    width:75px;
 			}				
 		</style>
    </head>
@@ -129,28 +132,28 @@
 							<label class="checkbox-inline radio-checked">
 								<input type="radio" name="month" id="problem-2-1" value="12" checked> 12个月
 							</label>
-							<label class="font-14"><del>600元</del></label>
+							<label class="font-14 lw-100"><del>600元</del></label>
 							<label class="font-14" style="padding-left:130px"><p style="color:#ff6c6c"><fmt:formatNumber value="${12*feePerMonth}" pattern="0"/>元</p></label>
 						</div>
 						<div class="radio radio-margin">
 							<label class="checkbox-inline">
 								<input type="radio" name="month" id="problem-2-2" value="6"> 6个月
 							</label>
-							<label class="font-14"><del>300元</del></label>
+							<label class="font-14 lw-100"><del>300元</del></label>
 							<label class="font-14" style="padding-left:130px"><p style="color:#ff6c6c"><fmt:formatNumber value="${4*feePerMonth}" pattern="0"/>元</p></label>						
 						</div>
 						<div class="radio radio-margin">
 							<label class="checkbox-inline">
 								<input type="radio" name="month" id="problem-2-3" value="3"> 3个月
 							</label>
-							<label class="font-14"><del>180元</del></label>
+							<label class="font-14 lw-100"><del>180元</del></label>
 							<label class="font-14" style="padding-left:130px"><p style="color:#ff6c6c"><fmt:formatNumber value="${3*feePerMonth}" pattern="0"/>元</p></label>						
 						</div>
 						<div class="radio radio-margin">
 							<label class="checkbox-inline">
 								<input type="radio" name="month" id="problem-2-4" value="1"> 1个月
 							</label>	
-							<label class="font-14"><del>60元</del></label>
+							<label class="font-14 lw-100"><del>60元</del></label>
 							<label class="font-14" style="padding-left:130px"><p style="color:#ff6c6c"><fmt:formatNumber value="${1*feePerMonth}" pattern="0"/>元</p></label>							
 						</div>	
 					</div>

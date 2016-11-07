@@ -232,7 +232,7 @@ public class PcService {
      * @return
      */
 	private static final String DATABASE_PASSWORD_KEY = "6A38719F22424b2d94227923E966F9AC";
-	private String getTruePassword(String dataBasePassword){
+	public String getTruePassword(String dataBasePassword){
 			return decrypt(dataBasePassword,DATABASE_PASSWORD_KEY);
 	}
 	/**
@@ -240,7 +240,7 @@ public class PcService {
 	 * @param clientTransferPassword     变换后的密码  =   HEX(MD5("5X#6423D79C74b6b+实际输入的密码+AB8471%VAED8A76E"))   Base64(AES("变换后的密码", KEY("CEEF0B3D241F4f3798FF89384BE7ACA1"), "AES/CFB/NoPadding")
 	 * @return
 	 */
-	private String getDatabasePassword(String clientTransferPassword){
+	public String getDatabasePassword(String clientTransferPassword){
 //		String afterTransferKey = decrypt(clientTransferPassword, "CEEF0B3D241F4f3798FF89384BE7ACA1");
 		if(clientTransferPassword!=null){
 			return encrypt(clientTransferPassword, DATABASE_PASSWORD_KEY);

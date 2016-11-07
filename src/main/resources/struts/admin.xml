@@ -4,8 +4,17 @@
 <struts>
 
 	<!-- 一个包可以就是一个模块 -->
-	<package name="admin" extends="adminInterceptor" namespace="/">
-		
+	<package name="admin" extends="adminInterceptor" namespace="/admin">
+		<action name="index" class="com.sr178.iseek.admin.action.IndexAction">
+		   <result name="success">index.jsp</result>
+		</action>
+		<action name="login" class="com.sr178.iseek.admin.action.IndexAction" method="login">
+		   <result name="success">index.jsp</result>
+		   <result name="ok" type="redirect">adminindex</result>
+		</action>
+		<action name="adminindex" class="com.sr178.iseek.admin.action.AdminUserAction">
+		   <result name="success">admin.jsp</result>
+		</action>
 	</package>
 	
 	<package name="test" extends="myInterceptor" namespace="/test">
@@ -26,11 +35,11 @@
 		<global-results>
 			<!-- 当anction抛出异常将被转向web的错误处理页面，拦截器是exceptionInterceptor -->
 			<result name="glober_error">
-				/error_manager.jsp
+				/common/glober_error.jsp
 			</result>
 			<!-- 当没有登录的时候就会跳到首页要求其进行登录 -->
 			<result name="nologin" type="redirect">
-				/index.jsp
+				/admin/index.jsp
 			</result>
 		</global-results>
 	</package>
