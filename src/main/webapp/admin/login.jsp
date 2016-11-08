@@ -15,8 +15,13 @@
 		<script src="../js/bootstrap.min.js"></script>
 		<script src="../js/bootstrapValidator.js"></script>		
 		<script src="../js/jquery.md5.js"></script>
-		<script type="text/javascript" src="../scripts/jquery.cookie.js"></script>		
-		<jsp:include page="/common/show-message.jsp" flush="true"></jsp:include>
+		<script type="text/javascript" src="../scripts/jquery.cookie.js"></script>
+		<script type="text/javascript">
+			var code = '${code}';
+			if(code!=0){
+				print_s("[${desc}]",function(){window.location.href="login";});
+			}
+		</script>	
 		<script type="text/javascript">
 		$(function(){
 		    // validate form
@@ -26,7 +31,7 @@
 		        // 修复bootstrap validator重复向服务端提交bug
 		        $form.on('success.form.bv', function(e) {
 		            // Prevent form submission
-		            e.preventDefault();
+		            //e.preventDefault();
 		        });
 		    })
 		 	$('.form-horizontal').bootstrapValidator({
@@ -106,7 +111,7 @@
 			<div class="col-xs-6 login-lod">
 				<div class="col-xs-4"></div>
 				<div class="col-xs-8">
-					<form class="form-horizontal"  role="form" method="post" name="Form" id="Form" action="login">
+					<form class="form-horizontal"  role="form" method="post" name="Form" id="Form" action="login?st=1">
 					  <div class="form-group">
 					    <label for="username" class="col-sm-4 control-label font-weight">用户名：</label>
 					    <div class="col-sm-8">
@@ -123,7 +128,7 @@
 					    <div class="col-sm-offset-4 col-sm-10">
 					      <div class="checkbox">
 					        <label>
-					          <input type="checkbox" id="rember_me" name="rember_me">记住密码
+					          <input type="checkbox" id="rember_me" name="rember_me" checked="checked">记住密码
 					        </label>
 					      </div>
 					    </div>

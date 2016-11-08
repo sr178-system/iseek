@@ -25,7 +25,7 @@ public class AdminUserInterceptor extends AbstractInterceptor {
 		HttpSession sessionhttp = ServletActionContext.getRequest().getSession();
 		Object obj = actionInvocation.getAction();
 		String className = obj.getClass().getCanonicalName();
-		if(!className.equals("com.sr178.iseek.admin.action.IndexAction")){
+		if(!className.equals("com.sr178.iseek.admin.action.LoginAction")){
 			Session session = admin.getLoginAdminUserName(sessionhttp.getId());
 			if (session == null) {
 				return "nologin";

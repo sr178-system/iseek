@@ -19,4 +19,15 @@ public class AdminUserDao extends IseekDaoBase<AdminUser> {
 		String sql = "update "+super.getTable()+" set last_login_time = ? where login_name=? limit 1";
 		return super.getJdbc().update(sql, SqlParameter.Instance().withObject(loginTime).withString(userName))>0;
 	}
+	
+	/**
+	 * 修改密码
+	 * @param userName
+	 * @param pasword
+	 * @return
+	 */
+	public boolean updateUserPassword(String userName,String pasword){
+		String sql = "update "+super.getTable()+" set pass_word = ? where login_name=? limit 1";
+		return super.getJdbc().update(sql, SqlParameter.Instance().withObject(pasword).withString(userName))>0;
+	}
 }

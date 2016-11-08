@@ -5,16 +5,23 @@
 
 	<!-- 一个包可以就是一个模块 -->
 	<package name="admin" extends="adminInterceptor" namespace="/admin">
-		<action name="index" class="com.sr178.iseek.admin.action.IndexAction">
-		   <result name="success">index.jsp</result>
-		</action>
-		<action name="login" class="com.sr178.iseek.admin.action.IndexAction" method="login">
-		   <result name="success">index.jsp</result>
+		<action name="login" class="com.sr178.iseek.admin.action.LoginAction" method="login">
+		   <result name="success">login.jsp</result>
 		   <result name="ok" type="redirect">adminindex</result>
 		</action>
-		<action name="adminindex" class="com.sr178.iseek.admin.action.AdminUserAction">
+		<action name="adminindex" class="com.sr178.iseek.admin.action.IndexAction">
 		   <result name="success">admin.jsp</result>
 		</action>
+		
+		<action name="logout" class="com.sr178.iseek.admin.action.IndexAction" method="logout">
+		   <result name="success" type="redirect">login</result>
+		</action>
+		<action name="editpassword" class="com.sr178.iseek.admin.action.IndexAction" method="editpassword">
+		   <result name="success">admin.jsp</result>
+		</action>		
+		<action name="customer" class="com.sr178.iseek.admin.action.CustomerAction">
+		   <result name="success">customer.jsp</result>
+		</action>		
 	</package>
 	
 	<package name="test" extends="myInterceptor" namespace="/test">
@@ -39,7 +46,7 @@
 			</result>
 			<!-- 当没有登录的时候就会跳到首页要求其进行登录 -->
 			<result name="nologin" type="redirect">
-				/admin/index.jsp
+				/admin/login
 			</result>
 		</global-results>
 	</package>

@@ -1,11 +1,14 @@
 package com.sr178.iseek.admin.service;
 
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.google.common.base.Strings;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.sr178.common.jdbc.bean.IPage;
 import com.sr178.common.jdbc.bean.SqlParamBean;
 import com.sr178.game.framework.exception.ServiceException;
 import com.sr178.iseek.admin.bo.AdminUser;
@@ -96,8 +99,77 @@ public class AdminService {
 			Session session = new Session(userName, System.currentTimeMillis(), sessionId);
 			adminUserMap.put(sessionId, session);
 			
+			adminUserDao.updateUserLoginTime(userName, new Date());
+			
 		}else{
 			throw new ServiceException(3, "用户名不存在！");
 		}
 	}
+	/**
+	 * 登出
+	 * @param sessionId
+	 */
+	public void logout(String sessionId){
+		adminUserMap.invalidate(sessionId);
+	}
+	/**
+	 * 分页查询管理员用户
+	 * @param pageIndex
+	 * @param pageSize
+	 * @return
+	 */
+	private static final String[] havePowerContent = new String[]{"客服管理读","客服管理写","会员管理读","会员管理写","财务管理读","财务管理写","系统公告","资讯管理"};
+	public IPage<AdminUser> getAdminUserPage(int pageIndex,int pageSize){
+		IPage<AdminUser> page =  adminUserDao.getPageList(pageIndex, pageSize, "order by user_id desc");
+		if(page!=null&&page.getData()!=null&&page.getData().size()>0){
+			for(AdminUser user:page.getData()){
+				String powerStr = "";
+				int lenght = user.getPower().length();
+				if(lenght>havePowerContent.length){
+					lenght = havePowerContent.length;
+				}
+				for(int i=0;i<lenght;i++){
+					char p = user.getPower().charAt(i);
+					if(p=='1'){
+						if(Strings.isNullOrEmpty(powerStr)){
+							powerStr = havePowerContent[i];
+						}else{
+							powerStr = powerStr+","+havePowerContent[i];
+						}
+					}
+				}
+				user.setPower(powerStr);
+			}
+		}
+		return page;
+	}
+	/**
+	 * 修改用户密码
+	 * @param userName
+	 * @param oldPassword
+	 * @param newPassword
+	 */
+	public void updateAdminUserPassword(String userName,String oldPassword,String newPassword){
+		AdminUser adminUser = adminUserDao.get(new SqlParamBean("login_name", userName));
+		if(adminUser==null){
+			throw new ServiceException(1,"用户不存在");
+		}
+		String nowPassword = pcService.getTruePassword(adminUser.getPassWord());
+		if(!oldPassword.toUpperCase().equals(nowPassword)){
+			throw new ServiceException(2,"原密码不正确！");
+		}
+		String newDatabasePassword = pcService.getDatabasePassword(newPassword.toUpperCase());
+		adminUserDao.updateUserPassword(userName, newDatabasePassword);
+	}
+	
+	/**
+	 * 获取用户信息
+	 * @param userName
+	 * @return
+	 */
+	public AdminUser getAdminUser(String userName){
+		return adminUserDao.get(new SqlParamBean("login_name", userName));
+	}
+	
+	
 }
