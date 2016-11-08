@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50624
 File Encoding         : 65001
 
-Date: 2016-11-05 12:54:51
+Date: 2016-11-08 19:10:48
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -26,15 +26,16 @@ CREATE TABLE `admin_user` (
   `sex` int(11) NOT NULL COMMENT '1男  2女',
   `pass_word` varchar(512) NOT NULL,
   `status` int(11) NOT NULL COMMENT '账户状态 0 正常   1被封号',
-  `power` varchar(6) NOT NULL DEFAULT '0' COMMENT '权限',
+  `power` varchar(16) NOT NULL DEFAULT '0' COMMENT '权限',
   `last_login_time` datetime DEFAULT NULL COMMENT '最后登录时间',
   `created_time` datetime NOT NULL COMMENT '用户创建日期',
   PRIMARY KEY (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of admin_user
 -- ----------------------------
+INSERT INTO `admin_user` VALUES ('1', 'admin', '超级管理员', '1', 'mExY8fmqBhwdQCPOwPYxmswu2ES2Nxhdmr5ZFQO8gM6KJCUWxKs9W+Buw1Mf9lL5', '0', '11111111', '2016-11-08 18:38:55', '2016-11-07 18:03:12');
 
 -- ----------------------------
 -- Table structure for charge_config
@@ -104,7 +105,7 @@ CREATE TABLE `mobile_verify` (
 -- ----------------------------
 INSERT INTO `mobile_verify` VALUES ('13507418135', '628522', '0', '2016-11-05 11:56:24', '2016-11-05 11:46:41');
 INSERT INTO `mobile_verify` VALUES ('13534277314', '733700', '0', '2016-11-05 11:48:23', '2016-11-04 13:33:51');
-INSERT INTO `mobile_verify` VALUES ('15919820372', null, '0', null, '2016-10-29 12:02:15');
+INSERT INTO `mobile_verify` VALUES ('15919820372', '118613', '1', '2016-11-05 14:47:26', '2016-10-29 12:02:15');
 
 -- ----------------------------
 -- Table structure for news
