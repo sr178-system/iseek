@@ -70,5 +70,20 @@ public class AdminUser{
 	public Date getCreatedTime(){
 		return createdTime;
 	}
+	public AdminUser(String loginName, String name, int sex, String passWord, int status, String power,
+			Date lastLoginTime, Date createdTime) {
+		super();
+		this.loginName = loginName;
+		this.name = name;
+		this.sex = sex;
+		this.passWord = passWord;
+		this.status = status;
+		this.power = power;
+		this.lastLoginTime = lastLoginTime;
+		this.createdTime = createdTime;
+	}
+	public AdminUser() {
+		super();
+	}
 }
 

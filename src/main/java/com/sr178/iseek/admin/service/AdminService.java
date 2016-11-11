@@ -170,6 +170,77 @@ public class AdminService {
 	public AdminUser getAdminUser(String userName){
 		return adminUserDao.get(new SqlParamBean("login_name", userName));
 	}
+	/**
+	 * 批量更新用户状态
+	 * @param ids
+	 * @param status
+	 */
+	public void updateAdminUserStatus(long[] ids,int status){
+		if(ids!=null&&ids.length>0){
+			for(int i=0;i<ids.length;i++){
+				adminUserDao.updateStatus(ids[i], status);
+			}
+		}
+	}
+	/**
+	 * 批量删除用户
+	 * @param ids
+	 */
+	public void deleteAdminUser(long[] ids){
+		if(ids!=null&&ids.length>0){
+			for(int i=0;i<ids.length;i++){
+				adminUserDao.delete(ids[i]);
+			}
+		}
+	}
+	/**
+	 * 将客户端的str转为数据库中的权限字符串
+	 * @param power
+	 * @return
+	 */
+	private String getDataBasePowerString(int[] power){
+		String[] powerStr = new String[]{"0","0","0","0","0","0","0","0"};
+		if(power!=null){
+			for(int position:power){
+				powerStr[position-1] = "1";
+			}
+		}
+		String dataPowerString = "";
+		for(String str:powerStr){
+			dataPowerString = dataPowerString +str;
+		}
+		return dataPowerString;
+	}
+	/**
+	 * 更新用户信息
+	 * @param userName
+	 * @param password
+	 * @param name
+	 * @param sex
+	 * @param power
+	 */
+	public void updateAdminUser(String userName,String password,String name,int sex,int[] power){
+		if(!Strings.isNullOrEmpty(password)){
+			password = pcService.getDatabasePassword(password.toUpperCase());
+		}
+		adminUserDao.updateAdminUser(userName, password, name, sex, getDataBasePowerString(power));
+	}
 	
-	
+	/**
+	 * 添加用户
+	 * @param userName
+	 * @param password
+	 * @param name
+	 * @param sex
+	 * @param power
+	 */
+	public void addAdminUser(String userName,String password,String name,int sex,int[] power){
+		AdminUser adminUser =  adminUserDao.get(new SqlParamBean("login_name", userName));
+		if(adminUser!=null){
+			throw new ServiceException(1,"用户已存在！");
+		}
+		password = pcService.getDatabasePassword(password.toUpperCase());
+		adminUser = new AdminUser(userName, name, sex, password, 0, getDataBasePowerString(power), null, new Date());
+		adminUserDao.add(adminUser);
+	}
 }

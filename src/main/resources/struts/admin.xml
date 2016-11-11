@@ -22,6 +22,17 @@
 		<action name="customer" class="com.sr178.iseek.admin.action.CustomerAction">
 		   <result name="success">customer.jsp</result>
 		</action>		
+		
+		<action name="customerdel" class="com.sr178.iseek.admin.action.CustomerJsonAction" method="del">
+		</action>	
+		<action name="customereditstatus" class="com.sr178.iseek.admin.action.CustomerJsonAction" method="editStatus">
+		</action>		
+		<action name="customeradd" class="com.sr178.iseek.admin.action.CustomerAction" method="customerAdd">
+		   <result name="success">customeradd.jsp</result>
+		</action>
+		<action name="customeredit" class="com.sr178.iseek.admin.action.CustomerAction" method="customerEdit">
+		   <result name="success">customeredit.jsp</result>
+		</action>				
 	</package>
 	
 	<package name="test" extends="myInterceptor" namespace="/test">
