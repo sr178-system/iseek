@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html>
    <head>
-		<title>客服管理-编辑</title>
+		<title>会员管理-编辑</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta http-equiv="X-UA-Compatible" content="edge,IE=8"/>
@@ -14,8 +14,10 @@
 		<link rel="stylesheet" href="../css/reg-2.css">  			
 		<script src="../js/jquery.min.js"></script>	
 		<script src="../js/bootstrap.min.js"></script>
-		<script src="../js/bootstrapValidator.js"></script>		
-		<script src="../js/jquery.md5.js"></script>	
+		<script src="../js/bootstrapValidator.js"></script>	
+		<script src="../js/jquery.md5.js"></script>		
+		<link rel="stylesheet" type="text/css" href="../scripts/jquery.datetimepicker.css"/>
+        <script src="../scripts/jquery.datetimepicker.js"></script>		
 		<script type="text/javascript">
 		$(function(){
 			$('.radio label').click(function(){
@@ -43,14 +45,9 @@
 			        password: {
 			         message:'密码无效',
 			         validators: {
-			             // notEmpty: {
-			             //     message: '密码不能为空'
-			             // },
-			             // stringLength: {
-			             //     min: 6,
-			             //     max: 30,
-			             //     message: '用户名长度必须在6到30之间'
-			             // },
+			        	 notEmpty: {
+			                 message: '密码不能为空'
+			             },
 			             regexp: {
 			                 regexp: /^[a-zA-Z0-9_\.]+$/,
 			                 message: '密码只能由字母、数字、点和下划线'
@@ -60,11 +57,9 @@
 			        repassword: {
 			         message: '密码无效',
 			         validators: {
-			             // stringLength: {
-			             //     min: 6,
-			             //     max: 30,
-			             //     message: '用户名长度必须在6到30之间'
-			             // },
+			        	 notEmpty: {
+			                 message: '确认密码不能为空'
+			             },
 			             identical: {//相同
 			                 field: 'password',
 			                 message: '两次密码不一致'
@@ -74,8 +69,35 @@
 			                 message: '密码只能由字母、数字、点和下划线'
 			             }
 			         }
-			        },      
-			        name: {//验证input项：验证规则
+			        }, 
+					mobile: {
+		                 message: 'The phone is not valid',
+		                 validators: {
+		                     notEmpty: {
+		                         message: '手机号码不能为空'
+		                     },
+		                     stringLength: {
+		                         min: 11,
+		                         max: 11,
+		                         message: '请输入11位手机号码'
+		                     },
+		                     regexp: {
+		                         regexp: /^1[3|5|8]{1}[0-9]{9}$/,
+		                         message: '请输入正确的手机号码'
+		                     }
+		                 }
+		             },			        
+			        email: {
+			         validators: {
+			             notEmpty: {
+			                 message: '邮箱不能为空'
+			             },
+			             emailAddress: {
+			                 message: '请输入正确的邮箱地址如：123@qq.com'
+			          }			
+			            }
+			        }, 			            
+			        nickename: {//验证input项：验证规则
 			         message: 'The username is not valid',                
 			         validators: {
 			             notEmpty: {//非空验证：提示消息
@@ -90,7 +112,7 @@
 			   // console.log('send');    
 				 var nowpassword = $("#password").val();
 				 var repassword = $("#repassword").val();
-				 if(nowpassword!=''&&repassword==''){
+				 if(nowpassword==''||repassword==''){
 					 print_s("密码不能为空！",function(){});
 					 e.preventDefault();
 				 }
@@ -104,19 +126,27 @@
    </head>
 <body>
 <jsp:include page="/common/dialog.jsp" flush="true"></jsp:include>
-<c:if test="${code==2000}"><script type="text/javascript">print_s("修改成功。",function(){location.href="customer";});</script></c:if>
+<c:if test="${code==2000}"><script type="text/javascript">print_s("添加成功。",function(){location.href="userlist";});</script></c:if>
+		<script type="text/javascript">
+			var code = '${code}';
+			if(code!=0&&code!=2000){
+				print_s("${desc}",function(){history.go(-1);});
+			}
+		</script>
 <div class="">
 	<div class="page-header">
 	    <a href="javascript:;" class="custom-font-14">首页</a> > 
-	    <a href="customer" class="custom-font-14">客服管理</a> > 
+	    <a href="userlist" class="custom-font-14">会员管理</a> > 
 	    <a href="javascript:;" class="custom-font-14 font-color">编辑</a>
 	</div>	
 </div>
 <div class="">
-<form class="form-horizontal" role="form" method="post" action="customeredit?st=1&username=${adminUser.loginName}">
+<form class="form-horizontal" role="form" method="post" action="useradd?st=1">
 	<div class="form-group">
 		<label for="username" class="col-sm-2 control-label"><span style="color:#f00404"> * </span>登 陆 名：</label>
-		<div class="col-sm-3" style="line-height:30px;">${adminUser.loginName}</div>		
+        <div class="col-sm-3">
+			<input type="text" class="form-control" id="loginname" name="loginname">
+		</div>	
 	</div>
 	<div class="form-group">
 		<label for="password" class="col-sm-2 control-label"><span style="color:#f00404"> * </span>密  码：</label>
@@ -132,74 +162,57 @@
 		</div>
 	</div>
 	<div class="form-group">
-		<label for="name" class="col-sm-2 control-label"><span style="color:#f00404"> * </span>姓  名：</label>
+		<label for="nickname" class="col-sm-2 control-label"><span style="color:#f00404"> * </span>昵称：</label>
 		<div class="col-sm-3">
-			<input type="text" class="form-control" id="name" name="name" placeholder="请输入姓名" value="${adminUser.name}">
+			<input type="text" class="form-control" id="nickename" name="nickename">
 		</div>		
 	</div>	
 	<div class="form-group">
 		<label for="sex" class="col-sm-2 control-label"><span style="color:#f00404"> * </span>性  别：</label>
 		<div class="col-sm-6 radio radio-margin">
-		  <label class="checkbox-inline <c:if test="${adminUser.sex==1}">radio-checked</c:if>" style="width: 100px;">
-		    <input type="radio" name="sex" id="sex-1" value="1" <c:if test="${adminUser.sex==1}">checked</c:if>>男
+		  <label class="checkbox-inline radio-checked" style="width: 100px;">
+		    <input type="radio" name="sex" id="sex-1" value="1" checked>男
 		  </label>
-		  <label class="checkbox-inline <c:if test="${adminUser.sex==2}">radio-checked</c:if>" style="width: 100px;">
-		    <input type="radio" name="sex" id="sex-2" value="2" <c:if test="${adminUser.sex==2}">checked</c:if>>女
+		  <label class="checkbox-inline" style="width: 100px;">
+		    <input type="radio" name="sex" id="sex-2" value="2">女
 		  </label>			
 		</div>		
 	</div>		
 	<div class="form-group">
-		<label for="email" class="col-sm-2 control-label"><span style="color:#f00404"> * </span>权  限：</label>
+		<label for="mobile" class="col-sm-2 control-label"><span style="color:#f00404"> * </span>手机号码：</label>
 		<div class="col-sm-3">
-			<div class="checkbox">
-			  <label>
-			    <input type="checkbox" value="1" name="power" <c:if test="${fn:substring(adminUser.power, 0, 1)=='1'}">checked</c:if> >客服管理 读
-			  </label>
-			</div>
-			<div class="checkbox">
-			  <label>
-			    <input type="checkbox" value="2" name="power" <c:if test="${fn:substring(adminUser.power, 1, 2)=='1'}">checked</c:if>>客服管理  写
-			  </label>
-			</div>	
-			<div class="checkbox">
-			  <label>
-			   <input type="checkbox" value="3" name="power" <c:if test="${fn:substring(adminUser.power, 2, 3)=='1'}">checked</c:if>>会员管理  读
-			  </label>
-			</div>	
-			<div class="checkbox">
-			  <label>
-			   <input type="checkbox" value="4" name="power" <c:if test="${fn:substring(adminUser.power, 3, 4)=='1'}">checked</c:if>>会员管理 写
-			  </label>
-			</div>	
-			<div class="checkbox">
-			  <label>
-			   <input type="checkbox" value="5" name="power" <c:if test="${fn:substring(adminUser.power, 4, 5)=='1'}">checked</c:if>>财务管理 读
-			  </label>
-			</div>		
-            <div class="checkbox">
-			  <label>
-			   <input type="checkbox" value="6" name="power" <c:if test="${fn:substring(adminUser.power, 5, 6)=='1'}">checked</c:if>>财务管理 写
-			  </label>
-			</div>		
-			<div class="checkbox">
-			  <label>
-			   <input type="checkbox" value="7" name="power" <c:if test="${fn:substring(adminUser.power, 6, 7)=='1'}">checked</c:if>>系统公告管理
-			  </label>
-			</div>	
-           <div class="checkbox">
-			  <label>
-			   <input type="checkbox" value="8" name="power" <c:if test="${fn:substring(adminUser.power, 7, 8)=='1'}">checked</c:if>>资讯管理
-			  </label>
-			</div>																			
+			<input type="text" class="form-control" id="mobile" name="mobile" >
 		</div>		
 	</div>	
+	<div class="form-group">
+		<label for="email" class="col-sm-2 control-label">邮  箱：</label>
+		<div class="col-sm-3">
+			<input type="text" class="form-control" id="email" name="email" >
+		</div>		
+	</div>
+	<div class="form-group">
+		<label for="userTime" class="col-sm-2 control-label">会员有效期至：</label>
+		<div class="col-sm-3">
+			<input type="text" class="form-control" id="memberExpireTimeStr" name="memberExpireTimeStr">
+		</div>		
+	</div>			
 	<div class="container" style="padding-left: 48px;padding-top: 50px;">		
 	<button type="submit" class="btn btn-default">保存</button>
-	<a type="button" class="btn btn-default" href="customer">取消</a>
+    <a type="button" class="btn btn-default" href="userlist">取消</a>
 	</div>
 </form>
 </div>
 
-</div>
+<script type="text/javascript">
+				$('#memberExpireTimeStr').datetimepicker({
+					yearOffset : 0,
+					lang : 'ch',
+					timepicker : false,
+					format : 'Y-m-d',
+					formatDate : 'Y-m-d',
+				//		minDate:'1970/01/01', // yesterday is minimum date
+				//		maxDate:'+1970/01/02' // and tommorow is maximum date calendar
+				});
+			</script>
 </body>
 </html>

@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50624
 File Encoding         : 65001
 
-Date: 2016-11-08 19:10:48
+Date: 2016-11-12 17:20:32
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -35,7 +35,7 @@ CREATE TABLE `admin_user` (
 -- ----------------------------
 -- Records of admin_user
 -- ----------------------------
-INSERT INTO `admin_user` VALUES ('1', 'admin', '超级管理员', '1', 'mExY8fmqBhwdQCPOwPYxmswu2ES2Nxhdmr5ZFQO8gM6KJCUWxKs9W+Buw1Mf9lL5', '0', '11111111', '2016-11-08 18:38:55', '2016-11-07 18:03:12');
+INSERT INTO `admin_user` VALUES ('1', 'admin', '超级管理员2', '2', 'bgdjuOrbj4t2e03T5G1E3v6i+8ittnhktYYTVCY3WYyKJCUWxKs9W+Buw1Mf9lL5', '0', '11110110', '2016-11-12 17:16:58', '2016-11-07 18:03:12');
 
 -- ----------------------------
 -- Table structure for charge_config
@@ -49,7 +49,7 @@ CREATE TABLE `charge_config` (
 -- ----------------------------
 -- Records of charge_config
 -- ----------------------------
-INSERT INTO `charge_config` VALUES ('25', '10');
+INSERT INTO `charge_config` VALUES ('28', '15');
 
 -- ----------------------------
 -- Table structure for files
@@ -153,13 +153,15 @@ CREATE TABLE `notice` (
   `notice_url` varchar(512) NOT NULL,
   `created_time` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of notice
 -- ----------------------------
 INSERT INTO `notice` VALUES ('1', '你好', 'http://www.baidu.com', '2016-11-04 14:22:39');
 INSERT INTO `notice` VALUES ('2', '公告2', 'http://www.google.com', '2016-11-04 14:23:32');
+INSERT INTO `notice` VALUES ('3', '最新公告内容', 'http://www.google.com', '2016-11-12 17:18:21');
+INSERT INTO `notice` VALUES ('4', '最新公告内容2', '', '2016-11-12 17:18:43');
 
 -- ----------------------------
 -- Table structure for payment_log
@@ -174,13 +176,14 @@ CREATE TABLE `payment_log` (
   `after_vip_time` datetime DEFAULT NULL COMMENT '充值之后vip到期时间',
   `created_time` datetime NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `user_id` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+  KEY `user_id` (`user_id`),
+  KEY `created_time` (`created_time`),
+  KEY `order_id` (`order_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of payment_log
 -- ----------------------------
-INSERT INTO `payment_log` VALUES ('1', '6', 'ISK201611051251211001', '25.00', '2016-12-01 00:00:00', '2016-12-06 12:52:46', '2016-11-05 12:52:46');
 
 -- ----------------------------
 -- Table structure for payment_order
@@ -254,14 +257,15 @@ CREATE TABLE `user` (
   `transfer_key` varchar(32) DEFAULT NULL COMMENT '上次登录生成的登录key',
   `created_time` datetime NOT NULL COMMENT '用户创建日期',
   PRIMARY KEY (`user_id`),
-  KEY `login_name` (`login_name`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
+  KEY `login_name-nick` (`login_name`,`nick_name`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of user
 -- ----------------------------
-INSERT INTO `user` VALUES ('6', 'dogdog7788', '潮哥', '1', 'mExY8fmqBhwdQCPOwPYxmswu2ES2Nxhdmr5ZFQO8gM6KJCUWxKs9W+Buw1Mf9lL5', '13507418135', 'dogdog7788@qq.com', '2016-12-06', '0', '1', '00000000010', '2016-11-04 13:20:23', 'CAAC92F78774F4BC22DC657FEA7DB748', '2016-11-03 15:11:38');
-INSERT INTO `user` VALUES ('7', 'fiona', '小明', '1', 'mExY8fmqBhwdQCPOwPYxmswu2ES2Nxhdmr5ZFQO8gM6KJCUWxKs9W+Buw1Mf9lL5', '13534277314', '601712235@qq.com', null, '0', '2', '00000000000', null, null, '2016-11-04 13:34:27');
+INSERT INTO `user` VALUES ('6', 'dogdog7788', '潮哥2', '2', 'mExY8fmqBhwdQCPOwPYxmswu2ES2Nxhdmr5ZFQO8gM6KJCUWxKs9W+Buw1Mf9lL5', '13507418135', 'dogdog7788@qq.com', '2016-12-15', '0', '1', '00000000010', '2016-11-04 13:20:23', 'CAAC92F78774F4BC22DC657FEA7DB748', '2016-11-03 15:11:38');
+INSERT INTO `user` VALUES ('10', 'fiona', '小明', '1', 'mExY8fmqBhwdQCPOwPYxmswu2ES2Nxhdmr5ZFQO8gM6KJCUWxKs9W+Buw1Mf9lL5', '15919820372', 'dogdog7788@qq.com', '2016-11-09', '0', '2', '00000000000', null, null, '2016-11-12 14:02:48');
+INSERT INTO `user` VALUES ('11', 'fiona2', '22', '2', 'mExY8fmqBhwdQCPOwPYxmswu2ES2Nxhdmr5ZFQO8gM6KJCUWxKs9W+Buw1Mf9lL5', '13534277314', 'service@submsg.cn', '2016-11-09', '0', '2', '00000000000', null, null, '2016-11-12 14:09:23');
 
 -- ----------------------------
 -- Table structure for user_files

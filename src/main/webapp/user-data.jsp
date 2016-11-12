@@ -20,7 +20,7 @@
 		<script type="text/javascript">
 			var code = '${code}';
 			if(code!=0){
-				print_s("[${desc}]",function(){history.go(-1);});
+				print_s("${desc}",function(){history.go(-1);});
 			}
 		</script>	
 		<script type="text/javascript">

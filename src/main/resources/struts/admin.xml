@@ -32,7 +32,33 @@
 		</action>
 		<action name="customeredit" class="com.sr178.iseek.admin.action.CustomerAction" method="customerEdit">
 		   <result name="success">customeredit.jsp</result>
-		</action>				
+		</action>
+		
+		<action name="userlist" class="com.sr178.iseek.admin.action.UserAction">
+		   <result name="success">userlist.jsp</result>
+		</action>		
+		<action name="userdel" class="com.sr178.iseek.admin.action.UserJsonAction" method="del">
+		</action>	
+		<action name="usereditstatus" class="com.sr178.iseek.admin.action.UserJsonAction" method="editStatus">
+		</action>		
+		<action name="usereditsharecompstatus" class="com.sr178.iseek.admin.action.UserJsonAction" method="editShareCompressStatus">
+		</action>			
+		<action name="useradd" class="com.sr178.iseek.admin.action.UserAction" method="addUser">
+		   <result name="success">useradd.jsp</result>
+		</action>
+		<action name="useredit" class="com.sr178.iseek.admin.action.UserAction" method="editUser">
+		   <result name="success">useredit.jsp</result>
+		</action>
+		<action name="chargelist" class="com.sr178.iseek.admin.action.PayMentLogAction">
+		   <result name="success">chargelist.jsp</result>
+		</action>
+		<action name="updatechargeconfig" class="com.sr178.iseek.admin.action.PayMentLogAction" method="updatechargeconfig">
+		   <result name="success">chargeconfig.jsp</result>
+		</action>
+		
+		<action name="updatenotice" class="com.sr178.iseek.admin.action.NoticeAction">
+		   <result name="success">updatenotice.jsp</result>
+		</action>												
 	</package>
 	
 	<package name="test" extends="myInterceptor" namespace="/test">

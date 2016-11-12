@@ -200,7 +200,7 @@
 	</div>	
 	<div class="container" style="padding-left: 48px;padding-top: 50px;">		
 	<button type="submit" class="btn btn-default">保存</button>
-	<button type="button" class="btn btn-default">取消</button>
+	<a type="button" class="btn btn-default" href="customer">取消</a>
 	</div>
 </form>
 </div>

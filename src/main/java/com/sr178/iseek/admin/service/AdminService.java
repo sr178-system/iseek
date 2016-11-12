@@ -13,6 +13,12 @@ import com.sr178.common.jdbc.bean.SqlParamBean;
 import com.sr178.game.framework.exception.ServiceException;
 import com.sr178.iseek.admin.bo.AdminUser;
 import com.sr178.iseek.admin.dao.AdminUserDao;
+import com.sr178.iseek.pc.bo.ChargeConfig;
+import com.sr178.iseek.pc.bo.MobileVerify;
+import com.sr178.iseek.pc.bo.Notice;
+import com.sr178.iseek.pc.bo.PaymentLog;
+import com.sr178.iseek.pc.bo.PaymentLogMore;
+import com.sr178.iseek.pc.bo.User;
 import com.sr178.iseek.pc.dao.ChargeConfigDao;
 import com.sr178.iseek.pc.dao.FilesDao;
 import com.sr178.iseek.pc.dao.MobileVerifyDao;
@@ -27,6 +33,7 @@ import com.sr178.iseek.pc.dao.UserFilesDao;
 import com.sr178.iseek.pc.dao.UserFriendsDao;
 import com.sr178.iseek.pc.dao.VersionDao;
 import com.sr178.iseek.pc.service.PcService;
+import com.sr178.module.utils.DateUtils;
 import com.sr178.module.utils.MD5Security;
 import com.sr178.module.utils.ParamCheck;
 import com.sr178.module.web.session.Session;
@@ -243,4 +250,196 @@ public class AdminService {
 		adminUser = new AdminUser(userName, name, sex, password, 0, getDataBasePowerString(power), null, new Date());
 		adminUserDao.add(adminUser);
 	}
+	/**
+	 * 获取用户列表
+	 * @param loginName
+	 * @param nickeName
+	 * @param startRegDate
+	 * @param endRegDate
+	 */
+	public IPage<User> getUserList(String loginName,String nickeName,String startRegDate,String endRegDate,int pageIdex,int pageSize){
+		if(!Strings.isNullOrEmpty(startRegDate)&&!Strings.isNullOrEmpty(endRegDate)){
+			startRegDate = startRegDate +" 00:00:00";
+			endRegDate = endRegDate+" 23:59:59";
+		}
+		return userDao.getPageUserList(loginName, nickeName, startRegDate, endRegDate, pageIdex, pageSize);
+	}
+	/**
+	 * 更新用户状态
+	 * @param ids
+	 * @param status
+	 */
+	public void updateUserStatus(long[] ids,int status){
+		if(ids!=null&&ids.length>0){
+			for(int i=0;i<ids.length;i++){
+				userDao.updateStatus(ids[i], status);
+			}
+		}
+	}
+	/**
+	 * 批量删除用户
+	 * @param ids
+	 */
+	public void deleteUser(long[] ids){
+		if(ids!=null&&ids.length>0){
+			for(int i=0;i<ids.length;i++){
+				userDao.delete(ids[i]);
+			}
+		}
+	}
+	/**
+	 * 禁止或启用用户可否共享压缩文件
+	 * @param ids
+	 * @param status
+	 */
+	public void updateUserShareCompresStatus(long[] ids,int status){
+		if(ids!=null&&ids.length>0){
+			for(int i=0;i<ids.length;i++){
+				userDao.updateUserCanShareZipStatus(ids[i], status);
+			}
+		}
+	}
+	/**
+	 * 管理员修改用户信息
+	 * @param userId
+	 * @param nickerName
+	 * @param email
+	 * @param sex
+	 * @param password
+	 * @param memberExpireTimeStr
+	 */
+	public void updateUserInfoByAdmin(long userId,String nickerName,String email,String mobile,int sex,String password,String memberExpireTimeStr){
+		ParamCheck.checkString(nickerName, 1, "昵称不能为空");
+		ParamCheck.checkString(email, 2, "邮箱不能为空");
+		ParamCheck.checkString(mobile, 5, "手机号码不能为空");
+		User user = userDao.get(new SqlParamBean("user_id", userId));
+		if(user==null){
+			throw new ServiceException(3,"用户不存在");
+		}
+		if(sex!=1&&sex!=2){
+			throw new ServiceException(4, "性别填写错误！");
+		}
+		if(!Strings.isNullOrEmpty(password)){
+			password = pcService.getDatabasePassword(password.toUpperCase());
+		}
+		Date memberExpireTime = null;
+		if(!Strings.isNullOrEmpty(memberExpireTimeStr)){
+			memberExpireTime = DateUtils.StringToDate(memberExpireTimeStr, "yyyy-MM-dd");
+		}
+		userDao.updateUserInfoByAdmin(userId, nickerName, email,mobile, sex, password, memberExpireTime);
+	}
+	/**
+	 * 管理员添加用户
+	 * @param loginName
+	 * @param password
+	 * @param nickName
+	 * @param sex
+	 * @param email
+	 * @param mobile
+	 */
+	public void addUserByAdmin(String loginName,String password,String nickName,int sex,String email,String mobile,String memberExpiryDay){
+		ParamCheck.checkString(loginName, 1, "登录名不能为空");
+		ParamCheck.checkString(password, 2, "密码不能为空");
+		ParamCheck.checkString(nickName, 3, "昵称不能为空");
+		ParamCheck.checkString(email, 4, "邮箱不能为空");
+		ParamCheck.checkString(mobile, 5, "手机号码不能为空");
+		if(sex!=1&&sex!=2){
+			throw new ServiceException(6, "性别错误！");
+		}
+		User user = userDao.get(new SqlParamBean("login_name", loginName));
+		if(user!=null){
+			throw new ServiceException(8, "用户名已存在！");
+		}
+		user = userDao.get(new SqlParamBean("mobile", mobile));
+		if(user!=null){
+			throw new ServiceException(9, "手机号已注册！");
+		}
+		password = password.toUpperCase();
+		String dataBasePass = pcService.getDatabasePassword(password);
+		
+		Date memberExpiryDayDate = null;
+		if(!Strings.isNullOrEmpty(memberExpiryDay)){
+			memberExpiryDayDate = DateUtils.StringToDate(memberExpiryDay, "yyyy-MM-dd");
+		}
+		
+		user = new User();
+		user.setCreatedTime(new Date());
+		user.setEmail(email);
+		user.setLastLoginTime(null);
+		user.setLoginName(loginName);
+		user.setMemberExpiryDay(memberExpiryDayDate);
+		user.setMobile(mobile);
+		user.setNickName(nickName);
+		user.setPassWord(dataBasePass);
+		user.setSex(sex);
+		user.setShareCompress(2);
+		user.setShareFileCount(0);
+		user.setStatus(0);
+		userDao.add(user);
+	}
+	/**
+	 * 获取充值
+	 * @param loginName
+	 * @param nickeName
+	 * @param startChargeDate
+	 * @param endChargeDate
+	 * @param pageIndex
+	 * @param pageSize
+	 * @return
+	 */
+	public IPage<PaymentLogMore> getPagePamentLogList(String loginName,String nickeName,String startChargeDate,String endChargeDate,int pageIndex,int pageSize){
+		if(!Strings.isNullOrEmpty(startChargeDate)&&!Strings.isNullOrEmpty(endChargeDate)){
+			startChargeDate = startChargeDate +" 00:00:00";
+			endChargeDate = endChargeDate+" 23:59:59";
+		}
+		return paymentLogDao.getPageList(loginName, nickeName, startChargeDate, endChargeDate, pageIndex, pageSize);
+	}
+	/**
+	 * 获取充值总额
+	 * @param loginName
+	 * @param nickeName
+	 * @param startChargeDate
+	 * @param endChargeDate
+	 * @param pageIndex
+	 * @param pageSize
+	 * @return
+	 */
+	public double getSum(String loginName,String nickeName,String startChargeDate,String endChargeDate){
+		if(!Strings.isNullOrEmpty(startChargeDate)&&!Strings.isNullOrEmpty(endChargeDate)){
+			startChargeDate = startChargeDate +" 00:00:00";
+			endChargeDate = endChargeDate+" 23:59:59";
+		}
+		return paymentLogDao.getSumAmount(loginName, nickeName, startChargeDate, endChargeDate);
+	}
+	/**
+	 * 更新充值配置
+	 * @param feePerMonth
+	 * @param remindDay
+	 * @return
+	 */
+	public boolean updateChargeConfig(double feePerMonth,int remindDay){
+		return chargeConfigDao.update(feePerMonth, remindDay);
+	}
+	/**
+	 * 获取冲至配置
+	 * @return
+	 */
+	public ChargeConfig getChargeConfig(){
+		return chargeConfigDao.getFirstOne("");
+	}
+	/**
+	 * 修改系统公告
+	 * @param content
+	 * @param url
+	 */
+	public void updateNotice(String content,String url){
+		ParamCheck.checkString(content, 1, "公告内容不能为空");
+		Notice notice = new Notice();
+		notice.setNoticeContent(content);
+		notice.setNoticeUrl(url);
+		notice.setCreatedTime(new Date());
+		int maxNoticeKey = noticeDao.addBackKey(notice);
+		PcService.globalMaxNoticeKey = maxNoticeKey;
+	} 
+	
 }
