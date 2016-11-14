@@ -14,11 +14,12 @@ public class UserAction extends BasePageActionSupport<User>{
 	private static final long serialVersionUID = 1L;
 	private String loginname;
 	private String nickename;
+	private int type=1;
 	private String startRegDate;
 	private String endRegDate;
 	public String execute(){
 		AdminService adminService = ServiceCacheFactory.getService(AdminService.class);
-		super.initPage(adminService.getUserList(loginname, nickename, startRegDate, endRegDate, super.getToPage(), 10));
+		super.initPage(adminService.getUserList(loginname, nickename,type, startRegDate, endRegDate, super.getToPage(), 10));
 		return SUCCESS;
 	}
 	
@@ -125,5 +126,10 @@ public class UserAction extends BasePageActionSupport<User>{
 	public void setMemberExpireTimeStr(String memberExpireTimeStr) {
 		this.memberExpireTimeStr = memberExpireTimeStr;
 	}
-	
+	public int getType() {
+		return type;
+	}
+	public void setType(int type) {
+		this.type = type;
+	}
 }

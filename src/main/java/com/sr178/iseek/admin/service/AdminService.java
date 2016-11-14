@@ -257,12 +257,12 @@ public class AdminService {
 	 * @param startRegDate
 	 * @param endRegDate
 	 */
-	public IPage<User> getUserList(String loginName,String nickeName,String startRegDate,String endRegDate,int pageIdex,int pageSize){
+	public IPage<User> getUserList(String loginName,String nickeName,int type,String startRegDate,String endRegDate,int pageIdex,int pageSize){
 		if(!Strings.isNullOrEmpty(startRegDate)&&!Strings.isNullOrEmpty(endRegDate)){
 			startRegDate = startRegDate +" 00:00:00";
 			endRegDate = endRegDate+" 23:59:59";
 		}
-		return userDao.getPageUserList(loginName, nickeName, startRegDate, endRegDate, pageIdex, pageSize);
+		return userDao.getPageUserList(loginName, nickeName,type, startRegDate, endRegDate, pageIdex, pageSize);
 	}
 	/**
 	 * 更新用户状态

@@ -7,6 +7,7 @@ import com.sr178.common.jdbc.SqlParameter;
 import com.sr178.common.jdbc.bean.IPage;
 import com.sr178.iseek.common.dao.IseekDaoBase;
 import com.sr178.iseek.pc.bo.User;
+import com.sr178.module.utils.DateUtils;
 
 public class UserDao extends IseekDaoBase<User> {
 	/**
@@ -153,7 +154,7 @@ public class UserDao extends IseekDaoBase<User> {
 	 * @param pageSize
 	 * @return
 	 */
-	public IPage<User> getPageUserList(String loginName,String nickeName,String startRegDate,String endRegDate,int pageIndex,int pageSize){
+	public IPage<User> getPageUserList(String loginName,String nickeName,int type,String startRegDate,String endRegDate,int pageIndex,int pageSize){
 		String sql = "select * from "+super.getTable()+" where 1=1 ";
 		SqlParameter parameter = SqlParameter.Instance();
 		if(!Strings.isNullOrEmpty(loginName)){
@@ -167,6 +168,17 @@ public class UserDao extends IseekDaoBase<User> {
 		if(!Strings.isNullOrEmpty(startRegDate)&&!Strings.isNullOrEmpty(endRegDate)){
 			sql = sql +" and created_time between ? and ?";
 			parameter.withString(startRegDate).withString(endRegDate);
+		}
+		if(type==2){//未过期会员
+			sql = sql + " and member_expiry_day>=?";
+			String now = DateUtils.DateToString(new Date(), "yyyy-MM-dd");
+			parameter.withString(now);
+		}else if(type==3){//非会员
+			sql = sql + " and member_expiry_day is null";
+		}else if(type==4){//已过期会员
+			sql = sql + " and member_expiry_day<?";
+			String now = DateUtils.DateToString(new Date(), "yyyy-MM-dd");
+			parameter.withString(now);
 		}
 		sql = sql +" order by user_id desc";
 		return super.getJdbc().getListPage(sql, User.class, parameter, pageSize, pageIndex);

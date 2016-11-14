@@ -9,6 +9,7 @@ import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.Tag;
 
+import com.google.common.base.Strings;
 import com.sr178.iseek.common.utils.Tools;
 
 
@@ -61,9 +62,14 @@ public class PageTag implements Tag {
     private static final String ALL_PAGE_SIZE_NUM_TAG="ALL_PAGE_SIZE_NUM_TAG";
     private static final String PER_PAGE_SIZE_NUM_TAG = "PER_PAGE_SIZE_NUM_TAG";
     
+    private static final String TOTAL_FEE = "TOTAL_FEE";
     
-    private static final String TAG_FORMAT = "<div class=\"col-xs-2\"><p class=\"text-left\" style=\"margin:0;\">共"+ALL_PAGE_SIZE_NUM_TAG+"条记录，"+CURRENT_PAGE_NUM_TAG+"/"+ALL_PAGE_NUM_TAG+" 页</p></div><div class=\"col-xs-10\"><p class=\"text-right\" style=\"margin:0;\">"+FIRST_PAGE_TAG+""+UP_PAGE_TAG+""+NEXT_PAGE_TAG+""+END_PAGE_TAG+"跳转到第<input id='toPageInputText' type='text' class='form-control' name='toPage' value='"+CURRENT_PAGE_NUM_TAG+"' onkeydown='if(event.keyCode==13)document.getElementById(&quot;pageGo&quot;).click()' />页<a type='button' class='btn btn-default' href='javascript:gotoPage(document.getElementById('toPageInputText').value);'>确定</a></p></div>";
     
+    private static final String TAG_FORMAT = "<div class=\"col-xs-2\"><p class=\"text-left\" style=\"margin:0;\">共"+ALL_PAGE_SIZE_NUM_TAG+"条记录，"+CURRENT_PAGE_NUM_TAG+"/"+ALL_PAGE_NUM_TAG+" 页 </p></div><div class=\"col-xs-10\"><p class=\"text-right\" style=\"margin:0;\">"+FIRST_PAGE_TAG+""+UP_PAGE_TAG+""+NEXT_PAGE_TAG+""+END_PAGE_TAG+"跳转到第<input id='toPageInputText' type='text' class='form-control' name='toPage' value='"+CURRENT_PAGE_NUM_TAG+"' onkeydown='if(event.keyCode==13)document.getElementById(&quot;pageGo&quot;).click()' />页<a type='button' class='btn btn-default' href='javascript:gotoPage(document.getElementById('toPageInputText').value);'>确定</a></p></div>";
+    
+    
+    private static final String TAG_FORMAT_FEE = "<div class=\"col-xs-3\"><p class=\"text-left\" style=\"margin:0;\">共"+ALL_PAGE_SIZE_NUM_TAG+"条记录，"+CURRENT_PAGE_NUM_TAG+"/"+ALL_PAGE_NUM_TAG+" 页   "+TOTAL_FEE+"</p></div><div class=\"col-xs-9\"><p class=\"text-right\" style=\"margin:0;\">"+FIRST_PAGE_TAG+""+UP_PAGE_TAG+""+NEXT_PAGE_TAG+""+END_PAGE_TAG+"跳转到第<input id='toPageInputText' type='text' class='form-control' name='toPage' value='"+CURRENT_PAGE_NUM_TAG+"' onkeydown='if(event.keyCode==13)document.getElementById(&quot;pageGo&quot;).click()' />页<a type='button' class='btn btn-default' href='javascript:gotoPage(document.getElementById('toPageInputText').value);'>确定</a></p></div>";
+
     
     public int doEndTag() throws JspTagException {
     	try {
@@ -71,6 +77,11 @@ public class PageTag implements Tag {
     		long totalSize = ((Long) pageContext.getRequest().getAttribute("totalSize")).longValue();
     		int currentPage = ((Integer) pageContext.getRequest().getAttribute("toPage")).intValue();
       		int pageSize = ((Integer) pageContext.getRequest().getAttribute("pageSize")).intValue();
+      		String allfee = "";
+      		if(pageContext.getRequest().getAttribute("allfee")!=null){
+      			allfee = "共计消费"+(Double)(pageContext.getRequest().getAttribute("allfee"))+"元";
+      		}
+      		
         	String sessionID;
         	if (pageContext.getRequest().getAttribute("sessionID") == null) {
         		sessionID = "";
@@ -232,8 +243,11 @@ public class PageTag implements Tag {
         	}else{
         		endUrlStr = url+"&";
         	}
-        	
-        	String result = TAG_FORMAT.replaceAll(FIRST_PAGE_TAG, firstStr)
+        	String sourceModel = TAG_FORMAT;
+        	if(!Strings.isNullOrEmpty(allfee)){
+        		sourceModel = TAG_FORMAT_FEE;
+        	}
+        	String result = sourceModel.replaceAll(FIRST_PAGE_TAG, firstStr)
         			.replaceAll(END_PAGE_TAG, endStr)
         			.replaceAll(UP_PAGE_TAG, upString)
         			.replaceAll(NEXT_PAGE_TAG, nextStr)
@@ -241,6 +255,7 @@ public class PageTag implements Tag {
         			.replaceAll(ALL_PAGE_NUM_TAG, (totalPage+1)+"")
         			.replaceAll(ALL_PAGE_SIZE_NUM_TAG, totalSize+"")
         			.replaceAll(PER_PAGE_SIZE_NUM_TAG, pageSize+"")
+        			.replaceAll(TOTAL_FEE, allfee);
         			;
         	
         	result=result+"<script>function gotoPage(pageNum){location.href='"+endUrlStr.replaceAll("&amp;", "&")+"toPage='+(pageNum-1)+'';}</script>";

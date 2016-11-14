@@ -123,7 +123,7 @@
 			            <li><a href="userlist" class="nav-icon user-icon" target="customer">会员管理</a></li>
 			            <li><a href="chargelist" class="nav-icon pay-icon" target="customer">财务管理</a></li>
 			            <li><a href="updatenotice" class="nav-icon sys-icon" target="customer">系统公告</a></li>
-			            <li class="last-li"><a href="message.html" class="nav-icon msg-icon" target="customer">资讯管理</a></li>
+			            <li class="last-li"><a href="finance.html" class="nav-icon msg-icon" target="customer">资讯管理</a></li>
 			        </ul>		
 			</nav>
 		</div>
