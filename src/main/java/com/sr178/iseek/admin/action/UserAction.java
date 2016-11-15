@@ -1,9 +1,12 @@
 package com.sr178.iseek.admin.action;
 
+import java.util.Date;
+
 import com.sr178.game.framework.context.ServiceCacheFactory;
 import com.sr178.iseek.admin.service.AdminService;
 import com.sr178.iseek.pc.bo.User;
 import com.sr178.iseek.pc.service.PcService;
+import com.sr178.module.utils.DateUtils;
 import com.sr178.module.web.action.BasePageActionSupport;
 
 public class UserAction extends BasePageActionSupport<User>{
@@ -15,11 +18,23 @@ public class UserAction extends BasePageActionSupport<User>{
 	private String loginname;
 	private String nickename;
 	private int type=1;
+	private int datetype=1;
 	private String startRegDate;
 	private String endRegDate;
 	public String execute(){
 		AdminService adminService = ServiceCacheFactory.getService(AdminService.class);
+		if(datetype==2){
+			String now = DateUtils.DateToString(new Date(), "yyyy/MM/dd");
+			startRegDate = now;
+			endRegDate = now;
+		}else if(datetype==3){
+			String now = DateUtils.DateToString(new Date(), "yyyy/MM/");
+			startRegDate = now+"01";
+			endRegDate = now+"31";
+		}
 		super.initPage(adminService.getUserList(loginname, nickename,type, startRegDate, endRegDate, super.getToPage(), 10));
+		startRegDate=null;
+		endRegDate= null;
 		return SUCCESS;
 	}
 	
@@ -131,5 +146,11 @@ public class UserAction extends BasePageActionSupport<User>{
 	}
 	public void setType(int type) {
 		this.type = type;
+	}
+	public int getDatetype() {
+		return datetype;
+	}
+	public void setDatetype(int datetype) {
+		this.datetype = datetype;
 	}
 }

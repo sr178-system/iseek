@@ -110,6 +110,24 @@
 		$("#Form").submit();
 	}
 		</script>
+		<style type="text/css">
+		
+				.select {
+		    border: solid 1px #a5a4a4;
+		    outline: none;
+		    appearance: none;
+		    -moz-appearance: none;
+		    -webkit-appearance: none;
+		    width: 130px;
+		    padding-left: 5px;
+		    height: 26px;
+		    padding-right: 15px;
+		    background: url("../image/type.png") no-repeat scroll center rgb(255, 255, 255);
+		    background-position: 110px 5px;
+		}
+		.select::-ms-expand { display: none; }
+		
+		</style>
 	</head>
 	<body>
 	<jsp:include page="/common/dialog.jsp" flush="true"></jsp:include>
@@ -140,7 +158,7 @@
 						登陆名 <input type="text" name="loginname" id="loginname" class="w110" placeholder="不填写查询全部" value="${loginname}"/>&nbsp;
 						&nbsp;昵称 <input type="text" name="nickename" id="nickename" class="w110" value="${nickename}" placeholder="不填写查询全部"/>
 						<div class="dropdown dropdown-type">
-						类别  <select name="type" id="type">
+						类别  <select name="type" id="type" class="select">
 						   <option value="1" <c:if test="${type==1}">selected</c:if>>全部</option>
 						   <option value="2" <c:if test="${type==2}">selected</c:if>>未过期会员</option>
 						   <option value="3" <c:if test="${type==3}">selected</c:if>>非会员</option>
@@ -148,12 +166,11 @@
 						</select>
 						</div>
 						<div class="dropdown dropdown-type m0">
-						注册日期 <input type="text" class="type-rea w110 m0" name="regDate" id="regDate" value="1" readonly="readonly"/>
-						<ul class="type-nav">
-							<li value="1">全部</li>
-							<li value="2">当日</li>
-							<li value="3">当月</li>
-						</ul>
+						注册日期 <select name="datetype" id="datetype" class="select">
+						   <option value="1" <c:if test="${datetype==1}">selected</c:if>>全部</option>
+						   <option value="2" <c:if test="${datetype==2}">selected</c:if>>当日</option>
+						   <option value="3" <c:if test="${datetype==3}">selected</c:if>>当月</option>
+						</select>
 						</div>	
 						<div class="dropdown dropdown-type">
 						<input type="text" class="w110 m0" name="startRegDate" id="startRegDate" value="${startRegDate}"/>		
@@ -199,7 +216,7 @@
 					<tr>
 						<td colspan=10>
 						<div class="row" style="padding-top: 0 !important;line-height: 32px;margin: 0;">
-							  <aldtags:pageTag paraStr="loginname,${loginname},nickename,${nickename},startRegDate,${startRegDate},endRegDate,${endRegDate},type,${type}"/>
+							  <aldtags:pageTag paraStr="loginname,${loginname},nickename,${nickename},startRegDate,${startRegDate},endRegDate,${endRegDate},type,${type},datetype,${datetype}"/>
 							</div>
 						</td>
 					</tr>

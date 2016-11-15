@@ -1,8 +1,13 @@
 package com.sr178.iseek.admin.service;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Date;
+import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.google.common.base.Strings;
@@ -11,10 +16,13 @@ import com.google.common.cache.CacheBuilder;
 import com.sr178.common.jdbc.bean.IPage;
 import com.sr178.common.jdbc.bean.SqlParamBean;
 import com.sr178.game.framework.exception.ServiceException;
+import com.sr178.game.framework.log.LogSystem;
 import com.sr178.iseek.admin.bo.AdminUser;
 import com.sr178.iseek.admin.dao.AdminUserDao;
 import com.sr178.iseek.pc.bo.ChargeConfig;
 import com.sr178.iseek.pc.bo.MobileVerify;
+import com.sr178.iseek.pc.bo.News;
+import com.sr178.iseek.pc.bo.NewsConfig;
 import com.sr178.iseek.pc.bo.Notice;
 import com.sr178.iseek.pc.bo.PaymentLog;
 import com.sr178.iseek.pc.bo.PaymentLogMore;
@@ -441,5 +449,78 @@ public class AdminService {
 		int maxNoticeKey = noticeDao.addBackKey(notice);
 		PcService.globalMaxNoticeKey = maxNoticeKey;
 	} 
+	/**
+	 * 获取咨询列表
+	 * @param nums
+	 * @return
+	 */
+	public List<News> getNewsList(){
+		return newsDao.getAllOrder("order by news_id desc");
+	}
+	/**
+	 * 获取资讯页配置
+	 * @return
+	 */
+	public NewsConfig getNewsConfig(){
+		return newsConfigDao.getFirstOne(" order by id desc");
+	}
+	/**
+	 * 添加咨询
+	 * @param content
+	 * @param url
+	 */
+	public void addNews(String content,String url){
+		ParamCheck.checkString(content, 1, "咨询内容不能为空！");
+		News news = new News();
+		news.setNewTitle(content);
+		news.setNewsUrl(url);
+		news.setCreatedTime(new Date());
+		news.setUpdatedTime(new Date());
+		newsDao.add(news);
+	}
+	/**
+	 * 删除资讯
+	 * @param id
+	 */
+	public void deleteNews(int[] ids){
+		if(ids!=null&&ids.length>0){
+			for(int id:ids){
+				newsDao.delete(new SqlParamBean("news_id", id));
+			}
+		}
+	}
+	
+	
+	
+	/**
+	 * 保存图片
+	 * 
+	 * @param files
+	 * @param fileNames
+	 * @param taskId
+	 * @param type
+	 */
+	public String saveAttach(int type,File file, String names, String descPath) {
+		String oldFileName = names;
+		String[] prefixArray = oldFileName.split("\\.");
+		String prefix = prefixArray[prefixArray.length - 1];
+		String fileName = MD5Security.md5_16_Small(UUID.randomUUID().toString()) + "." + prefix;
+		try {
+			FileUtils.copyFile(file, new File(descPath + fileName));
+		} catch (IOException e) {
+			LogSystem.error(e, "上传附件失败");
+			throw new ServiceException(3, "上传附件失败！请重新上传！");
+		}
+		if(type==1){
+			newsConfigDao.updateSmallPicUrl(fileName);
+		}else if(type==2){
+			newsConfigDao.updateBigPicUrl(fileName);
+		}else{
+			throw new ServiceException(1,"错误的类型type");
+		}
+		return fileName;
+	}
+	
+	
 	
 }

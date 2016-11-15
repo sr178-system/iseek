@@ -1,10 +1,12 @@
 package com.sr178.iseek.admin.action;
 
+import java.util.Date;
+
 import com.sr178.game.framework.context.ServiceCacheFactory;
 import com.sr178.iseek.admin.service.AdminService;
 import com.sr178.iseek.pc.bo.ChargeConfig;
-import com.sr178.iseek.pc.bo.PaymentLog;
 import com.sr178.iseek.pc.bo.PaymentLogMore;
+import com.sr178.module.utils.DateUtils;
 import com.sr178.module.web.action.BasePageActionSupport;
 
 public class PayMentLogAction extends BasePageActionSupport<PaymentLogMore> {
@@ -17,12 +19,24 @@ public class PayMentLogAction extends BasePageActionSupport<PaymentLogMore> {
 	private String nickeName;
 	private String startChargeDate;
 	private String endChargeDate;
-	
+	private int datetype;
 	private double allfee;
 	public String execute(){
 		AdminService adminService = ServiceCacheFactory.getService(AdminService.class);
+		
+		if(datetype==2){
+			String now = DateUtils.DateToString(new Date(), "yyyy/MM/dd");
+			startChargeDate = now;
+			endChargeDate = now;
+		}else if(datetype==3){
+			String now = DateUtils.DateToString(new Date(), "yyyy/MM/");
+			startChargeDate = now+"01";
+			endChargeDate = now+"31";
+		}
         super.initPage(adminService.getPagePamentLogList(loginName, nickeName, startChargeDate, endChargeDate, super.getToPage(), 10));
         allfee = adminService.getSum(loginName, nickeName, startChargeDate, endChargeDate);
+        startChargeDate=null;
+        endChargeDate=null;
         return SUCCESS;
 	}
 	private int st;
@@ -92,5 +106,11 @@ public class PayMentLogAction extends BasePageActionSupport<PaymentLogMore> {
 	}
 	public void setRemindDay(int remindDay) {
 		this.remindDay = remindDay;
+	}
+	public int getDatetype() {
+		return datetype;
+	}
+	public void setDatetype(int datetype) {
+		this.datetype = datetype;
 	}
 }

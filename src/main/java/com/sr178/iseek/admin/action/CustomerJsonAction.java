@@ -1,9 +1,7 @@
 package com.sr178.iseek.admin.action;
 
 import com.sr178.game.framework.context.ServiceCacheFactory;
-import com.sr178.iseek.admin.bo.AdminUser;
 import com.sr178.iseek.admin.service.AdminService;
-import com.sr178.module.web.action.BasePageActionSupport;
 import com.sr178.module.web.action.JsonBaseActionSupport;
 
 public class CustomerJsonAction extends JsonBaseActionSupport {

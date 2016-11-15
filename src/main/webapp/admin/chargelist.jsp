@@ -31,6 +31,24 @@
 			$("#FormCharge").submit();
 		}
 		</script>
+		<style type="text/css">
+		
+				.select {
+		    border: solid 1px #a5a4a4;
+		    outline: none;
+		    appearance: none;
+		    -moz-appearance: none;
+		    -webkit-appearance: none;
+		    width: 130px;
+		    padding-left: 5px;
+		    height: 26px;
+		    padding-right: 15px;
+		    background: url("../image/type.png") no-repeat scroll center rgb(255, 255, 255);
+		    background-position: 110px 5px;
+		}
+		.select::-ms-expand { display: none; }
+		
+		</style>
 	</head>
 	<body>
 		<div class="page-header">
@@ -46,12 +64,11 @@
 						登陆名 <input type="text" name="loginName" id="loginName" class="w110" placeholder="不填写查询全部" value="${loginName}"/>&nbsp;
 						&nbsp;昵称 <input type="text" name="nickeName" id="nickeName" class="w110" placeholder="不填写查询全部" value="${nickeName}"/>
 						<div class="dropdown dropdown-type m0">
-						注册日期 <input type="text" class="type-rea w110 m0" name="regDate" id="regDate" value="全部" readonly="readonly"/>
-						<ul class="type-nav">
-							<li>全部</li>
-							<li>1月</li>
-							<li>2月</li>
-						</ul>
+						注册日期 <select name="datetype" id="datetype" class="select">
+						   <option value="1" <c:if test="${datetype==1}">selected</c:if>>全部</option>
+						   <option value="2" <c:if test="${datetype==2}">selected</c:if>>当日</option>
+						   <option value="3" <c:if test="${datetype==3}">selected</c:if>>当月</option>
+						</select>
 						</div>	
 						<div class="dropdown dropdown-type">
 						<input type="text" class="w110 m0" name="startChargeDate" id="startChargeDate" value="${startChargeDate}"/>		
@@ -92,7 +109,7 @@
 					<tr>
 						<td colspan=10>
 						<div class="row" style="padding-top: 0 !important;line-height: 32px;margin: 0;">
-							  <aldtags:pageTag paraStr="loginName,${loginName},nickeName,${nickeName},startChargeDate,${startChargeDate},endChargeDate,${endChargeDate}"/>
+							  <aldtags:pageTag paraStr="loginName,${loginName},nickeName,${nickeName},startChargeDate,${startChargeDate},endChargeDate,${endChargeDate},datetype,${datetype}"/>
 							</div>
 						</td>
 					</tr>

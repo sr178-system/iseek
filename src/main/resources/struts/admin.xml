@@ -2,7 +2,8 @@
         "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN"
         "http://struts.apache.org/dtds/struts-2.1.dtd">
 <struts>
-
+	<constant name="struts.multipart.maxSize" value="10000000000"/>
+	<constant name="struts.multipart.saveDir" value="/tmp"></constant>
 	<!-- 一个包可以就是一个模块 -->
 	<package name="admin" extends="adminInterceptor" namespace="/admin">
 		<action name="login" class="com.sr178.iseek.admin.action.LoginAction" method="login">
@@ -58,7 +59,18 @@
 		
 		<action name="updatenotice" class="com.sr178.iseek.admin.action.NoticeAction">
 		   <result name="success">updatenotice.jsp</result>
-		</action>												
+		</action>	
+		
+		<action name="message" class="com.sr178.iseek.admin.action.MessageAction">
+		   <result name="success">message.jsp</result>
+		</action>
+        <action name="addnews" class="com.sr178.iseek.admin.action.MessageAction" method="addNews">
+		   <result name="success">message.jsp</result>
+		</action>		
+		<action name="uploadAttach" class="com.sr178.iseek.admin.action.MessageJsonAction" method="uploadAttach">
+		</action>	
+		<action name="deletenews" class="com.sr178.iseek.admin.action.MessageJsonAction" method="deleteNews">
+		</action>													
 	</package>
 	
 	<package name="test" extends="myInterceptor" namespace="/test">
