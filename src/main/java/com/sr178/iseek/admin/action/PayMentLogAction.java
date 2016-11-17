@@ -33,10 +33,12 @@ public class PayMentLogAction extends BasePageActionSupport<PaymentLogMore> {
 			startChargeDate = now+"01";
 			endChargeDate = now+"31";
 		}
+		adminService.checkPower(super.getUserName(), 5);
         super.initPage(adminService.getPagePamentLogList(loginName, nickeName, startChargeDate, endChargeDate, super.getToPage(), 10));
         allfee = adminService.getSum(loginName, nickeName, startChargeDate, endChargeDate);
         startChargeDate=null;
         endChargeDate=null;
+        
         return SUCCESS;
 	}
 	private int st;
@@ -45,6 +47,7 @@ public class PayMentLogAction extends BasePageActionSupport<PaymentLogMore> {
 	private int remindDay;
 	public String updatechargeconfig(){
 		AdminService adminService = ServiceCacheFactory.getService(AdminService.class);
+		adminService.checkPower(super.getUserName(), 6);
 		if(st==0){
 			config = adminService.getChargeConfig();
 			return SUCCESS;

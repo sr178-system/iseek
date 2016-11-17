@@ -67,7 +67,8 @@
         <action name="addnews" class="com.sr178.iseek.admin.action.MessageAction" method="addNews">
 		   <result name="success">message.jsp</result>
 		</action>		
-		<action name="uploadAttach" class="com.sr178.iseek.admin.action.MessageJsonAction" method="uploadAttach">
+		<action name="uploadAttach" class="com.sr178.iseek.admin.action.MessageAction" method="uploadAttach">
+		<result name="success" type="redirect">message</result>
 		</action>	
 		<action name="deletenews" class="com.sr178.iseek.admin.action.MessageJsonAction" method="deleteNews">
 		</action>													

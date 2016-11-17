@@ -7,7 +7,7 @@
 		<title>客服管理</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<meta http-equiv="X-UA-Compatible" content="edge,IE=8"/>
+		<meta http-equiv="X-UA-Compatible" content="IE=Edge">
 		<!-- 引入 Bootstrap -->
 		<link rel="stylesheet" href="../css/bootstrap.min.css">  
 		<link rel="stylesheet" href="../css/customer.css"> 		
@@ -46,7 +46,7 @@
 				if(data.flag==0){
 					print_s("成功删除了"+selok.size()+"个",function(){location.href="customer";});
 				}else{
-					print_s("删除失败，错误码"+data.code);
+					print_s("删除失败，"+data.msg);
 				}
 			})
 		}
@@ -69,7 +69,7 @@
 					print_s("操作成功！",function(){location.href="customer";});
 					
 				}else{
-					print_s("操作失败，错误码"+data.flag);
+					print_s("操作失败，"+data.msg);
 				}
 			})
 		}

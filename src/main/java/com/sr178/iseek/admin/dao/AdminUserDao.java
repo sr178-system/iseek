@@ -41,13 +41,17 @@ public class AdminUserDao extends IseekDaoBase<AdminUser> {
 	 * @return
 	 */
 	public boolean updateAdminUser(String userName,String password,String name,int sex,String power){
-		String sql = "update "+super.getTable()+" set name = ?,sex=?,power=?" ;
-		SqlParameter paramer = SqlParameter.Instance().withString(name).withInt(sex).withString(power);
+		String sql = "update "+super.getTable()+" set name = ?,sex=?" ;
+		SqlParameter paramer = SqlParameter.Instance().withString(name).withInt(sex);
+		if(!userName.equals("admin")){
+			sql = sql+",power=?";
+			paramer.withString(power);
+		}
 		if(!Strings.isNullOrEmpty(password)){
 			sql = sql +",pass_word = ?";
 			paramer.withString(password);
 		}
-		sql = sql + "where login_name=? limit 1";
+		sql = sql + " where login_name=? limit 1";
 		paramer.withString(userName);
 		return super.getJdbc().update(sql, paramer)>0;
 	}

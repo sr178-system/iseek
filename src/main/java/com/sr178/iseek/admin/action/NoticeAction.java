@@ -19,12 +19,14 @@ public class NoticeAction extends BaseActionSupport{
     private int st;
     private Notice notice;
 	public String execute(){
+		AdminService adminService = ServiceCacheFactory.getService(AdminService.class);
+		adminService.checkPower(super.getUserName(), 7);
 		if(st==0){
 			PcService pcService = ServiceCacheFactory.getService(PcService.class);
 			notice = pcService.getMaxKeyNotice();
 			return SUCCESS;
 		}
-		AdminService adminService = ServiceCacheFactory.getService(AdminService.class);
+
 		adminService.updateNotice(content, url);
 		super.setCode(2000);
 		return SUCCESS;

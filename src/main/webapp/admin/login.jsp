@@ -1,13 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ include file="/common/taglib.jsp"%>
+<%@ include file="/common/taglib2.jsp"%>
 <!DOCTYPE html>
 <html>
    <head>
 		<title>用户登陆</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<meta http-equiv="X-UA-Compatible" content="edge,IE=8"/>
+		<meta http-equiv="X-UA-Compatible" content="IE=Edge">
 		<!-- 引入 Bootstrap -->
 		<link rel="stylesheet" href="../css/bootstrap.min.css">  
 		<link rel="stylesheet" href="../css/bootstrapValidator.css">  
@@ -16,6 +16,7 @@
 		<script src="../js/bootstrapValidator.js"></script>		
 		<script src="../js/jquery.md5.js"></script>
 		<script type="text/javascript" src="../scripts/jquery.cookie.js"></script>
+		<jsp:include page="/common/dialog.jsp" flush="true"></jsp:include>
 		<script type="text/javascript">
 			var code = '${code}';
 			if(code!=0){

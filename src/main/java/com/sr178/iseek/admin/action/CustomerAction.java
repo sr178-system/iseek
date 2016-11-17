@@ -1,6 +1,7 @@
 package com.sr178.iseek.admin.action;
 
 import com.sr178.game.framework.context.ServiceCacheFactory;
+import com.sr178.game.framework.exception.ServiceException;
 import com.sr178.iseek.admin.bo.AdminUser;
 import com.sr178.iseek.admin.service.AdminService;
 import com.sr178.module.web.action.BasePageActionSupport;
@@ -16,6 +17,11 @@ public class CustomerAction extends BasePageActionSupport<AdminUser> {
 
 	public String execute(){
 		AdminService adminService = ServiceCacheFactory.getService(AdminService.class);
+		try {
+			adminService.checkPower(super.getUserName(), 1);
+		} catch (Exception e) {
+			throw new ServiceException(201,"您没有该功能权限，请联系管理员开通");
+		}
 		super.initPage(adminService.getAdminUserPage(super.getToPage(), 10));
 		return SUCCESS;
 	}
@@ -30,10 +36,12 @@ public class CustomerAction extends BasePageActionSupport<AdminUser> {
 	private AdminUser adminUser;
 	public String customerEdit(){
 		AdminService adminService = ServiceCacheFactory.getService(AdminService.class);
+		adminService.checkPower(super.getUserName(), 2);
 		if(st==0){
 			adminUser = adminService.getAdminUser(username);
 			return SUCCESS;
 		}
+		
 		adminService.updateAdminUser(username, password, name, sex, power);
 		super.setCode(2000);
 		return SUCCESS;
@@ -41,6 +49,7 @@ public class CustomerAction extends BasePageActionSupport<AdminUser> {
 	
 	public String customerAdd(){
 		AdminService adminService = ServiceCacheFactory.getService(AdminService.class);
+		adminService.checkPower(super.getUserName(), 2);
 		if(st==0){
 			return SUCCESS;
 		}

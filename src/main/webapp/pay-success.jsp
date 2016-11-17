@@ -7,7 +7,7 @@
 		<title>支付中心</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<meta http-equiv="X-UA-Compatible" content="edge,IE=8"/>
+		<meta http-equiv="X-UA-Compatible" content="IE=Edge">
 		<!-- 引入 Bootstrap -->
 		<link rel="stylesheet" href="css/bootstrap.min.css">  			
 		<script src="js/jquery.min.js"></script>	

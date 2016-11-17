@@ -193,6 +193,9 @@ public class AdminService {
 	public void updateAdminUserStatus(long[] ids,int status){
 		if(ids!=null&&ids.length>0){
 			for(int i=0;i<ids.length;i++){
+				if(ids[i]==1){
+					continue;
+				}
 				adminUserDao.updateStatus(ids[i], status);
 			}
 		}
@@ -204,6 +207,9 @@ public class AdminService {
 	public void deleteAdminUser(long[] ids){
 		if(ids!=null&&ids.length>0){
 			for(int i=0;i<ids.length;i++){
+				if(ids[i]==1){
+					continue;
+				}
 				adminUserDao.delete(ids[i]);
 			}
 		}
@@ -521,6 +527,30 @@ public class AdminService {
 		return fileName;
 	}
 	
-	
-	
+	/**
+	 * 权限检查
+	 * @param userName
+	 * @param pos
+	 */
+	public void checkPower(String userName,int pos){
+		AdminUser adminUser = adminUserDao.get(new SqlParamBean("login_name", userName));
+		String power = adminUser.getPower();
+		if(power.charAt(pos-1)=='0'){
+			throw new ServiceException(200,"您没有该功能权限，请联系管理员开通");
+		}
+	}
+	/**
+	 * 检查权限
+	 * @param userName
+	 * @param pos
+	 * @return
+	 */
+	public boolean checkPowerTitle(String userName,int pos){
+		AdminUser adminUser = adminUserDao.get(new SqlParamBean("login_name", userName));
+		String power = adminUser.getPower();
+		if(power.charAt(pos-1)=='0'){
+			return false;
+		}
+		return true;
+	}
 }

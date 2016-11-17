@@ -32,6 +32,7 @@ public class UserAction extends BasePageActionSupport<User>{
 			startRegDate = now+"01";
 			endRegDate = now+"31";
 		}
+		adminService.checkPower(super.getUserName(), 3);
 		super.initPage(adminService.getUserList(loginname, nickename,type, startRegDate, endRegDate, super.getToPage(), 10));
 		startRegDate=null;
 		endRegDate= null;
@@ -46,10 +47,11 @@ public class UserAction extends BasePageActionSupport<User>{
 	private String email;
 	private String mobile;
 	public String addUser(){
+		AdminService adminService = ServiceCacheFactory.getService(AdminService.class);
+		adminService.checkPower(super.getUserName(), 4);
 		if(st==0){
 			return SUCCESS;
 		}
-		AdminService adminService = ServiceCacheFactory.getService(AdminService.class);
 		adminService.addUserByAdmin(loginname, password, nickename, sex, email, mobile,memberExpireTimeStr);
 		super.setCode(2000);
 		return SUCCESS;
@@ -59,12 +61,13 @@ public class UserAction extends BasePageActionSupport<User>{
 	private User user;
 	private String memberExpireTimeStr;
 	public String editUser(){
+		AdminService adminService = ServiceCacheFactory.getService(AdminService.class);
+		adminService.checkPower(super.getUserName(), 4);
 		if(st==0){
 			PcService pcService = ServiceCacheFactory.getService(PcService.class);
 			user = pcService.getUser(userid);
 			return SUCCESS;
 		}
-		AdminService adminService = ServiceCacheFactory.getService(AdminService.class);
 		adminService.updateUserInfoByAdmin(userid, nickename, email, mobile, sex, password, memberExpireTimeStr);
 		super.setCode(2000);
 		return SUCCESS;

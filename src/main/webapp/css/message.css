@@ -1,62 +1,165 @@
-		.col-sm-2{
-			width: 13% !important;
-		}
-		.form-group{
-			margin-left: 0 !important;
-			margin-right: 0 !important;
-		}
-		.text-left{
-			text-align: left !important;
-		}
-		.p5{
-			padding-bottom: 5px !important;		
-		}
-		.font-weight{
-			font-weight: 400 !important;
-		}
-		.image-1 {
-		    width: 328px;
-		    height: 114px;
-		    background-size: cover;
-		}
-		.image-2 {
-		    width: 180px;
-		    height: 138px;
-		    background-size: cover;
-		}		
-		.table thead{background-color: #d5f2ff}
-		.table > tbody tr:nth-child(even) > td {background-color: #fff;}
-		.table > tbody tr:nth-child(odd) > td {background-color: #f6f6f6;}  
-		.table tfoot{background-color: #e6e6e6;}
-		.btn{padding:2px 12px !important;}
-		.top-td{
-			background-color: #353b4b;
-		}
-		.add-btn{
-			background-color:#65c3df !important;
-			border-color: #65c3df !important;
-		}
-		.cus-btn{
-			margin:0 10px !important;
-		}
-		.td-font-color{
-			color: #ff6c6c !important;
-		}
-		.end-font-color{
-			color: #65c3df;
-		}
-		.chebox-label{
-		    width: 20px;
-		    height: 20px;
-		    /* box-sizing: border-box; */
-		    background: url('../image/chebox.png') no-repeat left;
-		    background-position: 0% 100%;
-		    margin-bottom: -4px;
-		    margin-right: 10px;
-		}
-		.active-box{
-			background-position: 0% 0%;
-		}
-		.chebox-label input[type='checkbox']{
-		display: none;
-		}		
+.col-sm-2{
+	width: 13% !important;
+}
+.form-group{
+	margin-left: 0 !important;
+	margin-right: 0 !important;
+}
+.text-left{
+	text-align: left !important;
+}
+.p5{
+	padding-bottom: 5px !important;		
+}
+.font-weight{
+	font-weight: 400 !important;
+}
+.image-1 {
+	background-color: #f2f2f2;
+    background: url('../image/image-1.png') no-repeat top;
+    width: 328px;
+    height: 155px;
+    background-size: cover;
+    padding: 0;
+}
+.image-2 {
+    background: url('../image/image-2.png') no-repeat top;
+    width: 180px;
+    height: 155px;
+    background-size: cover;
+    padding: 0;
+}		
+.table thead{background-color: #d5f2ff}
+.table > tbody tr:nth-child(even) > td {background-color: #fff;}
+.table > tbody tr:nth-child(odd) > td {background-color: #f6f6f6;}  
+.table tfoot{background-color: #e6e6e6;}
+.btn{padding:2px 12px !important;}
+.top-td{
+	background-color: #353b4b;
+}
+.add-btn{
+	background-color:#65c3df !important;
+	border-color: #65c3df !important;
+}
+.cus-btn{
+	margin:0 10px !important;
+}
+.td-font-color{
+	color: #ff6c6c !important;
+}
+.end-font-color{
+	color: #65c3df;
+}
+.chebox-label{
+    width: 20px;
+    height: 20px;
+    /* box-sizing: border-box; */
+    background: url('../image/chebox.png') no-repeat left;
+    background-position: 0% 100%;
+    margin-bottom: -4px;
+    margin-right: 10px;
+}
+.active-box{
+	background-position: 0% 0%;
+}
+.chebox-label input[type='checkbox']{
+	display: none;
+}		
+.td-w-25{
+	width: 25% !important;
+}
+.td-w-50{
+	width: 50% !important;
+}
+.td-b-0{
+	border-bottom: 0 !important;
+}
+.td-t-0{
+	border-top: 0 !important;
+}
+.td-m{margin-bottom: 0 !important;}
+.td-h{
+    height: 381px;
+    overflow: auto;
+    /*padding-right: 0px;*/
+    border-bottom: 1px solid #ccc;
+    border-left: 1px solid #ccc;
+}
+.thead{
+	padding-left: 0;	
+	background-color: #d5f2ff;
+	border: 1px solid #ccc;			
+}
+.td-b-r-0{
+	border-right: 0 !important;
+}
+.td-b-l-0{
+	border-left: 0 !important;
+}			
+/*定义滚动条宽高及背景，宽高分别对应横竖滚动条的尺寸*/
+.td-h::-webkit-scrollbar{
+    width: 16px;
+    height: 16px;
+    background-color: #fff;
+    position: absolute;
+    left: 0;
+}
+/*定义滚动条的轨道，内阴影及圆角*/
+.td-h::-webkit-scrollbar-track{
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+    border-radius: 0px;
+    background-color: #f5f5f5;
+}
+/*定义滑块，内阴影及圆角*/
+.td-h::-webkit-scrollbar-thumb{
+    /*width: 10px;*/
+    height: 20px;
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+    background-color: #65c3df;
+}		
+.btn-file {
+    position: absolute !important;
+    overflow: hidden;
+    right: -115px;
+    bottom: 0px;
+}
+.fileinput-cancel-button {
+    position: absolute;
+    right: -285px;    
+    bottom: 0px;
+}
+.fileinput-remove-button {
+    position: absolute;
+    right: -195px;
+    bottom: 0px;
+}
+.fileinput-upload-button {
+    position: absolute;
+    right: -275px;
+    bottom: 0;
+}
+.close {
+    position: absolute;
+    right: 3px;
+    top: 0;
+}
+.file-preview-frame {
+    box-shadow: 0px 0px 0px 0px #a2958a;
+    border: 0 !important;
+    padding: 6px 0 0;
+    margin: 12px 0 0 0;
+    height: 131px;
+    width: 100%;
+}
+
+.file-preview-frame:hover {
+    box-shadow: 0px 0px 0px 0px #333;
+}
+.file-other-error{display: none !important}
+.file-error-message {
+    position: absolute;
+    top: 45px;
+    left: 0;
+    width: 321px;
+}

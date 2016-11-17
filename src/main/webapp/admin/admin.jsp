@@ -1,13 +1,15 @@
+<%@page import="com.sr178.iseek.admin.service.AdminService"%>
+<%@page import="com.sr178.game.framework.context.ServiceCacheFactory"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ include file="/common/taglib.jsp"%>
+<%@ include file="/common/taglib2.jsp"%>
 <!DOCTYPE html>
 <html>
    <head>
 		<title>管理中心</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<meta http-equiv="X-UA-Compatible" content="edge,IE=8"/>
+		<meta http-equiv="X-UA-Compatible" content="IE=Edge">
 		<!-- 引入 Bootstrap -->
 		<link rel="stylesheet" href="../css/bootstrap.min.css"> 
 		<link rel="stylesheet" href="../css/admin.css">  		
@@ -27,7 +29,7 @@
 				})
 			})
 		</script>
-		
+		<jsp:include page="/common/dialog.jsp" flush="true"></jsp:include>
 		<script type="text/javascript">
 			var code = '${code}';
 			if(code!=0){
@@ -117,13 +119,32 @@
 			<nav class="navbar navbar-inverse navbar-inverse-cus" role="navigation">
 	
 			        <ul class="nav navbar-nav nav-ul text-center ">
-			            <li class="active">
-			            	<a href="customer" class="nav-icon service-icon" target="customer">客服管理</a>
-			            </li>
-			            <li><a href="userlist" class="nav-icon user-icon" target="customer">会员管理</a></li>
-			            <li><a href="chargelist" class="nav-icon pay-icon" target="customer">财务管理</a></li>
-			            <li><a href="updatenotice" class="nav-icon sys-icon" target="customer">系统公告</a></li>
-			            <li class="last-li"><a href="message" class="nav-icon msg-icon" target="customer">资讯管理</a></li>
+			           <%
+			             AdminService adminService = ServiceCacheFactory.getService(AdminService.class);
+			             String userName = (String)request.getAttribute("userName");
+			             if(adminService.checkPowerTitle(userName, 1)){
+			            %>
+			            <%="<li class=\"active\"> <a href=\"customer\" class=\"nav-icon service-icon\" target=\"customer\">客服管理</a></li>" %>
+			            <%}%>
+			             <%if(adminService.checkPowerTitle(userName, 3)){%>
+			             <%="<li><a href=\"userlist\" class=\"nav-icon user-icon\" target=\"customer\">会员管理</a></li>" %> 
+			             <%}%>
+			             
+			             <%
+			             if(adminService.checkPowerTitle(userName, 5)){
+				         %>
+				          <%="<li><a href=\"chargelist\" class=\"nav-icon pay-icon\" target=\"customer\">财务管理</a></li>"%>
+				         <%}%>
+				         			             <%
+			             if(adminService.checkPowerTitle(userName, 7)){
+				         %>
+				          <%= "<li><a href=\"updatenotice\" class=\"nav-icon sys-icon\" target=\"customer\">系统公告</a></li>"%>
+				         <%}%>
+				         			             <%
+			             if(adminService.checkPowerTitle(userName, 8)){
+				         %>
+				          <%= "<li class=\"last-li\"><a href=\"message\" class=\"nav-icon msg-icon\" target=\"customer\">资讯管理</a></li>"%>
+				         <%}%>
 			        </ul>		
 			</nav>
 		</div>

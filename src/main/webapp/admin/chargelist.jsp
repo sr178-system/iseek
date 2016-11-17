@@ -7,7 +7,7 @@
 		<title>财务管理</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<meta http-equiv="X-UA-Compatible" content="edge,IE=8"/>
+		<meta http-equiv="X-UA-Compatible" content="IE=Edge">
 		<!-- 引入 Bootstrap -->
 		<link rel="stylesheet" href="../css/bootstrap.min.css">  
 		<link rel="stylesheet" href="../css/finance.css"> 		
@@ -51,6 +51,7 @@
 		</style>
 	</head>
 	<body>
+		<jsp:include page="/common/dialog.jsp" flush="true"></jsp:include>
 		<div class="page-header">
 			<a href="javascript:;" class="custom-font-14">首页</a> > 
 			<a href="javascript:;" class="custom-font-14 font-color">财务管理</a>

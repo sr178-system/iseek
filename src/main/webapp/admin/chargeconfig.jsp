@@ -7,7 +7,7 @@
 		<title>财务管理-设置</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<meta http-equiv="X-UA-Compatible" content="edge,IE=8"/>
+		<meta http-equiv="X-UA-Compatible" content="IE=Edge">
 		<!-- 引入 Bootstrap -->
 		<link rel="stylesheet" href="../css/bootstrap.min.css">  			
 		<link rel="stylesheet" href="../css/reg-2.css">  			
@@ -22,6 +22,12 @@
 <body>
 <jsp:include page="/common/dialog.jsp" flush="true"></jsp:include>
 <c:if test="${code==2000}"><script type="text/javascript">print_s("修改成功。",function(){location.href="chargelist";});</script></c:if>
+<script type="text/javascript">
+			var code = '${code}';
+			if(code!=0&&code!=2000){
+				print_s("${desc}",function(){history.go(-1);});
+			}
+		</script>
 <div class="">
 	<div class="page-header">
 	    <a href="javascript:;" class="custom-font-14">首页</a> > 

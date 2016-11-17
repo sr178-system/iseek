@@ -15,18 +15,21 @@ public class UserJsonAction extends JsonBaseActionSupport {
 	private int status;
     public String del(){
     	AdminService adminService = ServiceCacheFactory.getService(AdminService.class);
+    	adminService.checkPower(super.getUserName(), 4);
     	adminService.deleteUser(ids);
     	return this.renderSuccessResult();
     }
     
     public String editStatus(){
     	AdminService adminService = ServiceCacheFactory.getService(AdminService.class);
+    	adminService.checkPower(super.getUserName(), 4);
     	adminService.updateUserStatus(ids, status);
     	return this.renderSuccessResult();
     }
 
     public String editShareCompressStatus(){
     	AdminService adminService = ServiceCacheFactory.getService(AdminService.class);
+    	adminService.checkPower(super.getUserName(), 4);
     	adminService.updateUserShareCompresStatus(ids, status);
     	return this.renderSuccessResult();
     }

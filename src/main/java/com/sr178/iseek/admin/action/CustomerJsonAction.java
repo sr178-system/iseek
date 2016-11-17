@@ -15,12 +15,14 @@ public class CustomerJsonAction extends JsonBaseActionSupport {
 	private int status;
     public String del(){
     	AdminService adminService = ServiceCacheFactory.getService(AdminService.class);
+    	adminService.checkPower(super.getUserName(), 2);
     	adminService.deleteAdminUser(ids);
     	return this.renderSuccessResult();
     }
     
     public String editStatus(){
     	AdminService adminService = ServiceCacheFactory.getService(AdminService.class);
+    	adminService.checkPower(super.getUserName(), 2);
     	adminService.updateAdminUserStatus(ids, status);
     	return this.renderSuccessResult();
     }
