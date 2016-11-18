@@ -24,7 +24,7 @@ body{font-family: '微软雅黑'}
 .form-control{
     width: 40px !important;
     height: 25px !important;
-    display: initial !important;
+    display: inline-block; !important;
     margin: 0 7px !important;
 }
 .top-td{

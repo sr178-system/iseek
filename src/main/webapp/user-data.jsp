@@ -1,13 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ include file="/common/taglib.jsp"%>
+<%@ include file="/common/taglib2.jsp"%>
 <!DOCTYPE html>
 <html>
    <head>
 		<title>个人设置</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1,IE=8">
 		<!-- 引入 Bootstrap -->
 		<link rel="stylesheet" href="css/bootstrap.min.css">  	
 		<link rel="stylesheet" href="css/bootstrapValidator.css">  		
@@ -234,6 +234,7 @@
 		</script>
    </head>
 <body>
+<jsp:include page="/common/dialog.jsp" flush="true"></jsp:include>
 <div class="header">
 	<iframe frameborder=0 scrolling="no" border=0 width=100% height=60 src="user-header.html"></iframe>
 </div>

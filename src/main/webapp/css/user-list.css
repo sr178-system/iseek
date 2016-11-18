@@ -24,7 +24,7 @@ body{font-family: '微软雅黑'}
 .form-control{
     width: 40px !important;
     height: 25px !important;
-    display: initial !important;
+    display: inline-block; !important;
     margin: 0 7px !important;
 }
 .top-td{
@@ -50,6 +50,10 @@ body{font-family: '微软雅黑'}
 	width: 110px !important;
 	padding: 0 5px;
 	margin-right: 5px;
+	border:1px solid #a5a4a4;
+    height: 25px;
+    color: #888;
+    outline: none;    
 }
 .type-rea {
     background: #fff url('../image/type.png') no-repeat right;
@@ -73,7 +77,7 @@ body{font-family: '微软雅黑'}
     background: #fff;
 }
 .dropdown-type{
-	display: initial;
+	display: inline-block;
 	position: relative;
 	margin-right: 30px;
 }

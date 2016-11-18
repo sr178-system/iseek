@@ -1,13 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ include file="/common/taglib.jsp"%>
+<%@ include file="/common/taglib2.jsp"%>
 <!DOCTYPE html>
 <html>
    <head>
 		<title>用户注册</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1,IE=8">
 		<!-- 引入 Bootstrap -->
 		<link rel="stylesheet" href="css/bootstrap.min.css">  	
 		<link rel="stylesheet" href="css/bootstrapValidator.css">  		
@@ -16,10 +16,6 @@
 		<script src="js/bootstrap.min.js"></script>
 		<script src="js/bootstrapValidator.js"></script>	
 		<script src="js/jquery.md5.js"></script>	
-<c:if test="${code==7}"><script type="text/javascript">print_s("手机号码没有通过验证。",function(){history.go(-1);});</script></c:if>
-<c:if test="${code==8}"><script type="text/javascript">print_s("用户名已存在！。",function(){history.go(-1);});</script></c:if>
-<c:if test="${code==9}"><script type="text/javascript">print_s("手机号码已注册！！。",function(){history.go(-1);});</script></c:if>
-<c:if test="${code==1002}"><script type="text/javascript">print_s("密码解密失败！。",function(){history.go(-1);});</script></c:if>
 		<script type="text/javascript">
 		$(function(){
 			$('.radio label').click(function(){
@@ -176,6 +172,7 @@
 		</script>
    </head>
 <body>
+<jsp:include page="/common/dialog.jsp" flush="true"></jsp:include>
 <div class="header">
 	<iframe frameborder=0 scrolling="no" border=0 width=100% height=60 src="header.html"></iframe>
 </div>
