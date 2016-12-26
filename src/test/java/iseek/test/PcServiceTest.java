@@ -1,6 +1,8 @@
 package iseek.test;
 
+//import com.sr178.game.framework.context.ServiceCacheFactory;
 import com.sr178.game.framework.testcore.DaoTest;
+//import com.sr178.iseek.pc.service.PcService;
 
 public class PcServiceTest extends DaoTest {
 
@@ -29,6 +31,6 @@ public class PcServiceTest extends DaoTest {
 //		String email = "dogdog7788@qq.com";
 //		
 //		pcService.reg(loginName, tranferPassword, nickName, sex, email, mobile);
-		
+//		pcService.sendMobileVerify("15919820372", 3);
 	}
 }

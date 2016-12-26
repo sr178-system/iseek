@@ -77,6 +77,8 @@ import com.sr178.module.utils.DateStyle;
 import com.sr178.module.utils.DateUtils;
 import com.sr178.module.utils.MD5Security;
 import com.sr178.module.utils.ParamCheck;
+import com.sr178.module.utils.UrlRequestUtils;
+import com.sr178.module.utils.UrlRequestUtils.Mode;
 
 import cn.submsg.pay.alipay.directpay.config.AlipayConfig;
 import cn.submsg.pay.alipay.directpay.utils.AlipayNotify;
@@ -392,22 +394,41 @@ public class PcService {
 		if(sendSms(mobile, randomString,type)){
 			//发送短信
 			if(mobileVerifyDao.updateVerifyCode(mobile, randomString)){
-				
 			}else{
 				throw new ServiceException(2,"数据更新失败，请重试！");
 			}
 		}else{
-			throw new ServiceException(1,"短信发送失败！");
+			throw new ServiceException(1,"短信发送失败！同一个手机号不能反复发送过多短信，验证码一分钟只能下发一条一个小时三条!");
 		}
 		return randomString;
 	}
 	
-	private static final String[] sms_template = new String[]{"您的注册验证码为@code","您的新密码为@code","您正在修改手机号码，验证码为@code"};
+	private static final String[] sms_template = new String[]{"您的注册验证码为：@code","您的新密码为：@code","您正在修改手机号，验证码为：@code"};
 	public boolean sendSms(String mobile,String code,int type){
 		String template = sms_template[type-1];
 		String smsContent = template.replace("@code", code);
 		LogSystem.info("给手机"+mobile+"发送短信，内容为:"+smsContent);
-		return true;
+		return sendHttpSms(mobile, smsContent);
+	}
+	
+	private static final String SMS_URL = "http://admin.sms9.net/houtai/sms.php";
+	public static boolean sendHttpSms(String mobile,String msgCotent){
+		Map<String,String> paramMap = new HashMap<String,String>();
+		paramMap.put("cpid","16228");
+		long time = System.currentTimeMillis()/1000;
+		String md5 = MD5Security.md5_32_Small("958732"+"_"+time+"_"+"topsky");
+		paramMap.put("password",md5);
+		paramMap.put("timestamp",time+"");
+		paramMap.put("channelid","1462");
+		paramMap.put("msg",msgCotent);
+		paramMap.put("tele",mobile);
+		String result = UrlRequestUtils.execute(SMS_URL, paramMap, Mode.POST);
+		if(result.indexOf("success")!=-1){
+			return true;
+		}else{
+			LogSystem.info("短信发送错误："+result);
+			return false;
+		}
 	}
 	/**
 	 * 发送会员过期提醒

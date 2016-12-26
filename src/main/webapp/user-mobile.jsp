@@ -26,7 +26,7 @@
 				$.post('sendSms',sendData,function(data){
 					//print(JSON.stringify(data));
 					if(data.flag==0){
-						print_s("发送成功！验证码为="+data.rc.verifyCode);
+						print_s("验证码发送成功！");
 					}else{
 						print_s("发送错误："+data.msg);
 					}
