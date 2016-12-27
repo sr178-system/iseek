@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html>
    <head>
-		<title>reg-2</title>
+		<title>用户注册</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1,IE=8">
@@ -19,29 +19,10 @@
 		<script type="text/javascript">
 		$(function(){
 			$("#send-code").click(function(){
-			    var phone = document.getElementById('mobile').value;
-			    if(!phone){
-			    	print_s("手机号码不能为空！");
-			        return false; 		    	
-			    }else if(!(/^1[34578]\d{9}$/.test(phone))){ 
-			        //alert("手机号码有误，请重填");  
-			        print_s("请输入正确的手机号码！");
-			        return false; 
-			    }
-				var sendData =  {
-						mobile: phone,
-		                xx: 1
-		            };
-				$.post('sendSms',sendData,function(data){
-					//print(JSON.stringify(data));
-					if(data.flag==0){
-						print_s("验证码发送成功！");
-					}else{
-						print_s("发送错误："+data.msg);
-					}
-				});
+				sendSms(this.id);
 			})
 			
+
 			
 			$("#goon").click(function(){
 			    var phone = document.getElementById('mobile').value;
@@ -129,6 +110,55 @@
 				console.log('send');	
 			});
 		 });
+		
+		//执行按钮倒计时
+		var countdown=120; //定义时间
+		function settime(val) { 
+			/*
+			 *参数val是按钮传递过来的id	 
+			 * */
+			if (countdown == 0) { 
+				$("#"+val).attr("disabled",false);    
+				$("#"+val).text("发送验证码"); 
+				$("#"+val).bind("click",function(){
+					sendSms(val);
+				});
+				countdown = 120;
+			} else { 
+				$("#"+val).unbind("click");		
+				$("#"+val).attr("disabled", true); 
+				$("#"+val).text(countdown+"秒后重新发送"); 
+				countdown--; 
+			    setTimeout(function() { 
+				    settime(val);
+			    },1000);	    
+			} 
+		}
+		
+		function  sendSms(id){
+			var phone = document.getElementById('mobile').value;
+		    if(!phone){
+		    	print_s("手机号码不能为空！");
+		        return false; 		    	
+		    }else if(!(/^1[34578]\d{9}$/.test(phone))){ 
+		        //alert("手机号码有误，请重填");  
+		        print_s("请输入正确的手机号码！");
+		        return false; 
+		    }
+			var sendData =  {
+					mobile: phone,
+	                xx: 1
+	            };
+			$.post('sendSms',sendData,function(data){
+				//print(JSON.stringify(data));
+				if(data.flag==0){
+					settime(id);
+					print_s("验证码发送成功！");
+				}else{
+					print_s("发送错误："+data.msg);
+				}
+			});
+		}
 		</script>
    </head>
 <body>

@@ -18,7 +18,55 @@
 		<script type="text/javascript">
 		$(function(){
 			
-			function sendSms(phone){
+			//执行按钮倒计时
+			var countdown=120; //定义时间
+			function settime(val) { 
+				/*
+				 *参数val是按钮传递过来的id	 
+				 * */
+				if (countdown == 0) { 
+					$("#"+val).attr("disabled",false);    
+					$("#"+val).text("发送验证码"); 
+					$("#"+val).bind("click",function(){
+						sendEvent(val);
+					});
+					countdown = 120;
+				} else { 
+					$("#"+val).unbind("click");		
+					$("#"+val).attr("disabled", true); 
+					$("#"+val).text(countdown+"秒后重新发送"); 
+					countdown--; 
+				    setTimeout(function() { 
+					    settime(val);
+				    },1000);	    
+				} 
+			}
+			
+			var countdownnew=120;
+			function settimenew(val) { 
+				/*
+				 *参数val是按钮传递过来的id	 
+				 * */
+				if (countdownnew == 0) { 
+					$("#"+val).attr("disabled",false);    
+					$("#"+val).text("发送验证码"); 
+					$("#"+val).bind("click",function(){
+						sendEventNew(val);
+					});
+					countdownnew = 120;
+				} else { 
+					$("#"+val).unbind("click");		
+					$("#"+val).attr("disabled", true); 
+					$("#"+val).text(countdownnew+"秒后重新发送"); 
+					countdownnew--; 
+				    setTimeout(function() { 
+				    	settimenew(val);
+				    },1000);	    
+				} 
+			}
+			
+			
+			function sendSms(phone,id){
 				var sendData =  {
 						mobile: phone,
 		                type: 3
@@ -26,6 +74,7 @@
 				$.post('sendSms',sendData,function(data){
 					//print(JSON.stringify(data));
 					if(data.flag==0){
+						settime(id);
 						print_s("验证码发送成功！");
 					}else{
 						print_s("发送错误："+data.msg);
@@ -33,8 +82,24 @@
 				});
 			}
 			
-			$("#send-code").click(function(){
-			    var phone = document.getElementById('mobile').value;
+			function sendSmsNew(phone,id){
+				var sendData =  {
+						mobile: phone,
+		                type: 3
+		            };
+				$.post('sendSms',sendData,function(data){
+					//print(JSON.stringify(data));
+					if(data.flag==0){
+						settimenew(id);
+						print_s("验证码发送成功！");
+					}else{
+						print_s("发送错误："+data.msg);
+					}
+				});
+			}
+			
+			function sendEvent(id){
+				var phone = document.getElementById('mobile').value;
 			    if(!phone){
 			        $(".modal-body").text("手机号码不能为空~")
 			        $('#prompt-dialog').modal('show')	
@@ -45,23 +110,30 @@
 			        $('#prompt-dialog').modal('show')
 			        return false; 
 			    }
-			    
-			    sendSms(phone);
-			    
+			    sendSms(phone,id);
+			}
+			
+			function sendEventNew(id){
+				 var phone = document.getElementById('newMobile').value;
+				    if(!phone){
+				        $(".modal-body").text("手机号码不能为空!")
+				        $('#prompt-dialog').modal('show')	
+				        return false; 		    	
+				    }else if(!(/^1[34578]\d{9}$/.test(phone))){ 
+				        //alert("手机号码有误，请重填");  
+				        $(".modal-body").text("请输入正确的手机号码!")
+				        $('#prompt-dialog').modal('show')
+				        return false; 
+				    }
+				    sendSmsNew(phone,id);
+			}
+			
+			$("#send-code").click(function(){
+				sendEvent(this.id);
 			})
+			
 			$("#new-send-code").click(function(){
-			    var phone = document.getElementById('newMobile').value;
-			    if(!phone){
-			        $(".modal-body").text("手机号码不能为空!")
-			        $('#prompt-dialog').modal('show')	
-			        return false; 		    	
-			    }else if(!(/^1[34578]\d{9}$/.test(phone))){ 
-			        //alert("手机号码有误，请重填");  
-			        $(".modal-body").text("请输入正确的手机号码!")
-			        $('#prompt-dialog').modal('show')
-			        return false; 
-			    }
-			    sendSms(phone);
+				sendEventNew(this.id);
 			})			
 		    // validate form
 		    $("form.required-validate").each(function() {

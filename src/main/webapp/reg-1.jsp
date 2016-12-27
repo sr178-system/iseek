@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html>
    <head>
-		<title>reg-1</title>
+		<title>用户注册</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1,IE=8">
