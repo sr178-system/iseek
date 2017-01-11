@@ -7,6 +7,8 @@ public class FileUserBO {
 	private String nickname;
 	private int share_file_count;
 	private int is_friend;
+	private String share_dir;
+	private String sub_dir;
 	
 	public long getUser_id() {
 		return user_id;
@@ -48,5 +50,17 @@ public class FileUserBO {
 	}
 	public FileUserBO() {
 		super();
+	}
+	public String getShare_dir() {
+		return share_dir;
+	}
+	public void setShare_dir(String share_dir) {
+		this.share_dir = share_dir;
+	}
+	public String getSub_dir() {
+		return sub_dir;
+	}
+	public void setSub_dir(String sub_dir) {
+		this.sub_dir = sub_dir;
 	}
 }

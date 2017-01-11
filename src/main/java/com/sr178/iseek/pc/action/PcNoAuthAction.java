@@ -2,6 +2,9 @@ package com.sr178.iseek.pc.action;
 
 
 import com.sr178.game.framework.context.ServiceCacheFactory;
+import com.sr178.iseek.pc.bean.SystemNoticeBO;
+import com.sr178.iseek.pc.bean.SystemNoticeBO2;
+import com.sr178.iseek.pc.bo.Notice;
 import com.sr178.iseek.pc.service.PcService;
 import com.sr178.module.web.action.JsonBaseActionSupport;
 
@@ -40,6 +43,19 @@ public class PcNoAuthAction extends JsonBaseActionSupport{
         return renderObjectResult(pcService.getInfoPageBO());
 	}
 
+	/**
+	 * 获取系统公告
+	 * @return
+	 */
+	public String gettopad(){
+		 PcService pcService = ServiceCacheFactory.getService(PcService.class);
+			Notice notice = pcService.getMaxKeyNotice();
+			SystemNoticeBO2 bo = null;
+			if(notice!=null){
+				bo = new SystemNoticeBO2(notice.getNoticeContent(), notice.getNoticeUrl());
+			}
+			return this.renderObjectResult(bo);
+	}
 	
 	
 	

@@ -7,6 +7,7 @@
 		<action name="login" class="com.sr178.iseek.pc.action.PcNoAuthAction" method="login" />
 		<action name="update" class="com.sr178.iseek.pc.action.PcNoAuthAction" method="update" />
 		<action name="getinfopage" class="com.sr178.iseek.pc.action.PcNoAuthAction" method="getinfopage" />
+		<action name="gettopad" class="com.sr178.iseek.pc.action.PcNoAuthAction" method="gettopad" />
 		
 		
 		<action name="getssostr" class="com.sr178.iseek.pc.action.PcAction" method="getssostr" />
