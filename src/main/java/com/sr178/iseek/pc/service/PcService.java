@@ -725,7 +725,7 @@ public class PcService {
 		}
 		List<FileUserBO> result = Lists.newArrayList();
 		for(User user:ownerList){
-			FileUserBO  bo = new FileUserBO(user.getUserId(), user.getLoginName(), user.getNickName(), user.getShareFileCount(), friendsMap.containsKey(user.getUserId())?1:2);
+			FileUserBO  bo = new FileUserBO(user.getUserId(), user.getLoginName(), user.getNickName(), user.getShareFileCount(), friendsMap.containsKey(user.getUserId())?1:2,userFiles.getName());
 			bo.setShare_dir(userFiles.getShareDir());
 			bo.setSub_dir(userFiles.getSubDir());
 			result.add(bo);

@@ -9,6 +9,7 @@ public class FileUserBO {
 	private int is_friend;
 	private String share_dir;
 	private String sub_dir;
+	private String file_name;
 	
 	public long getUser_id() {
 		return user_id;
@@ -40,13 +41,14 @@ public class FileUserBO {
 	public void setIs_friend(int is_friend) {
 		this.is_friend = is_friend;
 	}
-	public FileUserBO(long user_id, String login_name, String nickname, int share_file_count, int is_friend) {
+	public FileUserBO(long user_id, String login_name, String nickname, int share_file_count, int is_friend,String file_name) {
 		super();
 		this.user_id = user_id;
 		this.login_name = login_name;
 		this.nickname = nickname;
 		this.share_file_count = share_file_count;
 		this.is_friend = is_friend;
+		this.file_name = file_name;
 	}
 	public FileUserBO() {
 		super();
@@ -62,5 +64,11 @@ public class FileUserBO {
 	}
 	public void setSub_dir(String sub_dir) {
 		this.sub_dir = sub_dir;
+	}
+	public String getFile_name() {
+		return file_name;
+	}
+	public void setFile_name(String file_name) {
+		this.file_name = file_name;
 	}
 }
