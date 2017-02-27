@@ -190,7 +190,7 @@ public class PcService {
 		String ciphertext = null;
 		try {
 			SecretKeySpec key = new SecretKeySpec(key32.getBytes("utf-8"), "AES");
-			Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+			Cipher cipher = Cipher.getInstance("AES/CFB/NoPadding");
 			cipher.init(1, key);
 			byte[] result = cipher.doFinal(encryptStr.getBytes("utf-8"));
 			if ((null != result) && (result.length > 0))
@@ -215,7 +215,7 @@ public class PcService {
 		SecretKeySpec key;
 		try {
 			key = new SecretKeySpec(key32.getBytes("utf-8"), "AES");
-			Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+			Cipher cipher = Cipher.getInstance("AES/CFB/NoPadding");
 			cipher.init(2, key);
 			byte[] result = cipher.doFinal(Base64.decodeBase64(authStr));
 			if ((null != result) && (result.length > 0))
