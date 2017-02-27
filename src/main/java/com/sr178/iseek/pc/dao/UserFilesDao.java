@@ -68,7 +68,7 @@ public class UserFilesDao extends IseekDaoBase<UserFiles> {
 	 * @return
 	 */
 	public List<User> getFileOwnerList(long fileId){
-		String sql = "select * from user where user_id in(select user_id from user_files where file_id=?)";
+		String sql = "select * from user where user_id in(select user_id from user_files where file_id=? order by created_time desc limit 1000)";
 		return super.getJdbc().getList(sql, User.class, SqlParameter.Instance().withLong(fileId));
 	}
 	/**

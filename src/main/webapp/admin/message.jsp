@@ -68,7 +68,7 @@
 	
 	<div class="form-group">
  		<label class="col-sm-12 control-label text-left p5 font-weight" style="padding-left:0;">
- 			<span style="color:#f00404"> * </span>资讯页大图：
+ 			<span style="color:#f00404"> * </span>资讯页大图（图片大小：840x120像素）：
  		</label>
 		<div class="col-sm-4 image-1">
 			<form class="form-horizontal" role="form" method="post" action="/admin/uploadAttach?type=2" enctype="multipart/form-data">
@@ -79,7 +79,7 @@
 	</div>	
 	<div class="form-group">
 		<label class="col-sm-12 control-label text-left p5 font-weight" style="padding-left:0;">
-			<span style="color:#f00404"> * </span>资讯页小图：
+			<span style="color:#f00404"> * </span>资讯页小图（图片大小：240x200像素）：
 		</label>
 		<div class="col-sm-4 image-2">
 			<form class="form-horizontal" role="form" method="post" action="/admin/uploadAttach?type=1" enctype="multipart/form-data">
