@@ -1,8 +1,5 @@
 package com.sr178.iseek.pc.service;
 
-import java.io.UnsupportedEncodingException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -13,10 +10,8 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.commons.codec.binary.Base64;
@@ -186,48 +181,126 @@ public class PcService {
 	 * @throws BadPaddingException 
 	 * @throws IllegalBlockSizeException 
 	 */
-	public static String encrypt(String encryptStr,String key32){
-		String ciphertext = null;
-		try {
-			SecretKeySpec key = new SecretKeySpec(key32.getBytes("utf-8"), "AES");
-			Cipher cipher = Cipher.getInstance("AES/CFB/NoPadding");
-			cipher.init(1, key);
-			byte[] result = cipher.doFinal(encryptStr.getBytes("utf-8"));
-			if ((null != result) && (result.length > 0))
-			{
-			   ciphertext = Base64.encodeBase64String(result);
-			}
-		} catch (Exception e) {
-			 LogSystem.error(e, "AES加密失败，加密字符串="+encryptStr+"，加密key为="+key32);
-			 throw new ServiceException(1001,"加密失败");
-		}
-		
-		return ciphertext;
-	}
+	
+	
+//	public static String encrypt(String encryptStr,String key32){
+//		String ciphertext = null;
+//		try {
+//			SecretKeySpec key = new SecretKeySpec(key32.getBytes("utf-8"), "AES");
+//			Cipher cipher = Cipher.getInstance("AES/CFB/NoPadding");
+//			cipher.init(Cipher.ENCRYPT_MODE, key);
+//			byte[] result = cipher.doFinal(encryptStr.getBytes("utf-8"));
+//			if ((null != result) && (result.length > 0))
+//			{
+//			   ciphertext = Base64.encodeBase64String(result);
+//			}
+//		} catch (Exception e) {
+//			 LogSystem.error(e, "AES加密失败，加密字符串="+encryptStr+"，加密key为="+key32);
+//			 throw new ServiceException(1001,"加密失败");
+//		}
+//		
+//		return ciphertext;
+//	}
 	/**
 	 * aes 256位解密
 	 * @param authStr
 	 * @param key32
 	 * @return
 	 */
-	public static String decrypt(String authStr,String key32) {
-		String decryptStr = null;
-		SecretKeySpec key;
+//	public static String decrypt(String authStr,String key32) {
+//		String decryptStr = null;
+//		SecretKeySpec key;
+//		try {
+//			key = new SecretKeySpec(key32.getBytes("utf-8"), "AES");
+//			Cipher cipher = Cipher.getInstance("AES/CFB/NoPadding");
+//			cipher.init(Cipher.DECRYPT_MODE, key);
+//			byte[] result = cipher.doFinal(Base64.decodeBase64(authStr));
+//			if ((null != result) && (result.length > 0))
+//			{
+//				decryptStr = new String(result, "utf-8");
+//			}
+//		} catch (Exception e) {
+//			 LogSystem.error(e, "AES解密失败，解密字符串="+authStr+"，解密key为="+key32);
+//			 throw new ServiceException(1002,"解密失败");
+//		}
+//		return decryptStr;
+//	}
+
+    public static byte[] IV = new byte[]{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+    
+	public static String encrypt(String sSrc, String sKey) {
+		if (sKey == null) {
+			System.out.print("Key为空null");
+			return null;
+		}
+		// 判断Key是否为16位
+		if (sKey.length() != 32) {
+			System.out.print("Key长度不是16位");
+			return null;
+		}
 		try {
-			key = new SecretKeySpec(key32.getBytes("utf-8"), "AES");
-			Cipher cipher = Cipher.getInstance("AES/CFB/NoPadding");
-			cipher.init(1, key);
-			byte[] result = cipher.doFinal(Base64.decodeBase64(authStr));
-			if ((null != result) && (result.length > 0))
-			{
-				decryptStr = new String(result, "utf-8");
-			}
+			byte[] raw = sKey.getBytes("utf-8");
+			SecretKeySpec skeySpec = new SecretKeySpec(raw, "AES");
+			Cipher cipher = Cipher.getInstance("AES/CFB/NoPadding");// "算法/模式/补码方式"
+			IvParameterSpec iv = new IvParameterSpec(IV);// 使用CBC模式，需要一个向量iv，可增加加密算法的强度
+			cipher.init(Cipher.ENCRYPT_MODE, skeySpec, iv);
+
+			byte[] srawt = sSrc.getBytes();
+//			int len = srawt.length;
+//			/* 计算补0后的长度 */
+//			while (len % 16 != 0)
+//				len++;
+//			byte[] sraw = new byte[len];
+//			/* 在最后补0 */
+//			for (int i = 0; i < len; ++i) {
+//				if (i < srawt.length) {
+//					sraw[i] = srawt[i];
+//				} else {
+//					sraw[i] = 0;
+//				}
+//			}
+			byte[] encrypted = cipher.doFinal(srawt);
+			return Base64.encodeBase64String(encrypted);// 此处使用BASE64做转码功能，同时能起到2次加密的作用。
 		} catch (Exception e) {
-			 LogSystem.error(e, "AES解密失败，解密字符串="+authStr+"，解密key为="+key32);
+			LogSystem.error(e, "AES加密失败，加密字符串=" + sSrc + "，加密key为=" + sKey);
+			throw new ServiceException(1001, "加密失败");
+		}
+
+	}  
+  
+    // 解密  
+	public static String decrypt(String sSrc, String sKey) {
+		try {
+			// 判断Key是否正确
+			if (sKey == null) {
+				System.out.print("Key为空null");
+				return null;
+			}
+			// 判断Key是否为16位
+			if (sKey.length() != 32) {
+				System.out.print("Key长度不是16位");
+				return null;
+			}
+			System.out.println("key is:" + sKey);
+			byte[] raw = sKey.getBytes("utf-8");
+			SecretKeySpec skeySpec = new SecretKeySpec(raw, "AES");
+			Cipher cipher = Cipher.getInstance("AES/CFB/NoPadding");
+			IvParameterSpec iv = new IvParameterSpec(IV);
+			cipher.init(Cipher.DECRYPT_MODE, skeySpec, iv);
+			byte[] encrypted1 = Base64.decodeBase64(sSrc);// 先用base64解密
+			try {
+				byte[] original = cipher.doFinal(encrypted1);
+				String originalString = new String(original,"utf-8");
+				return originalString.trim();
+			} catch (Exception e) {
+				 LogSystem.error(e, "AES解密失败，解密字符串="+sSrc+"，解密key为="+sKey);
+				 throw new ServiceException(1002,"解密失败");
+			}
+		} catch (Exception ex) {
+			 LogSystem.error(ex, "AES解密失败，解密字符串="+sSrc+"，解密key为="+sKey);
 			 throw new ServiceException(1002,"解密失败");
 		}
-		return decryptStr;
-	}
+	} 
     /**
      * 将数据库中的密码解密出来 当做秘钥
      * @param dataBasePassword
@@ -259,6 +332,7 @@ public class PcService {
 	 */
 	@Transactional
 	public LoginBO login(String userName, String loginStr) {
+		LogSystem.info("username=["+userName+"],loginStr=["+loginStr+"]");
 		ParamCheck.checkString(userName, 1, "用户名不能为空");
 		ParamCheck.checkString(loginStr, 2, "密码不能为空");
 		User user = userDao.get(new SqlParamBean("login_name", userName));
@@ -273,8 +347,9 @@ public class PcService {
 			throw new ServiceException(5, "该账户已被禁用，请及时联系管理员！");
 		}
 		String truePassword = getTruePassword(user.getPassWord());
-		
+		LogSystem.info("数据库中存储的密码为：["+user.getPassWord()+"],解密后的密码为：["+truePassword+"]");
  		String decryptLoginStr = decrypt(loginStr, truePassword);
+ 		LogSystem.info("loginStr解密后的值为:["+decryptLoginStr+"]");
  		if(decryptLoginStr==null){
  			Integer times = userWrongPasswordTimes.getIfPresent(user.getUserId()+"");
  			if(times==null){
@@ -1149,16 +1224,37 @@ public class PcService {
 		String decryptLoginStr = clientKey+"dogdog7788"+"20161018132220";
 		
 		
-		String databaseStr = "mExY8fmqBhwdQCPOwPYxmswu2ES2Nxhdmr5ZFQO8gM6KJCUWxKs9W+Buw1Mf9lL5";
-		String databaseKey = decrypt(databaseStr,DATABASE_PASSWORD_KEY);
+		PcService pcService = new PcService();
 		
-		System.out.println(databaseKey);
+		String skey = MD5Security.md5_32_Big("5X#6423D79C74b6b"+"111111"+"AB8471%VAED8A76E");
 		
-		String loginStr = encrypt(decryptLoginStr, databaseKey);
 		
-		System.out.println(loginStr);
+//		
+		String loginStr = "EE5F32B9A38CAE7C1E79B02854AF7808lzb20170228102521";
+		String afterEntry = pcService.encrypt(loginStr, skey);
+		System.out.println("原文=【"+loginStr+"】,加密key为:【"+skey+"】，加密后的值为:【"+afterEntry+"】");
+		String afterDecry = pcService.decrypt("uHFmPUPPTd8ziI87WOVGIZjAw68myvA807Xrdw/BIJ7CfSijlxGZrczV2Ap/iTNHJg==", skey);
+		System.out.println("解密key:【"+skey+"】解密后的值为:【"+afterDecry+"】");
 		
-		System.out.println(decrypt(loginStr,databaseKey));
+//		String dataaseStr = pcService.getDatabasePassword(skey);
+//		System.out.println("数据库中的值="+dataaseStr);
+		
+//		System.out.println(pcService.decrypt("xX4VPDO9Paw09P8 XZJKItzC 7oiYdpWxRDgWIQ5Y2ri 2ojW6dXWcyueKxT6MmA3w==", skey));
+//		
+//		System.out.println("解密后的值="+pcService.getTruePassword(dataaseStr));
+//		
+//		
+//		System.out.println("解密登录传"+pcService.decrypt("qZ3p0SGzhi1qOOQ4Lj54TIh9qtUXdore7TX4gKQ8my5TYGN6Qzff2AeQoikWqG7t Q==", skey));
+//		String databaseStr = "mExY8fmqBhwdQCPOwPYxmswu2ES2Nxhdmr5ZFQO8gM6KJCUWxKs9W+Buw1Mf9lL5";
+//		String databaseKey = decrypt(databaseStr,DATABASE_PASSWORD_KEY);
+//		
+//		System.out.println(databaseKey);
+//		
+//		String loginStr = encrypt(decryptLoginStr, databaseKey);
+//		
+//		System.out.println(loginStr);
+//		
+//		System.out.println(decrypt(loginStr,databaseKey));
 //		clientKey = decryptLoginStr.substring(0, 32);
 //		
 // 		String time = decryptLoginStr.substring(decryptLoginStr.length()-14,decryptLoginStr.length());
@@ -1178,23 +1274,22 @@ public class PcService {
 //		System.out.println(decrypt(aesStr, md516));
 //		
 //		System.out.println(MD5Security.md5_32_Big("5X#6423D79C74b6b"+"111111"+"AB8471%VAED8A76E"));
-		
-		System.out.println(encrypt("dogdog7788"+"20161018132220", "CAAC92F78774F4BC22DC657FEA7DB748"));
-		List<UpFileBO> list = Lists.newArrayList();
-		UpFileBO upFileBO1 = new UpFileBO("hash1", 1, "吻别.mp3", 102400l, 1500, 80, "\\我的文档\\我的音乐\\张学友\\", "流行音乐\\抒情歌曲\\");
-		UpFileBO upFileBO2 = new UpFileBO("hash2", 2, "爱你一万年.wav", 102400l, 1500, 80, "\\我的文档\\我的音乐\\刘德华\\", "流行音乐\\抒情歌曲\\");
-		UpFileBO upFileBO3 = new UpFileBO("hash3", 1, "一起跳舞.mp3", 102400l, 1500, 80, "\\我的文档\\我的音乐\\黎明\\", "流行音乐\\抒情歌曲\\");
-		UpFileBO upFileBO4 = new UpFileBO("hash4", 1, "危城.mp3", 102400l, 1500, 80, "\\我的文档\\我的音乐\\郭富城\\", "流行音乐\\抒情歌曲\\");
-		UpFileBO upFileBO5 = new UpFileBO("hash5", 3, "工具.zip", 102400l, 1500, 80, "\\我的文档\\我的音乐\\工具集\\", "工具\\好用的工具\\");
-		
-		UpFileBO upFileBO6 = new UpFileBO("hash6", 1, "吻别6.mp3", 102400l, 1500, 80, "\\我的文档\\我的音乐\\张学友\\", "流行音乐\\抒情歌曲\\");
-		UpFileBO upFileBO7 = new UpFileBO("hash7", 2, "爱你一万年7.wav", 102400l, 1500, 80, "\\我的文档\\我的音乐\\刘德华\\", "流行音乐\\抒情歌曲\\");
-		UpFileBO upFileBO8 = new UpFileBO("hash8", 1, "一起跳舞8.mp3", 102400l, 1500, 80, "\\我的文档\\我的音乐\\黎明\\", "流行音乐\\抒情歌曲\\");
-		UpFileBO upFileBO9 = new UpFileBO("hash9", 1, "危城9.mp3", 102400l, 1500, 80, "\\我的文档\\我的音乐\\郭富城\\", "流行音乐\\抒情歌曲\\");
-		UpFileBO upFileBO10 = new UpFileBO("hash10", 3, "工具10.zip", 102400l, 1500, 80, "\\我的文档\\我的音乐\\工具集\\", "工具\\好用的工具\\");
-		list.add(upFileBO1);list.add(upFileBO2);list.add(upFileBO3);list.add(upFileBO4);list.add(upFileBO5);
-		list.add(upFileBO6);list.add(upFileBO7);list.add(upFileBO8);list.add(upFileBO9);list.add(upFileBO10);
-		System.out.println(JSON.toJSONString(list));
+//		System.out.println(encrypt("dogdog7788"+"20161018132220", "CAAC92F78774F4BC22DC657FEA7DB748"));
+//		List<UpFileBO> list = Lists.newArrayList();
+//		UpFileBO upFileBO1 = new UpFileBO("hash1", 1, "吻别.mp3", 102400l, 1500, 80, "\\我的文档\\我的音乐\\张学友\\", "流行音乐\\抒情歌曲\\");
+//		UpFileBO upFileBO2 = new UpFileBO("hash2", 2, "爱你一万年.wav", 102400l, 1500, 80, "\\我的文档\\我的音乐\\刘德华\\", "流行音乐\\抒情歌曲\\");
+//		UpFileBO upFileBO3 = new UpFileBO("hash3", 1, "一起跳舞.mp3", 102400l, 1500, 80, "\\我的文档\\我的音乐\\黎明\\", "流行音乐\\抒情歌曲\\");
+//		UpFileBO upFileBO4 = new UpFileBO("hash4", 1, "危城.mp3", 102400l, 1500, 80, "\\我的文档\\我的音乐\\郭富城\\", "流行音乐\\抒情歌曲\\");
+//		UpFileBO upFileBO5 = new UpFileBO("hash5", 3, "工具.zip", 102400l, 1500, 80, "\\我的文档\\我的音乐\\工具集\\", "工具\\好用的工具\\");
+//		
+//		UpFileBO upFileBO6 = new UpFileBO("hash6", 1, "吻别6.mp3", 102400l, 1500, 80, "\\我的文档\\我的音乐\\张学友\\", "流行音乐\\抒情歌曲\\");
+//		UpFileBO upFileBO7 = new UpFileBO("hash7", 2, "爱你一万年7.wav", 102400l, 1500, 80, "\\我的文档\\我的音乐\\刘德华\\", "流行音乐\\抒情歌曲\\");
+//		UpFileBO upFileBO8 = new UpFileBO("hash8", 1, "一起跳舞8.mp3", 102400l, 1500, 80, "\\我的文档\\我的音乐\\黎明\\", "流行音乐\\抒情歌曲\\");
+//		UpFileBO upFileBO9 = new UpFileBO("hash9", 1, "危城9.mp3", 102400l, 1500, 80, "\\我的文档\\我的音乐\\郭富城\\", "流行音乐\\抒情歌曲\\");
+//		UpFileBO upFileBO10 = new UpFileBO("hash10", 3, "工具10.zip", 102400l, 1500, 80, "\\我的文档\\我的音乐\\工具集\\", "工具\\好用的工具\\");
+//		list.add(upFileBO1);list.add(upFileBO2);list.add(upFileBO3);list.add(upFileBO4);list.add(upFileBO5);
+//		list.add(upFileBO6);list.add(upFileBO7);list.add(upFileBO8);list.add(upFileBO9);list.add(upFileBO10);
+//		System.out.println(JSON.toJSONString(list));
 		
 	}
 }
