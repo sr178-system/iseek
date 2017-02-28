@@ -1222,7 +1222,7 @@ public class PcService {
 		String loginStr = "8A3D4428E8EDE0149DF934ABCDC57702lzb20170228121021";
 		String afterEntry = pcService.encrypt(loginStr, skey);
 		System.out.println("原文=【"+loginStr+"】,加密key为:【"+skey+"】，加密后的值为:【"+afterEntry+"】");
-		String afterDecry = pcService.decrypt(afterEntry, skey);
+		String afterDecry = pcService.decrypt("uHFmPUPPTd8ziI87WOVGIZjAw68myvA807Xrdw/BIJ7CfSijlxGZrczV2Ap/iTNHJg==", skey);
 		System.out.println("解密key:【"+skey+"】解密后的值为:【"+afterDecry+"】");
 		
 //		String dataaseStr = pcService.getDatabasePassword(skey);
