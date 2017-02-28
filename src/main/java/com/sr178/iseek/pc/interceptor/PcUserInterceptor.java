@@ -38,6 +38,9 @@ public class PcUserInterceptor extends AbstractInterceptor {
 			Object authStrvalues = map.get("auth_str");
 			String userId = userIdvalues==null?null:((String[])userIdvalues)[0];//用户id
 			String authStr = authStrvalues==null?null:((String[])authStrvalues)[0];//加密校验串
+			if(authStr!=null){
+				authStr = authStr.replace(" ", "+");
+			}
 			//校验是否登录用户
 			if(!aus.isLogin(userId, authStr)){
 				appAction.renderErrorResult("秘钥失效或未登陆！");

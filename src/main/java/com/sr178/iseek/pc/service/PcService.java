@@ -181,126 +181,115 @@ public class PcService {
 	 * @throws BadPaddingException 
 	 * @throws IllegalBlockSizeException 
 	 */
+	public static byte[] IV = new byte[]{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 	
-	
-//	public static String encrypt(String encryptStr,String key32){
-//		String ciphertext = null;
-//		try {
-//			SecretKeySpec key = new SecretKeySpec(key32.getBytes("utf-8"), "AES");
-//			Cipher cipher = Cipher.getInstance("AES/CFB/NoPadding");
-//			cipher.init(Cipher.ENCRYPT_MODE, key);
-//			byte[] result = cipher.doFinal(encryptStr.getBytes("utf-8"));
-//			if ((null != result) && (result.length > 0))
-//			{
-//			   ciphertext = Base64.encodeBase64String(result);
-//			}
-//		} catch (Exception e) {
-//			 LogSystem.error(e, "AES加密失败，加密字符串="+encryptStr+"，加密key为="+key32);
-//			 throw new ServiceException(1001,"加密失败");
-//		}
-//		
-//		return ciphertext;
-//	}
+	public static String encrypt(String encryptStr,String key32){
+		String ciphertext = null;
+		try {
+			SecretKeySpec key = new SecretKeySpec(key32.getBytes("utf-8"), "AES");
+			Cipher cipher = Cipher.getInstance("AES/CFB/NoPadding");
+			IvParameterSpec iv = new IvParameterSpec(IV);
+			cipher.init(Cipher.ENCRYPT_MODE, key,iv);
+			byte[] result = cipher.doFinal(encryptStr.getBytes("utf-8"));
+			if ((null != result) && (result.length > 0))
+			{
+			   ciphertext = Base64.encodeBase64String(result);
+			}
+		} catch (Exception e) {
+			 LogSystem.error(e, "AES加密失败，加密字符串="+encryptStr+"，加密key为="+key32);
+			 throw new ServiceException(1001,"加密失败");
+		}
+		
+		return ciphertext;
+	}
 	/**
 	 * aes 256位解密
 	 * @param authStr
 	 * @param key32
 	 * @return
 	 */
-//	public static String decrypt(String authStr,String key32) {
-//		String decryptStr = null;
-//		SecretKeySpec key;
-//		try {
-//			key = new SecretKeySpec(key32.getBytes("utf-8"), "AES");
-//			Cipher cipher = Cipher.getInstance("AES/CFB/NoPadding");
-//			cipher.init(Cipher.DECRYPT_MODE, key);
-//			byte[] result = cipher.doFinal(Base64.decodeBase64(authStr));
-//			if ((null != result) && (result.length > 0))
-//			{
-//				decryptStr = new String(result, "utf-8");
-//			}
-//		} catch (Exception e) {
-//			 LogSystem.error(e, "AES解密失败，解密字符串="+authStr+"，解密key为="+key32);
-//			 throw new ServiceException(1002,"解密失败");
-//		}
-//		return decryptStr;
-//	}
-
-    public static byte[] IV = new byte[]{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-    
-	public static String encrypt(String sSrc, String sKey) {
-		if (sKey == null) {
-			System.out.print("Key为空null");
-			return null;
-		}
-		// 判断Key是否为16位
-		if (sKey.length() != 32) {
-			System.out.print("Key长度不是16位");
-			return null;
-		}
+	public static String decrypt(String authStr,String key32) {
+		String decryptStr = null;
+		SecretKeySpec key;
 		try {
-			byte[] raw = sKey.getBytes("utf-8");
-			SecretKeySpec skeySpec = new SecretKeySpec(raw, "AES");
-			Cipher cipher = Cipher.getInstance("AES/CFB/NoPadding");// "算法/模式/补码方式"
-			IvParameterSpec iv = new IvParameterSpec(IV);// 使用CBC模式，需要一个向量iv，可增加加密算法的强度
-			cipher.init(Cipher.ENCRYPT_MODE, skeySpec, iv);
-
-			byte[] srawt = sSrc.getBytes();
-//			int len = srawt.length;
-//			/* 计算补0后的长度 */
-//			while (len % 16 != 0)
-//				len++;
-//			byte[] sraw = new byte[len];
-//			/* 在最后补0 */
-//			for (int i = 0; i < len; ++i) {
-//				if (i < srawt.length) {
-//					sraw[i] = srawt[i];
-//				} else {
-//					sraw[i] = 0;
-//				}
-//			}
-			byte[] encrypted = cipher.doFinal(srawt);
-			return Base64.encodeBase64String(encrypted);// 此处使用BASE64做转码功能，同时能起到2次加密的作用。
-		} catch (Exception e) {
-			LogSystem.error(e, "AES加密失败，加密字符串=" + sSrc + "，加密key为=" + sKey);
-			throw new ServiceException(1001, "加密失败");
-		}
-
-	}  
-  
-    // 解密  
-	public static String decrypt(String sSrc, String sKey) {
-		try {
-			// 判断Key是否正确
-			if (sKey == null) {
-				System.out.print("Key为空null");
-				return null;
-			}
-			// 判断Key是否为16位
-			if (sKey.length() != 32) {
-				System.out.print("Key长度不是16位");
-				return null;
-			}
-			System.out.println("key is:" + sKey);
-			byte[] raw = sKey.getBytes("utf-8");
-			SecretKeySpec skeySpec = new SecretKeySpec(raw, "AES");
+			key = new SecretKeySpec(key32.getBytes("utf-8"), "AES");
 			Cipher cipher = Cipher.getInstance("AES/CFB/NoPadding");
 			IvParameterSpec iv = new IvParameterSpec(IV);
-			cipher.init(Cipher.DECRYPT_MODE, skeySpec, iv);
-			byte[] encrypted1 = Base64.decodeBase64(sSrc);// 先用base64解密
-			try {
-				byte[] original = cipher.doFinal(encrypted1);
-				String originalString = new String(original,"utf-8");
-				return originalString.trim();
-			} catch (Exception e) {
-				 LogSystem.error(e, "AES解密失败，解密字符串="+sSrc+"，解密key为="+sKey);
-				 throw new ServiceException(1002,"解密失败");
+			cipher.init(Cipher.DECRYPT_MODE, key,iv);
+			byte[] result = cipher.doFinal(Base64.decodeBase64(authStr));
+			if ((null != result) && (result.length > 0))
+			{
+				decryptStr = new String(result, "utf-8");
 			}
-		} catch (Exception ex) {
-			 LogSystem.error(ex, "AES解密失败，解密字符串="+sSrc+"，解密key为="+sKey);
+		} catch (Exception e) {
+			 LogSystem.error(e, "AES解密失败，解密字符串="+authStr+"，解密key为="+key32);
 			 throw new ServiceException(1002,"解密失败");
 		}
-	} 
+		return decryptStr;
+	}
+
+    
+    
+//	public static String encrypt(String sSrc, String sKey) {
+//		if (sKey == null) {
+//			System.out.print("Key为空null");
+//			return null;
+//		}
+//		// 判断Key是否为16位
+//		if (sKey.length() != 32) {
+//			System.out.print("Key长度不是16位");
+//			return null;
+//		}
+//		try {
+//			byte[] raw = sKey.getBytes("utf-8");
+//			SecretKeySpec skeySpec = new SecretKeySpec(raw, "AES");
+//			Cipher cipher = Cipher.getInstance("AES/CFB/NoPadding");// "算法/模式/补码方式"
+//			IvParameterSpec iv = new IvParameterSpec(IV);// 使用CBC模式，需要一个向量iv，可增加加密算法的强度
+//			cipher.init(Cipher.ENCRYPT_MODE, skeySpec, iv);
+//
+//			byte[] srawt = sSrc.getBytes();
+//			byte[] encrypted = cipher.doFinal(srawt);
+//			return Base64.encodeBase64String(encrypted);// 此处使用BASE64做转码功能，同时能起到2次加密的作用。
+//		} catch (Exception e) {
+//			LogSystem.error(e, "AES加密失败，加密字符串=" + sSrc + "，加密key为=" + sKey);
+//			throw new ServiceException(1001, "加密失败");
+//		}
+//
+//	}  
+  
+    // 解密  
+//	public static String decrypt(String sSrc, String sKey) {
+//		try {
+//			// 判断Key是否正确
+//			if (sKey == null) {
+//				System.out.print("Key为空null");
+//				return null;
+//			}
+//			// 判断Key是否为16位
+//			if (sKey.length() != 32) {
+//				System.out.print("Key长度不是16位");
+//				return null;
+//			}
+//			System.out.println("key is:" + sKey);
+//			byte[] raw = sKey.getBytes("utf-8");
+//			SecretKeySpec skeySpec = new SecretKeySpec(raw, "AES");
+//			Cipher cipher = Cipher.getInstance("AES/CFB/NoPadding");
+//			IvParameterSpec iv = new IvParameterSpec(IV);
+//			cipher.init(Cipher.DECRYPT_MODE, skeySpec, iv);
+//			byte[] encrypted1 = Base64.decodeBase64(sSrc);// 先用base64解密
+//			try {
+//				byte[] original = cipher.doFinal(encrypted1);
+//				String originalString = new String(original,"utf-8");
+//				return originalString.trim();
+//			} catch (Exception e) {
+//				 LogSystem.error(e, "AES解密失败，解密字符串="+sSrc+"，解密key为="+sKey);
+//				 throw new ServiceException(1002,"解密失败");
+//			}
+//		} catch (Exception ex) {
+//			 LogSystem.error(ex, "AES解密失败，解密字符串="+sSrc+"，解密key为="+sKey);
+//			 throw new ServiceException(1002,"解密失败");
+//		}
+//	} 
     /**
      * 将数据库中的密码解密出来 当做秘钥
      * @param dataBasePassword
@@ -1230,10 +1219,10 @@ public class PcService {
 		
 		
 //		
-		String loginStr = "EE5F32B9A38CAE7C1E79B02854AF7808lzb20170228102521";
+		String loginStr = "8A3D4428E8EDE0149DF934ABCDC57702lzb20170228121021";
 		String afterEntry = pcService.encrypt(loginStr, skey);
 		System.out.println("原文=【"+loginStr+"】,加密key为:【"+skey+"】，加密后的值为:【"+afterEntry+"】");
-		String afterDecry = pcService.decrypt("uHFmPUPPTd8ziI87WOVGIZjAw68myvA807Xrdw/BIJ7CfSijlxGZrczV2Ap/iTNHJg==", skey);
+		String afterDecry = pcService.decrypt(afterEntry, skey);
 		System.out.println("解密key:【"+skey+"】解密后的值为:【"+afterDecry+"】");
 		
 //		String dataaseStr = pcService.getDatabasePassword(skey);

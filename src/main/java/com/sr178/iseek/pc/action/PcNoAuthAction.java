@@ -31,6 +31,9 @@ public class PcNoAuthAction extends JsonBaseActionSupport{
 	private String login_str;
 	public String login(){
 		PcService pcService = ServiceCacheFactory.getService(PcService.class);
+		if(login_str!=null){
+			login_str = login_str.replace(" ", "+");
+		}
         return renderObjectResult(pcService.login(login_name, login_str));
 	}
 	
