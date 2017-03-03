@@ -2,6 +2,7 @@ package com.sr178.iseek.pc.dao;
 
 import java.util.List;
 
+
 import com.google.common.base.Strings;
 import com.sr178.common.jdbc.SqlParameter;
 import com.sr178.game.framework.exception.ServiceException;
@@ -19,7 +20,13 @@ public class UserFilesDao extends IseekDaoBase<UserFiles> {
 		LogSystem.info("keyWorlds="+keyWorld+",fileType="+fileType+",style_type="+style_type+"");
 		if(Strings.isNullOrEmpty(keyWorld)){
 			throw new ServiceException(100,"搜索关键字不能为空！");
+		}else{
+			keyWorld = keyWorld.replace("\\", "\\\\\\\\");
+			keyWorld = keyWorld.replace("'", "''");
+			keyWorld = keyWorld.replace("%", "\\%");
+			keyWorld = keyWorld.replace("_", "\\_");
 		}
+		LogSystem.info("after replace keyWorlds="+keyWorld+",fileType="+fileType+",style_type="+style_type+"");
 		StringBuffer sqlBuffer = new StringBuffer();
 		if(fileType.equals("1")){//音频文件
 			sqlBuffer.append("select * from files ");
@@ -83,5 +90,10 @@ public class UserFilesDao extends IseekDaoBase<UserFiles> {
 	
 	public void insertLists(List<UserFiles> list){
 		super.getJdbc().insert(list);
+	}
+	
+	public static void main(String[] args) {
+		String keyWord = "_";
+		System.out.println(keyWord.replace("_", "\\_"));
 	}
 }
