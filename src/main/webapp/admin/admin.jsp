@@ -101,6 +101,9 @@
 		    color: #fff !important;
 		    border-color: #65c3df !important;
 		}
+		.navbar-inverse .navbar-nav > li > a:focus{
+		    color: #9d9d9d;
+		}
 		</style>
    </head>
    <body>	

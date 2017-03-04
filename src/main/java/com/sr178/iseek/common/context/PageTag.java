@@ -65,10 +65,10 @@ public class PageTag implements Tag {
     private static final String TOTAL_FEE = "TOTAL_FEE";
     
     
-    private static final String TAG_FORMAT = "<div class=\"col-xs-2\"><p class=\"text-left\" style=\"margin:0;\">共"+ALL_PAGE_SIZE_NUM_TAG+"条记录，"+CURRENT_PAGE_NUM_TAG+"/"+ALL_PAGE_NUM_TAG+" 页 </p></div><div class=\"col-xs-10\"><p class=\"text-right\" style=\"margin:0;\">"+FIRST_PAGE_TAG+""+UP_PAGE_TAG+""+NEXT_PAGE_TAG+""+END_PAGE_TAG+"跳转到第<input id='toPageInputText' type='text' class='form-control' name='toPage' value='"+CURRENT_PAGE_NUM_TAG+"' onkeydown='if(event.keyCode==13)document.getElementById(&quot;pageGo&quot;).click()' />页<a type='button' class='btn btn-default' href='javascript:gotoPage(document.getElementById('toPageInputText').value);'>确定</a></p></div>";
+    private static final String TAG_FORMAT = "<div class=\"col-xs-2\"><p class=\"text-left\" style=\"margin:0;\">共"+ALL_PAGE_SIZE_NUM_TAG+"条记录，"+CURRENT_PAGE_NUM_TAG+"/"+ALL_PAGE_NUM_TAG+" 页 </p></div><div class=\"col-xs-10\"><p style=\"margin:0;float: right;\">"+FIRST_PAGE_TAG+""+UP_PAGE_TAG+""+NEXT_PAGE_TAG+""+END_PAGE_TAG+"<span class='up-css' style='margin:0 !important;'>跳转到第</span><input id='toPageInputText' type='text' class='form-control up-css' style='margin-top: 3px !important;' name='toPage' value='"+CURRENT_PAGE_NUM_TAG+"' onkeydown='if(event.keyCode==13)document.getElementById(&quot;pageGo&quot;).click()' /><span class=\"up-css\" style=\"margin: 0px !important;\">页</span><a type='button' class='btn btn-default up-css' href='javascript:gotoPage(document.getElementById('toPageInputText').value);'>确定</a></p></div>";
     
     
-    private static final String TAG_FORMAT_FEE = "<div class=\"col-xs-3\"><p class=\"text-left\" style=\"margin:0;\">共"+ALL_PAGE_SIZE_NUM_TAG+"条记录，"+CURRENT_PAGE_NUM_TAG+"/"+ALL_PAGE_NUM_TAG+" 页   "+TOTAL_FEE+"</p></div><div class=\"col-xs-9\"><p class=\"text-right\" style=\"margin:0;\">"+FIRST_PAGE_TAG+""+UP_PAGE_TAG+""+NEXT_PAGE_TAG+""+END_PAGE_TAG+"跳转到第<input id='toPageInputText' type='text' class='form-control' name='toPage' value='"+CURRENT_PAGE_NUM_TAG+"' onkeydown='if(event.keyCode==13)document.getElementById(&quot;pageGo&quot;).click()' />页<a type='button' class='btn btn-default' href='javascript:gotoPage(document.getElementById('toPageInputText').value);'>确定</a></p></div>";
+    private static final String TAG_FORMAT_FEE = "<div class=\"col-xs-3\"><p class=\"text-left\" style=\"margin:0;\">共"+ALL_PAGE_SIZE_NUM_TAG+"条记录，"+CURRENT_PAGE_NUM_TAG+"/"+ALL_PAGE_NUM_TAG+" 页   "+TOTAL_FEE+"</p></div><div class=\"col-xs-9\"><p style=\"margin:0;float: right;\">"+FIRST_PAGE_TAG+""+UP_PAGE_TAG+""+NEXT_PAGE_TAG+""+END_PAGE_TAG+"<span class='up-css' style='margin:0 !important;'>跳转到第</span><input id='toPageInputText' type='text' class='form-control up-css' style='margin-top: 3px !important;' name='toPage' value='"+CURRENT_PAGE_NUM_TAG+"' onkeydown='if(event.keyCode==13)document.getElementById(&quot;pageGo&quot;).click()' /><span class=\"up-css\" style=\"margin: 0px !important;\">页</span><a type='button' class='btn btn-default up-css' href='javascript:gotoPage(document.getElementById('toPageInputText').value);'>确定</a></p></div>";
 
     
     public int doEndTag() throws JspTagException {
@@ -192,8 +192,8 @@ public class PageTag implements Tag {
         	String nextPageText = "下一页";//actionSupport.getText("nextPageText");
         	String upPageText = "上一页";//actionSupport.getText("upPageText");
         	
-        	String emptyLinknextPageText =  "<a  type='button' class='btn btn-default' >" + nextPageText + "</a>";
-        	String emptyLinkupPageText =  "<a  type='button' class='btn btn-default' >" + upPageText + "</a>";
+        	String emptyLinknextPageText =  "<a  type='button' class='btn btn-default up-css' >" + nextPageText + "</a>";
+        	String emptyLinkupPageText =  "<a  type='button' class='btn btn-default up-css' >" + upPageText + "</a>";
         	//只有下一页
         	String nextStr = "";
         	String upString = "";
@@ -201,10 +201,10 @@ public class PageTag implements Tag {
         	String endStr = "";
         	if (currentPage == 0 && totalPage > 0) {
         		if (paraNum <= 0) {
-        			nextStr = "<a  type='button' class='btn btn-default' href='" + Tools.UrlFormat(url + "?toPage=" + (currentPage + 1), sessionID) + "'>" + nextPageText + "</a>";
+        			nextStr = "<a  type='button' class='btn btn-default up-css' href='" + Tools.UrlFormat(url + "?toPage=" + (currentPage + 1), sessionID) + "'>" + nextPageText + "</a>";
         			upString = emptyLinkupPageText;
         		} else {
-        			nextStr =  "<a type='button' class='btn btn-default' href='" + Tools.UrlFormat(url + "&amp;toPage=" + (currentPage + 1), sessionID) + "'>" + nextPageText + "</a>";	
+        			nextStr =  "<a type='button' class='btn btn-default up-css' href='" + Tools.UrlFormat(url + "&amp;toPage=" + (currentPage + 1), sessionID) + "'>" + nextPageText + "</a>";	
         			upString = emptyLinkupPageText;
         		}
         	} else if ((currentPage == 0) && (totalPage <= 0)) {
@@ -212,29 +212,29 @@ public class PageTag implements Tag {
         		upString = emptyLinkupPageText;
         	} else if ((currentPage > 0) && (totalPage > currentPage)) {
         		if (paraNum <= 0) {
-        			nextStr = "<a type='button' class='btn btn-default' href='" + Tools.UrlFormat(url + "?toPage=" + (currentPage + 1), sessionID) + "'>" + nextPageText + "</a>";
-        			upString = "<a type='button' class='btn btn-default' href='" + Tools.UrlFormat(url + "?toPage=" + (currentPage - 1), sessionID) + "'>" + upPageText + "</a>";
+        			nextStr = "<a type='button' class='btn btn-default up-css' href='" + Tools.UrlFormat(url + "?toPage=" + (currentPage + 1), sessionID) + "'>" + nextPageText + "</a>";
+        			upString = "<a type='button' class='btn btn-default up-css' href='" + Tools.UrlFormat(url + "?toPage=" + (currentPage - 1), sessionID) + "'>" + upPageText + "</a>";
         		} else {
-        			nextStr = "<a type='button' class='btn btn-default' href='" + Tools.UrlFormat(url + "&amp;toPage=" + (currentPage + 1), sessionID) + "'>" + nextPageText + "</a>";
-        			upString = "<a type='button' class='btn btn-default' href='" + Tools.UrlFormat(url + "&amp;toPage=" + (currentPage - 1), sessionID) + "'>" + upPageText + "</a>";
+        			nextStr = "<a type='button' class='btn btn-default up-css' href='" + Tools.UrlFormat(url + "&amp;toPage=" + (currentPage + 1), sessionID) + "'>" + nextPageText + "</a>";
+        			upString = "<a type='button' class='btn btn-default up-css' href='" + Tools.UrlFormat(url + "&amp;toPage=" + (currentPage - 1), sessionID) + "'>" + upPageText + "</a>";
         		}
         	} else if ((currentPage > 0) && (totalPage <= currentPage)) {
         		if (paraNum <= 0) {        
         			nextStr = emptyLinknextPageText;
-        			upString = "<a type='button' class='btn btn-default' href='" + Tools.UrlFormat(url + "?toPage=" + (currentPage - 1), sessionID) + "'>" + upPageText + "</a>";
+        			upString = "<a type='button' class='btn btn-default up-css' href='" + Tools.UrlFormat(url + "?toPage=" + (currentPage - 1), sessionID) + "'>" + upPageText + "</a>";
         		} else {
         			nextStr = emptyLinknextPageText;
-        			upString = "<a type='button' class='btn btn-default' href='" + Tools.UrlFormat(url + "&amp;toPage=" + (currentPage - 1), sessionID) + "'>" + upPageText + "</a>";
+        			upString = "<a type='button' class='btn btn-default up-css' href='" + Tools.UrlFormat(url + "&amp;toPage=" + (currentPage - 1), sessionID) + "'>" + upPageText + "</a>";
         		}
         	}
         	String firstPageText = "首页";//actionSupport.getText("FirstPageText");
         	String endPageText = "尾页";//actionSupport.getText("EndPageText");
         	if(paraNum <= 0){
-        			firstStr = "<a type='button' class='btn btn-default' href='" + Tools.UrlFormat(url + "?toPage=" + 0, sessionID) + "'>"+firstPageText+"</a>";
-        			endStr = "<a type='button' class='btn btn-default' href='" + Tools.UrlFormat(url + "?toPage=" + (totalPage), sessionID) + "'>"+endPageText+"</a>";
+        			firstStr = "<a type='button' class='btn btn-default up-css' href='" + Tools.UrlFormat(url + "?toPage=" + 0, sessionID) + "'>"+firstPageText+"</a>";
+        			endStr = "<a type='button' class='btn btn-default up-css' href='" + Tools.UrlFormat(url + "?toPage=" + (totalPage), sessionID) + "'>"+endPageText+"</a>";
         		}else{
-        			firstStr = "<a type='button' class='btn btn-default' href='" + Tools.UrlFormat(url + "&amp;toPage=" + 0, sessionID) + "'>"+firstPageText+"</a>";
-        			endStr = "<a type='button' class='btn btn-default' href='" + Tools.UrlFormat(url + "&amp;toPage=" + (totalPage), sessionID) + "'>"+endPageText+"</a>";
+        			firstStr = "<a type='button' class='btn btn-default up-css' href='" + Tools.UrlFormat(url + "&amp;toPage=" + 0, sessionID) + "'>"+firstPageText+"</a>";
+        			endStr = "<a type='button' class='btn btn-default up-css' href='" + Tools.UrlFormat(url + "&amp;toPage=" + (totalPage), sessionID) + "'>"+endPageText+"</a>";
         	}
         	
         	String endUrlStr="";

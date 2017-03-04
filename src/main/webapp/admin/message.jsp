@@ -59,6 +59,12 @@
 		}
 		
 	}
+		
+		if($("#table-list").height()<381){		    	
+	    	$("#up-txt").removeClass("td-w-23").addClass("td-w-2");
+	    	$("#up-link").removeClass("td-w-46").addClass("td-w-51");
+	    	$("#table-list").removeClass("td-b-r-0").addClass("td-b-r-1");			
+	    }
 		</script>		
    </head>
 <body>
@@ -98,8 +104,8 @@
 			<table class="table table-bordered table-hover text-center td-m" style="border:0;">							
 				<thead>
 					<tr>					
-						<td class="text-left td-w-25 td-b-0 td-b-l-0">更新日期</td>
-						<td class="td-w-50 td-b-0">显示文字 </td>
+						<td class="text-left td-w-23 td-b-0 td-b-l-0" id="up-txt" style="border-left: 0 !important;">更新日期</td>
+						<td class="td-w-46 td-b-0" id="up-link">显示文字 </td>
 						<td class="td-b-0 td-w-25" style="border-right: 0;">链接URL</td>					
 					</tr>
 				</thead>
@@ -110,18 +116,18 @@
 					<tbody>
 					<s:iterator var="data" value="newsList">
 					<tr>
-						<td class="text-left td-t-0 td-w-25 td-b-l-0">
+						<td class="text-left td-t-0 td-w-25 td-b-l-0 td-p-r">
 							<label class="chebox-label"><input type="checkbox" value="${data.newsId}" name="ids" /></label><fmt:formatDate value="${data.updatedTime}" type="both" pattern="yyyy.MM.dd"/>
 						</td>
-						<td class="td-t-0 td-w-50">${data.newTitle}</td>
-						<td class="td-t-0 td-w-25 td-b-r-0">${data.newsUrl}</td>										
+						<td class="td-t-0 td-w-50"><div class="td-txt">${data.newTitle}</div></td>
+						<td class="td-t-0 td-w-25 td-b-r-0"><div class="td-link">${data.newsUrl}</div></td>										
 					</tr>
 				</s:iterator>
 					</tbody>					
 				</table>
 			</div>	
 		</div>
-		<div class="col-xs-6">
+		<div class="col-xs-6" style="padding-top: 25px;">
 		<form class="form-horizontal" role="form" method="post" action="addnews">
 			<div class="form-group">
 				<label class="col-sm-12 control-label text-left p5 font-weight"><span style="color:#f00404"> * </span>显示文字：：</label>
@@ -198,6 +204,7 @@
 	$(".fileinput-upload-button").click(function(){
       $(this).parent(".file-input").parent("form").submit();
     })
+    
 </script>
 </body>
 </html>

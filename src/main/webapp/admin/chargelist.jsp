@@ -49,6 +49,14 @@
 		.select::-ms-expand { display: none; }
 		
 		</style>
+		
+				<style type="text/css">
+		
+					 .up-css {
+			    float: left;
+			    margin: 3px 2px 0;
+			}
+		</style>
 	</head>
 	<body>
 		<jsp:include page="/common/dialog.jsp" flush="true"></jsp:include>

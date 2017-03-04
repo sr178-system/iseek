@@ -75,6 +75,14 @@
 		}
 	}
 		</script>
+		
+		<style type="text/css">
+		
+					 .up-css {
+			    float: left;
+			    margin: 3px 2px 0;
+			}
+		</style>
 	</head>
 	<body>
 	<jsp:include page="/common/dialog.jsp" flush="true"></jsp:include>
@@ -113,7 +121,7 @@
 						<c:if test="${data.status==0}"><td><span>已启用</span></td></c:if><c:if test="${data.status==1}"><td><span class="td-font-color">已停用</span></td></c:if>
 						<td>${data.name}</td>
 						<td><c:if test="${data.sex==1}">男</c:if><c:if test="${data.sex==2}">女</c:if></td>
-						<td>${data.power}</td>
+						<td class="col-xs-5">${data.power}</td>
 						<td><fmt:formatDate value="${data.lastLoginTime}" type="both" pattern="yyyy.MM.dd HH:mm"/></td>
 						<td><a href="customeredit?username=${data.loginName}" class="end-font-color">编辑</a></td>						
 					</tr>
