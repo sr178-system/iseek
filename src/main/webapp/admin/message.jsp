@@ -12,7 +12,7 @@
 		<link rel="stylesheet" href="../css/bootstrap.min.css">  		
 		<link href="../css/fileinput.css" media="all" rel="stylesheet" type="text/css" /> 			
 		<link rel="stylesheet" href="../css/reg-2.css">  	
-		<link rel="stylesheet" href="../css/message2.css"> 		
+		<link rel="stylesheet" href="../css/message3.css"> 		
 		<script src="../js/jquery.min.js"></script>	
 		<script src="../js/bootstrap.min.js"></script>
 		<script src="../js/fileinput.js" type="text/javascript"></script>
@@ -106,7 +106,7 @@
 					<tr>					
 						<td class="text-left td-w-23 td-b-0 td-b-l-0" id="up-txt" style="border-left: 0 !important;">更新日期</td>
 						<td class="td-w-46 td-b-0" id="up-link">显示文字 </td>
-						<td class="td-b-0 td-w-25" style="border-right: 0;">链接URL</td>					
+						<td class="td-b-0 td-w-25" style="border-right: 0;">链接URL</td>	
 					</tr>
 				</thead>
 			</table>

@@ -12,7 +12,7 @@
 		<link rel="stylesheet" href="../css/bootstrap.min.css">  		
 		<link href="../css/fileinput.css" media="all" rel="stylesheet" type="text/css" /> 			
 		<link rel="stylesheet" href="../css/reg-2.css">  	
-		<link rel="stylesheet" href="../css/message2.css"> 		
+		<link rel="stylesheet" href="../css/message3.css"> 		
 		<script src="../js/jquery.min.js"></script>	
 		<script src="../js/bootstrap.min.js"></script>
 		<script src="../js/fileinput.js" type="text/javascript"></script>
