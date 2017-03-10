@@ -777,11 +777,11 @@ public class PcService {
 	 */
 	public List<FileUserBO> getfileowners(long userId,long fileId){
 		List<User> ownerList = userFilesDao.getFileOwnerList(fileId);
-		UserFiles userFile = userFilesDao.get(new SqlParamBean("file_id", fileId));
-		return createFileUserBO(userId, ownerList,userFile);
+//		UserFiles userFile = userFilesDao.get(new SqlParamBean("file_id", fileId));
+		return createFileUserBO(userId, ownerList, fileId);
 	}
 	
-	private List<FileUserBO> createFileUserBO(long userId,List<User> ownerList,UserFiles userFiles){
+	private List<FileUserBO> createFileUserBO(long userId,List<User> ownerList,long fileId){
 		List<UserFriends> list = userFriendsDao.getList(new SqlParamBean("user_id", userId));
 		Map<Long,Long> friendsMap = new HashMap<Long,Long>();
 		for(UserFriends friends:list){
@@ -789,9 +789,10 @@ public class PcService {
 		}
 		List<FileUserBO> result = Lists.newArrayList();
 		for(User user:ownerList){
-			FileUserBO  bo = new FileUserBO(user.getUserId(), user.getLoginName(), user.getNickName(), user.getShareFileCount(), friendsMap.containsKey(user.getUserId())?1:2,userFiles.getName());
-			bo.setShare_dir(userFiles.getShareDir());
-			bo.setSub_dir(userFiles.getSubDir());
+			UserFiles userFile = userFilesDao.get(new SqlParamBean("user_id", user.getUserId()),new SqlParamBean("and","file_id", fileId));
+			FileUserBO  bo = new FileUserBO(user.getUserId(), user.getLoginName(), user.getNickName(), user.getShareFileCount(), friendsMap.containsKey(user.getUserId())?1:2,userFile.getName());
+			bo.setShare_dir(userFile.getShareDir());
+			bo.setSub_dir(userFile.getSubDir());
 			result.add(bo);
 		}
 		return result;
