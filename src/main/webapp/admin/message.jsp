@@ -37,9 +37,9 @@
 			    	$(this).removeClass("active-box");
 			    }			    				    	
 		    })			 
-		    if($("#table-list").height()>$(".td-h").height()){
-		    	$(".td-h").css("padding-right","1px");
-		    	$(".thead").css("padding-right","16px");
+		    if($("#table-list").height()<381){		    	
+		    	$(".thead").css("padding-right","0");
+		    	$("#table-list").removeClass("td-b-r-0").addClass("td-b-r-1");			
 		    }
 		})
 		
@@ -100,34 +100,40 @@
 				<label class="chebox-label"><input type="checkbox" id="checkbox"/></label>
 				<button type="button" class="btn btn-default" onclick="del()">删除</button>
 			</p>
-			<div class="col-xs-12 thead">
-			<table class="table table-bordered table-hover text-center td-m" style="border:0;">							
+			<div class="thead">
+				<table class="table table-bordered table-hover text-center td-m row" style="border:0;margin: 0;">							
 				<thead>
 					<tr>					
-						<td class="text-left td-w-23 td-b-0 td-b-l-0" id="up-txt" style="border-left: 0 !important;">更新日期</td>
-						<td class="td-w-46 td-b-0" id="up-link">显示文字 </td>
-						<td class="td-b-0 td-w-25" style="border-right: 0;">链接URL</td>	
+						<td class="text-left col-xs-3 td-b-0 td-b-l-0" id="up-txt" style="border-left: 0 !important;">更新日期</td>
+						<td class="col-xs-5 td-b-0" id="up-link">显示文字 </td>
+						<td class="td-b-0 col-xs-4" style="border-right: 0;">链接URL</td>					
 					</tr>
 				</thead>
 			</table>
 			</div>
-			<div class="col-xs-12 td-h" style="padding-left: 0;">
-				<table class="table table-bordered table-hover text-center td-b-r-0 td-b-l-0" id="table-list">
-					<tbody>
-					<s:iterator var="data" value="newsList">
+			<div class="td-h" style="padding-left: 0;">
+				<table class="table table-bordered table-hover text-center td-b-r-0 td-b-l-0 row" id="table-list" style="margin: 0;">
+					<tbody>	
+					<s:iterator var="data" value="newsList">				
 					<tr>
-						<td class="text-left td-t-0 td-w-25 td-b-l-0 td-p-r">
+						<td class="text-left td-t-0 col-xs-3 td-b-l-0 td-p-r">
 							<label class="chebox-label"><input type="checkbox" value="${data.newsId}" name="ids" /></label><fmt:formatDate value="${data.updatedTime}" type="both" pattern="yyyy.MM.dd"/>
 						</td>
-						<td class="td-t-0 td-w-50"><div class="td-txt">${data.newTitle}</div></td>
-						<td class="td-t-0 td-w-25 td-b-r-0"><div class="td-link">${data.newsUrl}</div></td>										
+						<td class="td-t-0 col-xs-5">
+							<div class="td-txt">${data.newTitle}</div>
+						</td>
+						<td class="td-t-0 col-xs-4 td-b-r-0">
+							<div class="td-link">
+								${data.newsUrl}
+							</div>
+						</td>										
 					</tr>
-				</s:iterator>
+					</s:iterator>
 					</tbody>					
 				</table>
 			</div>	
 		</div>
-		<div class="col-xs-6" style="padding-top: 25px;">
+		<div class="col-xs-6" style="padding-top: 25px;padding-left: 40px;">
 		<form class="form-horizontal" role="form" method="post" action="addnews">
 			<div class="form-group">
 				<label class="col-sm-12 control-label text-left p5 font-weight"><span style="color:#f00404"> * </span>显示文字：：</label>
