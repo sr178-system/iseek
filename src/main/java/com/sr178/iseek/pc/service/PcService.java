@@ -878,7 +878,28 @@ public class PcService {
 		//整体删除
 		userFilesDao.delete(new SqlParamBean("user_id", userId));
 		//批量插入
-		userFilesDao.insertLists(userFileList);
+		try {
+			userFilesDao.insertLists(userFileList);
+		} catch (Exception e) {
+			//有重复ID
+			Map<Long,Long> tmap = new HashMap<Long,Long>();
+			List<UserFiles> tlist = new ArrayList<UserFiles>();
+			for(UserFiles userT:userFileList){
+				if(tmap.containsKey(userT.getFileId())){
+					tlist.add(userT);
+				}else{
+					tmap.put(userT.getFileId(), userT.getFileId());
+				}
+			}
+			
+			for(UserFiles userY:tlist){
+				userFileList.remove(userY);
+			}
+			
+			userFilesDao.insertLists(userFileList);
+			
+		}
+		
 		//更新用户的共享文件个数
 		userDao.updateUserShareFileCount(userId, userFileList.size());
 	}
