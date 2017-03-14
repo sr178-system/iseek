@@ -60,7 +60,7 @@ public class PcAction extends JsonBaseActionSupport {
 	
 	private String key_word;
 	private String file_type;
-	private String stype_type;
+	private String style_type;
 	/**
 	 * 搜索文件
 	 * @return
@@ -72,7 +72,7 @@ public class PcAction extends JsonBaseActionSupport {
 			file_type="0";
 		}
 		
-		return this.renderListResult(pcService.seekFileList(Long.valueOf(super.getTokenId()), key_word, file_type, stype_type));
+		return this.renderListResult(pcService.seekFileList(Long.valueOf(super.getTokenId()), key_word, file_type, style_type));
 	}
 	private long file_id;
 	/**
@@ -141,11 +141,11 @@ public class PcAction extends JsonBaseActionSupport {
 	public void setFile_type(String file_type) {
 		this.file_type = file_type;
 	}
-	public String getStype_type() {
-		return stype_type;
+	public String getStyle_type() {
+		return style_type;
 	}
-	public void setStype_type(String stype_type) {
-		this.stype_type = stype_type;
+	public void setStyle_type(String style_type) {
+		this.style_type = style_type;
 	}
 	public long getFile_id() {
 		return file_id;

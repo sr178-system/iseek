@@ -878,27 +878,31 @@ public class PcService {
 		//整体删除
 		userFilesDao.delete(new SqlParamBean("user_id", userId));
 		//批量插入
-		try {
-			userFilesDao.insertLists(userFileList);
-		} catch (Exception e) {
-			//有重复ID
-			Map<Long,Long> tmap = new HashMap<Long,Long>();
-			List<UserFiles> tlist = new ArrayList<UserFiles>();
-			for(UserFiles userT:userFileList){
-				if(tmap.containsKey(userT.getFileId())){
-					tlist.add(userT);
-				}else{
-					tmap.put(userT.getFileId(), userT.getFileId());
-				}
-			}
-			
-			for(UserFiles userY:tlist){
-				userFileList.remove(userY);
-			}
-			
-			userFilesDao.insertLists(userFileList);
-			
-		}
+		userFilesDao.insertLists(userFileList);
+//		try {
+//			userFilesDao.insertLists(userFileList);
+//		} catch (Exception e) {
+//			LogSystem.info("出现了重复ID的情况");
+//			//有重复ID
+//			Map<Long,Long> tmap = new HashMap<Long,Long>();
+//			List<UserFiles> tlist = new ArrayList<UserFiles>();
+//			for(UserFiles userT:userFileList){
+//				if(tmap.containsKey(userT.getFileId())){
+//					LogSystem.info("fileId="+userT.getFileId()+"重复了，添加到tlist里面！"+userT);
+//					tlist.add(userT);
+//				}else{
+//					tmap.put(userT.getFileId(), userT.getFileId());
+//				}
+//			}
+//			
+//			for(UserFiles userY:tlist){
+//				LogSystem.info("删除列表中的重复id"+userY);
+//				userFileList.remove(userY);
+//			}
+//			
+//			userFilesDao.insertLists(userFileList);
+//			
+//		}
 		
 		//更新用户的共享文件个数
 		userDao.updateUserShareFileCount(userId, userFileList.size());

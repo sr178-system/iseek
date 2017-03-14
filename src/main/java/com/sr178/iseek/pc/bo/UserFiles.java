@@ -79,6 +79,11 @@ public class UserFiles{
 	public UserFiles() {
 		super();
 	}
-	
+	@Override
+	public String toString() {
+		return "UserFiles [userId=" + userId + ", fileId=" + fileId + ", name=" + name + ", shareDir=" + shareDir
+				+ ", subDir=" + subDir + ", searchType=" + searchType + ", searchZj=" + searchZj + ", createdTime="
+				+ createdTime + "]";
+	}
 }
 
