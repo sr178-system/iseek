@@ -1,13 +1,13 @@
 package iseek.test;
 
-//import com.sr178.game.framework.context.ServiceCacheFactory;
+import com.sr178.game.framework.context.ServiceCacheFactory;
 import com.sr178.game.framework.testcore.DaoTest;
-//import com.sr178.iseek.pc.service.PcService;
+import com.sr178.iseek.pc.service.PcService;
 
 public class PcServiceTest extends DaoTest {
 
 	public void testReg() throws Exception{
-//		PcService pcService = ServiceCacheFactory.getService(PcService.class);
+		PcService pcService = ServiceCacheFactory.getService(PcService.class);
 //		
 //		String mobile = "15919820372";
 //		
@@ -32,5 +32,6 @@ public class PcServiceTest extends DaoTest {
 //		
 //		pcService.reg(loginName, tranferPassword, nickName, sex, email, mobile);
 //		pcService.sendMobileVerify("15919820372", 3);
+//		pcService.seekFileList(6, "工", "3", "");
 	}
 }

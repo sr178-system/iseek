@@ -31,34 +31,32 @@ public class UserFilesDao extends IseekDaoBase<UserFiles> {
 		if(fileType.equals("1")){//音频文件
 			sqlBuffer.append("select * from files ");
 			sqlBuffer.append(" where search_type=1 ");
-			
 			if(Strings.isNullOrEmpty(style_type)){
-				sqlBuffer.append(" and id in(select file_id from user_files where name like '%"+keyWorld+"%')");
+				sqlBuffer.append(" and id in(select file_id from user_files where match(name) against('*"+keyWorld+"*' IN BOOLEAN MODE))");
 			}else{
-				sqlBuffer.append(" and id in(select file_id from user_files where name like '%"+keyWorld+"%' and search_type='"+style_type+"')");
+				sqlBuffer.append(" and id in(select file_id from user_files where match(name) against('*"+keyWorld+"*' IN BOOLEAN MODE) and search_type='"+style_type+"')");
 			}
 		}else if(fileType.equals("2")){//压缩文件
 			sqlBuffer.append("select * from files ");
 			sqlBuffer.append(" where search_type=2 ");
 			if(Strings.isNullOrEmpty(style_type)){
-				sqlBuffer.append(" and id in(select file_id from user_files where name like '%"+keyWorld+"%')");
+				sqlBuffer.append(" and id in(select file_id from user_files where match(name) against('*"+keyWorld+"*' IN BOOLEAN MODE))");
 			}else{
-				sqlBuffer.append(" and id in(select file_id from user_files where name like '%"+keyWorld+"%' and search_type='"+style_type+"')");
+				sqlBuffer.append(" and id in(select file_id from user_files where match(name) against('*"+keyWorld+"*' IN BOOLEAN MODE) and search_type='"+style_type+"')");
 			}
 			
 		}else if(fileType.equals("3")){//文件专辑
 			sqlBuffer.append("select * from files ");
 			if(Strings.isNullOrEmpty(style_type)){
-			   sqlBuffer.append(" where id in(select file_id from user_files where search_zj like '%"+keyWorld+"%')");
+			   sqlBuffer.append(" where id in(select file_id from user_files where match(search_zj) against('*"+keyWorld+"*' IN BOOLEAN MODE))");
 			}else{
-				 sqlBuffer.append(" where id in(select file_id from user_files where search_zj like '%"+keyWorld+"%' and search_type='"+style_type+"')");
+				 sqlBuffer.append(" where id in(select file_id from user_files where match(search_zj) against('*"+keyWorld+"*' IN BOOLEAN MODE) and search_type='"+style_type+"')");
 			}
 		}else if(fileType.equals("0")){
-			sqlBuffer.append("select * from files ");
 			if(Strings.isNullOrEmpty(style_type)){
-			sqlBuffer.append(" where id in(select file_id from user_files where search_zj like '%"+keyWorld+"%' union select file_id from user_files where name like '%"+keyWorld+"%')");
+			sqlBuffer.append("select * from files where id in(select file_id from user_files where match(search_zj,name) against('*"+keyWorld+"*' IN BOOLEAN MODE))");
 			}else{
-				sqlBuffer.append(" where id in(select file_id from user_files where search_zj like '%"+keyWorld+"%' and search_type='"+style_type+"'  union select file_id from user_files where name like '%"+keyWorld+"%' and search_type='"+style_type+"')");
+				sqlBuffer.append("select * from files where id in(select file_id from user_files where match(search_zj,name) against('*"+keyWorld+"*' IN BOOLEAN MODE) and search_type='"+style_type+"')");
 			}
 		}else{
 			throw new RuntimeException("错误的fileType="+fileType);
