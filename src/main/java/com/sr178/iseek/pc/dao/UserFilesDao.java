@@ -63,7 +63,7 @@ public class UserFilesDao extends IseekDaoBase<UserFiles> {
 		}else{
 			throw new RuntimeException("错误的fileType="+fileType);
 		}
-		sqlBuffer.append(" order by id desc limit 1000");
+		sqlBuffer.append(" order by src_count desc limit 1000");
 		String sql = sqlBuffer.toString();
 		LogSystem.info("keyWorlds="+keyWorld+",fileType="+fileType+",style_type="+style_type+"|"+"sql = "+sql);
 		return super.getJdbc().getList(sql, Files.class);
@@ -84,7 +84,7 @@ public class UserFilesDao extends IseekDaoBase<UserFiles> {
 	 * @return
 	 */
 	public List<UserFileTemp> getUserFileTempInfo(long userId){
-		String sql = "select f.id,f.hash,f.type,f.size,f.time_span,f.kbps,f.src_count,uf.name,uf.sub_dir,uf.share_dir,uf.created_time from user_files uf left join files f on uf.file_id=f.id where uf.user_id=? ";
+		String sql = "select f.id,f.hash,f.type,f.size,f.time_span,f.kbps,f.src_count,uf.name,uf.sub_dir,uf.share_dir,uf.created_time from user_files uf left join files f on uf.file_id=f.id where uf.user_id=? order by f.src_count desc";
 		return super.getJdbc().getList(sql, UserFileTemp.class,SqlParameter.Instance().withLong(userId));
 	}
 	

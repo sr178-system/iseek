@@ -19,7 +19,7 @@ body{font-family: '微软雅黑'}
     z-index: 9999;
 }
 .custom-navbar-header{
-	width: 112px;
+	width: 120px;
 	background: url(../image/logo.png);
 	background-size: cover;
 	vertical-align: middle;

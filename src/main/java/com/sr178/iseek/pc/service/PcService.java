@@ -750,9 +750,9 @@ public class PcService {
 		if(user.getMemberExpiryDay()==null||user.getMemberExpiryDay().getTime()<new Date().getTime()){
 			throw new ServiceException(1, "会员已过期！");
 		}
-		if(user.getShareFileCount()<10){
-			throw new ServiceException(2, "共享文件个数必须大于等于10个！");
-		}
+//		if(user.getShareFileCount()<10){
+//			throw new ServiceException(2, "共享文件个数必须大于等于10个！");
+//		}
 		List<Files> list = userFilesDao.seekFiles(key_word, file_type, style_type);
 		if(list!=null&&list.size()>0){
 			return createdFilesBOList(list);
