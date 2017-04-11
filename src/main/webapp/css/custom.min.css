@@ -104,9 +104,18 @@ body{font-family: '微软雅黑'}
 .custom-panel-body h1{
 	font-size: 40px !important;
 }
+.custom-panel-primary-zero{
+	border-color: #c8e0f7;
+}
+.custom-panel-primary-zero>.panel-heading {
+    color: #fff;
+    background-color: #c8e0f7;
+    border-color: #c8e0f7;
+}
 .custom-panel-primary{
 	border-color: #747685;
 }
+
 .custom-panel-primary>.panel-heading {
     color: #fff;
     background-color: #747685;
