@@ -33,7 +33,7 @@ public class UserAction extends BasePageActionSupport<User>{
 			endRegDate = now+"31";
 		}
 		adminService.checkPower(super.getUserName(), 3);
-		super.initPage(adminService.getUserList(loginname, nickename,type, startRegDate, endRegDate, super.getToPage(), 10));
+		super.initPage(adminService.getUserList(loginname, nickename,type, startRegDate, endRegDate, super.getToPage(), 30));
 		startRegDate=null;
 		endRegDate= null;
 		return SUCCESS;

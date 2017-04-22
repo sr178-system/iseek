@@ -70,6 +70,8 @@
 
 			});
 		 });
+		
+		
 		</script>		
 		<style type="text/css">
 		.login-layout {
@@ -146,8 +148,9 @@
 		</div>
 	</div>
    </body>
-</html>
-<script type="text/javascript">
+   <script type="text/javascript">
+	$('#userName').bind('input propertychange', function() {
+		$("#passWord").val("");}); 
 		$("#Form").keydown(function(e) {
 			var e = e || event;
 			var code = e.which || e.keyCode;
@@ -178,3 +181,4 @@
 		}
 	});
 </script>
+</html>

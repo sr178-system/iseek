@@ -447,8 +447,11 @@ public class AdminService {
 	 * @param url
 	 */
 	public void updateNotice(String content,String url){
-		ParamCheck.checkString(content, 1, "公告内容不能为空");
+//		ParamCheck.checkString(content, 1, "公告内容不能为空");
 		Notice notice = new Notice();
+		if(content==null){
+			content="";
+		}
 		notice.setNoticeContent(content);
 		notice.setNoticeUrl(url);
 		notice.setCreatedTime(new Date());
