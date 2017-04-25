@@ -24,7 +24,10 @@
 	
 	
 	<package name="pcweb" extends="pcWebAuthInterceptor" namespace="/">
-		 <action name="reg1" class="com.sr178.iseek.pc.action.PcWebNoAuthAction" method="answerQuestion" >
+		<action name="reg1" class="com.sr178.iseek.pc.action.PcWebNoAuthAction" >
+		    <result name="success">/reg.jsp</result>
+		 </action>
+		 <action name="reg" class="com.sr178.iseek.pc.action.PcWebNoAuthAction" method="answerQuestion" >
 		    <result name="success">/reg-1.jsp</result>
 		 </action>
 		 <action name="reg2" class="com.sr178.iseek.pc.action.PcWebNoAuthAction" method="mobileVerify" >

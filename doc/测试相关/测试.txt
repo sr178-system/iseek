@@ -2,7 +2,7 @@ username=dogdog7788
 password=111111
 时间戳=20161018132220
 
-生成的登录加密key=Du7GbVIHanEDoFZx5bj+fDcZmzV1omXZkM0Jnb8trXZ1/fiEawAOIEXcrG34dfoSOhbQxNftr40FGw8w74ERKg==
+生成的登录加密key=yghlMDC4MK80gv84L7VMcMXEuBtL04taDv3jubukEHBiH9/SnhruG19FgtxL1AeVUlho4zqiYo8=
 
 传输key=CAAC92F78774F4BC22DC657FEA7DB748
 
@@ -13,7 +13,7 @@ password=111111
 http://localhost:8083/iseek/api/pcclient/login?login_name=dogdog7788&login_str=Du7GbVIHanEDoFZx5bj+fDcZmzV1omXZkM0Jnb8trXZ1/fiEawAOIEXcrG34dfoSOhbQxNftr40FGw8w74ERKg==
 
 返回：
-{"flag":0,"msg":"success","rc":{"login_ret_str":"GaL30qC5DEYHGKOW+ul+OMrDJfI6OOhBY2ms8\/NpeKeaw2HgVZyccN8167jgXlKkvCKbSO4xPcvNn12roC5yZw==","user_id":6}}
+{"flag":0,"msg":"success","rc":{"login_ret_str":"yghlMDC4MK80gv84L7VMcMXEuBtL04taDv3jubukEHBiH9/SnhruG19FgtxL1AeVUlho4zqiYo8=","user_id":6}}
 
 二、
 获取单点登录字符串

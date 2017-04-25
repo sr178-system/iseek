@@ -13,6 +13,11 @@
 		<link href="../css/fileinput.css" media="all" rel="stylesheet" type="text/css" /> 			
 		<link rel="stylesheet" href="../css/reg-2.css">  	
 		<link rel="stylesheet" href="../css/message3.css"> 		
+		<style type="text/css">
+		
+		.trhover{ background:#f5f5f5; color: #1f73e4;  }
+        .trhover tr{ color: #1f73e4;  } 
+		</style>
 		<script src="../js/jquery.min.js"></script>	
 		<script src="../js/bootstrap.min.js"></script>
 		<script src="../js/fileinput.js" type="text/javascript"></script>
@@ -69,11 +74,11 @@
    </head>
 <body>
 <jsp:include page="/common/dialog.jsp" flush="true"></jsp:include>
-<c:if test="${code==2000}"><script type="text/javascript">print_s("添加成功。",function(){location.href="message";});</script></c:if>
+<c:if test="${code==2000}"><script type="text/javascript">print_s("操作成功。",function(){location.href="message";});</script></c:if>
 <div class="form-horizontal">
 	
 	<div class="form-group">
- 		<label class="col-sm-12 control-label text-left p5 font-weight" style="padding-left:0;">
+ 		<label class="col-sm-12 control-label text-left 	p5 font-weight" style="padding-left:0;">
  			<span style="color:#f00404"> * </span>资讯页大图（图片大小：840x120像素）：
  		</label>
 		<div class="col-sm-4 image-1">
@@ -117,7 +122,9 @@
 					<s:iterator var="data" value="newsList">				
 					<tr>
 						<td class="text-left td-t-0 col-xs-3 td-b-l-0 td-p-r">
-							<label class="chebox-label"><input type="checkbox" value="${data.newsId}" name="ids" /></label><fmt:formatDate value="${data.updatedTime}" type="both" pattern="yyyy.MM.dd"/>
+											<input type="hidden"  name="contenttemp" id="contenttemp" value="${data.newTitle}"/>
+					                        <input type="hidden"  name="urltemp" id="urltemp" value="${data.newsUrl}"/>
+							<label class="chebox-label"><input type="checkbox" value="${data.newsId}" name="ids" id="ids"/></label><fmt:formatDate value="${data.updatedTime}" type="both" pattern="yyyy.MM.dd"/>
 						</td>
 						<td class="td-t-0 col-xs-5">
 							<div class="td-txt">${data.newTitle}</div>
@@ -135,6 +142,7 @@
 		</div>
 		<div class="col-xs-6" style="padding-top: 25px;padding-left: 40px;">
 		<form class="form-horizontal" role="form" method="post" action="addnews">
+		    <input type="hidden"  name="id" id="id"/>
 			<div class="form-group">
 				<label class="col-sm-12 control-label text-left p5 font-weight"><span style="color:#f00404"> * </span>显示文字：：</label>
 				<div class="col-sm-8">
@@ -155,8 +163,27 @@
 	</div>		
 </div>
 <script type="text/javascript">
+
+   $("#table-list tr").click(function() {
+	    id=$(this).find("#ids").val();
+	    content=$(this).find("#contenttemp").val();
+	    url=$(this).find("#urltemp").val();
+	    $("#id").val(id)
+		$("#content").val(content)
+		$("#url").val(url);
+		$("#content").focus().select();
+
+	});
+   
+	$("#table-list tr").hover(function(){
+		$(this).toggleClass("trhover");
+	});
+
 	var imageurl=$("#max-file").attr("value");
 	var minImage=$("#min-file").attr("value");
+	
+	
+	
 	
 	// 资讯大图
 	if(imageurl){

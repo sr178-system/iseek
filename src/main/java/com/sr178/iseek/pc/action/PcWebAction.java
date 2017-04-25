@@ -61,7 +61,7 @@ public class PcWebAction extends BaseActionSupport {
      * 创建订单
      * @return
      */
-	private int month;
+	private int type;
 	private double feePerMonth;
 	public String creatOrder() throws IOException{
 		PcService pcService = ServiceCacheFactory.getService(PcService.class);
@@ -72,7 +72,7 @@ public class PcWebAction extends BaseActionSupport {
 		}else{
 			HttpServletResponse response = ServletActionContext.getResponse();
 			response.setContentType("text/html; charset=UTF-8");
-			String orderId = pcService.creatOrder(super.getUserId(),month);
+			String orderId = pcService.creatOrder(super.getUserId(),type);
 			response.getWriter().println("<!DOCTYPE html><html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><title>支付宝即时到账交易接口</title></head>");
 			String html = pcService.alipayRequest(orderId);
 			response.getWriter().println(html);
@@ -134,11 +134,12 @@ public class PcWebAction extends BaseActionSupport {
 	public void setNewCode(String newCode) {
 		this.newCode = newCode;
 	}
-	public int getMonth() {
-		return month;
+	
+	public int getType() {
+		return type;
 	}
-	public void setMonth(int month) {
-		this.month = month;
+	public void setType(int type) {
+		this.type = type;
 	}
 	public User getUser() {
 		return user;

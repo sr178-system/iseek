@@ -25,6 +25,10 @@ public class PcWebNoAuthAction extends JsonBaseActionSupport {
 	 */
 	private static final long serialVersionUID = 1L;
 	
+	public String execute(){
+		return SUCCESS;
+	}
+	
 	private List<RegQuestion> regQuestions;
 	public String answerQuestion(){
 		PcService pcService = ServiceCacheFactory.getService(PcService.class);

@@ -746,10 +746,10 @@ public class PcService {
 	 */
 	public List<FilesBO> seekFileList(long userId,String key_word,String file_type,String style_type){
 		//判断是否在会员有效期内
-		User user = userDao.get(new SqlParamBean("user_id", userId));
-		if(user.getMemberExpiryDay()==null||user.getMemberExpiryDay().getTime()<new Date().getTime()){
-			throw new ServiceException(1, "会员已过期！");
-		}
+//		User user = userDao.get(new SqlParamBean("user_id", userId));
+//		if(user.getMemberExpiryDay()==null||user.getMemberExpiryDay().getTime()<new Date().getTime()){
+//			throw new ServiceException(1, "会员已过期！");
+//		}
 //		if(user.getShareFileCount()<10){
 //			throw new ServiceException(2, "共享文件个数必须大于等于10个！");
 //		}
@@ -1031,6 +1031,10 @@ public class PcService {
 		//重置验证码信息
 		mobileVerifyDao.resetCode(newMobile);
 	}
+	
+	private static int[] ADD_MONTH_ARRAY = new int[]{-1,1,3,7,15};
+	
+	private static String[] ADD_MONTH_ARRAY_DESC = new String[]{"24小时","包月","包季","半年","包年"};
 	 /**
      * 创建订单
      * @param userId
@@ -1039,7 +1043,7 @@ public class PcService {
      * @param invoiceId
      * @return
      */
-    public String creatOrder(long userId,int month){
+    public String creatOrder(long userId,int type){
     	String orderId = generatorPayOrder();
     	User user = userDao.get(new SqlParamBean("user_id", userId));
     	if(user==null){
@@ -1050,13 +1054,38 @@ public class PcService {
     	if(chargeConfig!=null){
     		feePerMonth = chargeConfig.getFeePerMonth();
     	}
-    	PaymentOrder paymentOrder = new PaymentOrder(orderId, userId, feePerMonth*month, 0, 0, 0, "", null, new Date());
-    	paymentOrder.setNum(month);
+    	
+    	
+    	PaymentOrder paymentOrder = new PaymentOrder(orderId, userId, getAmountByType(type,feePerMonth), 0, 0, 0, "", null, new Date());
+    	paymentOrder.setNum(type);
     	paymentOrder.setPrice(feePerMonth);
     	if(!paymentOrderDao.add(paymentOrder)){
     		throw new ServiceException(2, "创建订单失败！");
     	}
     	return orderId;
+    }
+    /**
+     * 根据类型获取价格
+     * @param type
+     * @param feePerMonth
+     * @return
+     */
+    public double getAmountByType(int type,double feePerMonth){
+    	double amount = 0;
+    	if(type==1){//24小时
+    		amount = Math.ceil(feePerMonth/4.5);
+    	}else if(type==2){
+    		amount = feePerMonth;
+    	}else if(type==3){
+    		amount = Math.ceil(feePerMonth*3*0.9);
+    	}else if(type==4){
+    		amount = Math.ceil(feePerMonth*5);
+    	}else if(type==5){
+    		amount = Math.ceil(feePerMonth*10);
+    	}else{
+    		throw new ServiceException(5000, "不存在的充值类型"+type);
+    	}
+    	return amount;
     }
     
     
@@ -1102,12 +1131,22 @@ public class PcService {
 			if(user!=null){
 				beforVipTime = user.getMemberExpiryDay();
 				Date now = null;
-				if(user.getMemberExpiryDay()!=null){
+				if(user.getMemberExpiryDay()==null){
 					now = new Date();
 				}else{
-					now = user.getMemberExpiryDay();
+					if(user.getMemberExpiryDay().getTime()<new Date().getTime()){
+						now = new Date();
+					}else{
+						now = user.getMemberExpiryDay();
+					}
 				}
-				Date newMemberExpireTime = DateUtils.addDay(now, 31*order.getNum());
+				Date newMemberExpireTime = null;
+				if(order.getNum()==1){
+					newMemberExpireTime	 = DateUtils.addDay(now, 1);
+				}else{
+					newMemberExpireTime = DateUtils.addMonth(now, ADD_MONTH_ARRAY[order.getNum()-1]);
+				}
+				
 				afterVipTime = newMemberExpireTime;
 				result = userDao.updateMemberExpireTime(order.getUserId(), newMemberExpireTime);
 			}else{
@@ -1118,7 +1157,7 @@ public class PcService {
 				return false;
 			}else{
 				//发送消息
-				NoticeBO noticeBo = new NoticeBO(1, "您充值的"+order.getNum()+"个月会员，已到账成功！请注意查看", "");
+				NoticeBO noticeBo = new NoticeBO(1, "您充值的"+ADD_MONTH_ARRAY_DESC[order.getNum()-1]+"会员，已到账成功！请注意查看", "");
 				this.addNotice(order.getUserId()+"", noticeBo);
 				//写充值成功日志
 				PaymentLog log = new PaymentLog();
@@ -1147,9 +1186,9 @@ public class PcService {
         String out_trade_no = orderId;
         PaymentOrder order = paymentOrderDao.get(new SqlParamBean("order_id", orderId));
         //订单名称，必填
-        String subject = "购买Iseek"+order.getNum()+"个月会员";
+        String subject = "购买Iseek"+ADD_MONTH_ARRAY_DESC[order.getNum()-1]+"会员";
         //付款金额，必填
-        String total_fee = "0.1";//order.getAmount()+"";
+        String total_fee = order.getAmount()+"";
         //商品描述，可空
         String body = subject;
 		//////////////////////////////////////////////////////////////////////////////////
@@ -1236,12 +1275,12 @@ public class PcService {
 	}
 	public static void main(String[] args) throws Exception {
 		String clientKey = "6A38719F22424b2d94227923E966F9AC";
-		String decryptLoginStr = clientKey+"dogdog7788"+"20161018132220";
-		
-		
-		PcService pcService = new PcService();
-		
-		String skey = MD5Security.md5_32_Big("5X#6423D79C74b6b"+"111111"+"AB8471%VAED8A76E");
+//		String decryptLoginStr = clientKey+"dogdog7788"+"20161018132220";
+//		
+//		
+//		PcService pcService = new PcService();
+//		
+//		String skey = MD5Security.md5_32_Big("5X#6423D79C74b6b"+"111111"+"AB8471%VAED8A76E");
 		
 		
 //		
@@ -1250,9 +1289,9 @@ public class PcService {
 //		System.out.println("原文=【"+loginStr+"】,加密key为:【"+skey+"】，加密后的值为:【"+afterEntry+"】");
 //		String afterDecry = pcService.decrypt("uHFmPUPPTd8ziI87WOVGIZjAw68myvA807Xrdw/BIJ7CfSijlxGZrczV2Ap/iTNHJg==", skey);
 //		System.out.println("解密key:【"+skey+"】解密后的值为:【"+afterDecry+"】");
-		
-		String dataaseStr = pcService.getDatabasePassword(skey);
-		System.out.println("数据库中的值="+dataaseStr);
+//		System.out.println("解密key:【"+skey+"】");
+//		String dataaseStr = pcService.getDatabasePassword(skey);
+//		System.out.println("数据库中的值="+dataaseStr);
 		
 //		System.out.println(pcService.decrypt("xX4VPDO9Paw09P8 XZJKItzC 7oiYdpWxRDgWIQ5Y2ri 2ojW6dXWcyueKxT6MmA3w==", skey));
 //		
@@ -1289,7 +1328,7 @@ public class PcService {
 //		System.out.println(decrypt(aesStr, md516));
 //		
 //		System.out.println(MD5Security.md5_32_Big("5X#6423D79C74b6b"+"111111"+"AB8471%VAED8A76E"));
-//		System.out.println(encrypt("dogdog7788"+"20161018132220", "CAAC92F78774F4BC22DC657FEA7DB748"));
+		System.out.println(encrypt(clientKey+"dogdog7788"+"20161018132220", "653B325D14E8A91F1A4FAC36D3F874A2"));
 //		List<UpFileBO> list = Lists.newArrayList();
 //		UpFileBO upFileBO1 = new UpFileBO("hash1", 1, "吻别.mp3", 102400l, 1500, 80, "\\我的文档\\我的音乐\\张学友\\", "流行音乐\\抒情歌曲\\");
 //		UpFileBO upFileBO2 = new UpFileBO("hash2", 2, "爱你一万年.wav", 102400l, 1500, 80, "\\我的文档\\我的音乐\\刘德华\\", "流行音乐\\抒情歌曲\\");

@@ -120,7 +120,7 @@
    </head>
 <body>
 <jsp:include page="/common/dialog.jsp" flush="true"></jsp:include>
-<c:if test="${code==2000}"><script type="text/javascript">print_s("修改成功。",function(){location.href="userlist";});</script></c:if>
+<c:if test="${code==2000}"><script type="text/javascript">print_s("修改成功。",function(){location.href="useredit?userid=${userid}";});</script></c:if>
 		<script type="text/javascript">
 			var code = '${code}';
 			if(code!=0&&code!=2000){

@@ -27,13 +27,17 @@ public class MessageAction extends BaseActionSupport {
 		config = adminService.getNewsConfig();
 		return SUCCESS;
 	}
-	
+	private int id;
 	private String content;
 	private String url;
 	public String addNews(){
 		AdminService adminService = ServiceCacheFactory.getService(AdminService.class);
 		adminService.checkPower(super.getUserName(), 8);
+		if(id>0){
+			adminService.editNews(id, content, url);
+		}else{
 		adminService.addNews(content, url);
+		}
 		super.setCode(2000);
 		return SUCCESS;
 	}
@@ -134,5 +138,12 @@ public class MessageAction extends BaseActionSupport {
 		this.attach = attach;
 	}
 
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
 
 }

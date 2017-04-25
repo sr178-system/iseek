@@ -487,6 +487,11 @@ public class AdminService {
 		news.setUpdatedTime(new Date());
 		newsDao.add(news);
 	}
+	
+	public void editNews(int id,String content,String url){
+		ParamCheck.checkString(content, 1, "咨询内容不能为空！");
+		newsDao.updateNews(id, content, url);
+	}
 	/**
 	 * 删除资讯
 	 * @param id
