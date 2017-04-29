@@ -829,83 +829,97 @@ public class PcService {
 		if(Strings.isNullOrEmpty(files)){
 			throw new ServiceException(4, "上传数据为空！files="+files);
 		}
-		
-		List<UpFileBO> upFileBOs = null;
-		try {
-			upFileBOs = JSON.parseArray(files, UpFileBO.class);
-		} catch (Exception e) {
-			throw new ServiceException(3, "json解析失败,files="+files);
-		}
-		
-		List<UserFiles> userFileList = Lists.newArrayList();
-		for(UpFileBO upFileBO:upFileBOs){
-			int searchType = 0;
-			if(upFileBO.getType()==1||upFileBO.getType()==2){
-				searchType = 1;
-			}else if(upFileBO.getType()==3){
-				if(!isCanShareCompress){
-					throw new ServiceException(2,"该用户不能共享压缩包文件，type="+upFileBO.getType());
-				}
-				searchType = 2;
-			}else{
-				throw new ServiceException(1,"不存在的文件类型，type="+upFileBO.getType());
-			}
-			String indexHashTypeSizeTimeSpanKbps="";
+		if (!files.equals("null")) {
+			List<UpFileBO> upFileBOs = null;
 			try {
-				indexHashTypeSizeTimeSpanKbps = MD5Security.md5_32_Big(upFileBO.getHash()+upFileBO.getType()+upFileBO.getSize()+upFileBO.getTime_span()+upFileBO.getKbps());
+				upFileBOs = JSON.parseArray(files, UpFileBO.class);
 			} catch (Exception e) {
-				throw new ServiceException(-1, "MD5加密错误");
+				throw new ServiceException(3, "json解析失败,files=" + files);
 			}
-			Files f = new Files(upFileBO.getHash(), upFileBO.getName(), upFileBO.getType(), upFileBO.getSize(), upFileBO.getTime_span(), upFileBO.getKbps(), 1, new Date(), searchType, indexHashTypeSizeTimeSpanKbps);
-			String[] array = upFileBO.getSub_dir().split("\\\\", 2);
-			String searchStype = "";
-			String searchZj = "";
-			
-			searchStype = array[0];
-			if(array.length>1){
-				searchZj = array[1];
+
+			List<UserFiles> userFileList = Lists.newArrayList();
+			for (UpFileBO upFileBO : upFileBOs) {
+				int searchType = 0;
+				if (upFileBO.getType() == 1 || upFileBO.getType() == 2) {
+					searchType = 1;
+				} else if (upFileBO.getType() == 3) {
+					if (!isCanShareCompress) {
+						throw new ServiceException(2, "该用户不能共享压缩包文件，type=" + upFileBO.getType());
+					}
+					searchType = 2;
+				} else {
+					throw new ServiceException(1, "不存在的文件类型，type=" + upFileBO.getType());
+				}
+				String indexHashTypeSizeTimeSpanKbps = "";
+				try {
+					indexHashTypeSizeTimeSpanKbps = MD5Security.md5_32_Big(upFileBO.getHash() + upFileBO.getType()
+							+ upFileBO.getSize() + upFileBO.getTime_span() + upFileBO.getKbps());
+				} catch (Exception e) {
+					throw new ServiceException(-1, "MD5加密错误");
+				}
+				Files f = new Files(upFileBO.getHash(), upFileBO.getName(), upFileBO.getType(), upFileBO.getSize(),
+						upFileBO.getTime_span(), upFileBO.getKbps(), 1, new Date(), searchType,
+						indexHashTypeSizeTimeSpanKbps);
+				String[] array = upFileBO.getSub_dir().split("\\\\", 2);
+				String searchStype = "";
+				String searchZj = "";
+
+				searchStype = array[0];
+				if (array.length > 1) {
+					searchZj = array[1];
+				}
+				UserFiles userFiles = new UserFiles(userId, 0, upFileBO.getName(), upFileBO.getShare_dir(),
+						upFileBO.getSub_dir(), searchStype, searchZj, new Date());
+				// 如果文件存在 更新引用数量 不存在直接添加并设置userFiles中的文件id
+				addFile(f, userFiles);
+				userFileList.add(userFiles);
 			}
-			UserFiles userFiles = new UserFiles(userId, 0, upFileBO.getName(), upFileBO.getShare_dir(), upFileBO.getSub_dir(), searchStype, searchZj, new Date());
-			//如果文件存在 更新引用数量  不存在直接添加并设置userFiles中的文件id
-			addFile(f, userFiles);
-			userFileList.add(userFiles);
+
+			List<UserFiles> oldUserFiles = userFilesDao.getList(new SqlParamBean("user_id", userId));
+			for (UserFiles useroldFiles : oldUserFiles) {
+				filesDao.decreaseSrcCount(useroldFiles.getFileId());
+			}
+			// 整体删除
+			userFilesDao.delete(new SqlParamBean("user_id", userId));
+			// 批量插入
+			userFilesDao.insertLists(userFileList);
+			// try {
+			// userFilesDao.insertLists(userFileList);
+			// } catch (Exception e) {
+			// LogSystem.info("出现了重复ID的情况");
+			// //有重复ID
+			// Map<Long,Long> tmap = new HashMap<Long,Long>();
+			// List<UserFiles> tlist = new ArrayList<UserFiles>();
+			// for(UserFiles userT:userFileList){
+			// if(tmap.containsKey(userT.getFileId())){
+			// LogSystem.info("fileId="+userT.getFileId()+"重复了，添加到tlist里面！"+userT);
+			// tlist.add(userT);
+			// }else{
+			// tmap.put(userT.getFileId(), userT.getFileId());
+			// }
+			// }
+			//
+			// for(UserFiles userY:tlist){
+			// LogSystem.info("删除列表中的重复id"+userY);
+			// userFileList.remove(userY);
+			// }
+			//
+			// userFilesDao.insertLists(userFileList);
+			//
+			// }
+
+			// 更新用户的共享文件个数
+			userDao.updateUserShareFileCount(userId, userFileList.size());
+		}else{
+			List<UserFiles> oldUserFiles = userFilesDao.getList(new SqlParamBean("user_id", userId));
+			for (UserFiles useroldFiles : oldUserFiles) {
+				filesDao.decreaseSrcCount(useroldFiles.getFileId());
+			}
+			// 整体删除
+			userFilesDao.delete(new SqlParamBean("user_id", userId));
+			// 更新用户的共享文件个数
+			userDao.updateUserShareFileCount(userId, 0);
 		}
-		
-		List<UserFiles> oldUserFiles = userFilesDao.getList(new SqlParamBean("user_id", userId));
-		for(UserFiles useroldFiles:oldUserFiles){
-			filesDao.decreaseSrcCount(useroldFiles.getFileId());
-		}
-		//整体删除
-		userFilesDao.delete(new SqlParamBean("user_id", userId));
-		//批量插入
-		userFilesDao.insertLists(userFileList);
-//		try {
-//			userFilesDao.insertLists(userFileList);
-//		} catch (Exception e) {
-//			LogSystem.info("出现了重复ID的情况");
-//			//有重复ID
-//			Map<Long,Long> tmap = new HashMap<Long,Long>();
-//			List<UserFiles> tlist = new ArrayList<UserFiles>();
-//			for(UserFiles userT:userFileList){
-//				if(tmap.containsKey(userT.getFileId())){
-//					LogSystem.info("fileId="+userT.getFileId()+"重复了，添加到tlist里面！"+userT);
-//					tlist.add(userT);
-//				}else{
-//					tmap.put(userT.getFileId(), userT.getFileId());
-//				}
-//			}
-//			
-//			for(UserFiles userY:tlist){
-//				LogSystem.info("删除列表中的重复id"+userY);
-//				userFileList.remove(userY);
-//			}
-//			
-//			userFilesDao.insertLists(userFileList);
-//			
-//		}
-		
-		//更新用户的共享文件个数
-		userDao.updateUserShareFileCount(userId, userFileList.size());
 	}
 	
 	private void addFile(Files f,UserFiles userFiles){

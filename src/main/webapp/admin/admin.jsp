@@ -153,7 +153,7 @@
 		</div>
 		<div class="col-xs-10">
 			<div class="content">
-		<iframe id="customer" name="customer" frameborder=0 scrolling="no" border=0 width=100% height=100% src="customer"></iframe>
+		<iframe id="customer" name="customer" frameborder=0 scrolling="yes" border=0 width=100% height=100% src="customer"></iframe>
 			</div>								
 		</div>
 	</div>

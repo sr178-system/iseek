@@ -157,3 +157,30 @@ body{font-family: '微软雅黑'}
     color: #a4a4a4;
     font-size: 13px;
 }
+.col-xs-2{
+	width: 20% !important;
+}
+.h-261{
+	height: 190px;
+}
+.odr-btn{
+    width: 95%;
+    background: #ffdf4c !important;
+    border: 0;
+    color: #333 !important;
+    margin-bottom: 15px;
+}
+.font-c{
+	color: #ff8585;
+}
+.m-top{
+	margin-top: 85px;
+}
+.font-18{
+    font-size: 18px;
+    font-family: fantasy;
+    color: #333;
+}
+.border-cus{
+	border-color: #747685 !important;
+}

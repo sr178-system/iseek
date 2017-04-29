@@ -103,7 +103,7 @@ ul,li{
     overflow: auto;
     padding-right: 0px;
     border-bottom: 1px solid #ccc;
-   
+    margin-bottom: 25px;
 }
 .thead {
     padding-right: 16px;
@@ -185,10 +185,12 @@ ul,li{
 .td-txt {
     word-wrap: break-word;
     margin: 0 auto;
+    word-break: break-all;
 }
 .td-link {
-    width: 114px;
     word-wrap: break-word;
+    text-align: center;
+    word-break: break-all;
 }
 .table-bordered{
 	border: 0;
