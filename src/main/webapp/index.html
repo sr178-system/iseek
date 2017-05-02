@@ -131,7 +131,7 @@
 				        <h1 class="custom-font-bold">8元</h1>
 				        
 				    </div>
-				    <a href="javascript:alert('注册会员才能购买，点击确定注册成为会员。');" class="btn btn-primary btn-lg odr-btn">立即购买</a>
+				    <a href="javascript:alert('注册会员才能购买，点击确定注册成为会员。');" class="btn btn-primary btn-lg odr-btn" data-toggle="modal" data-target="#myModal">立即购买</a>
 				</div>
 			</div>			
 			<div class="col-xs-2">
@@ -143,7 +143,7 @@
 				    	<p class="custom-text-center">1个月使用权限</p>
 				        <h1 class="custom-font-bold">36元</h1>				        
 				    </div>
-				    <a href="javascript:alert('注册会员才能购买，点击确定注册成为会员。');" class="btn btn-primary btn-lg odr-btn">立即购买</a>
+				    <a href="javascript:alert('注册会员才能购买，点击确定注册成为会员。');" class="btn btn-primary btn-lg odr-btn" data-toggle="modal" data-target="#myModal">立即购买</a>
 				</div>
 			</div>
 			<div class="col-xs-2">
@@ -156,7 +156,7 @@
 				        <h1 class="custom-font-bold">98元</h1>
 				        <p class="custom-text-center">折合每月32元</p>				        
 				    </div>
-				    <a href="javascript:alert('注册会员才能购买，点击确定注册成为会员。');" class="btn btn-primary btn-lg odr-btn">立即购买</a>
+				    <a href="javascript:alert('注册会员才能购买，点击确定注册成为会员。');" class="btn btn-primary btn-lg odr-btn" data-toggle="modal" data-target="#myModal">立即购买</a>
 				</div>
 			</div>
 			<div class="col-xs-2">
@@ -170,7 +170,7 @@
 				        <p class="custom-text-center font-c">送一个月</p>
 				        <p class="custom-text-center">折合每月25元</p>				        
 				    </div>
-				    <a href="javascript:alert('注册会员才能购买，点击确定注册成为会员。');" class="btn btn-primary btn-lg odr-btn">立即购买</a>
+				    <a href="javascript:alert('注册会员才能购买，点击确定注册成为会员。');" class="btn btn-primary btn-lg odr-btn" data-toggle="modal" data-target="#myModal">立即购买</a>
 				</div>
 			</div>
 			<div class="col-xs-2">
@@ -184,7 +184,7 @@
 				        <p class="custom-text-center font-c">送三个月</p>
 				        <p class="custom-text-center">折合每月24元</p>				        
 				    </div>
-				    <a href="javascript:alert('注册会员才能购买，点击确定注册成为会员。');" class="btn btn-primary btn-lg odr-btn">立即购买</a>
+				    <a href="javascript:alert('注册会员才能购买，点击确定注册成为会员。');" class="btn btn-primary btn-lg odr-btn" data-toggle="modal" data-target="#myModal">立即购买</a>
 				</div>
 			</div>
 		</div>	
@@ -195,5 +195,25 @@
 	<div class="panel-footer custom-panel-footer text-center">
 		<p>Copyright ©i-Seek. All Rights Reserved.    <a href="http://gdcainfo.miitbeian.gov.cn" target="_blank">粤ICP备16112347号</a></p>
 	</div>
+	
+	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="width: 370px;position: absolute;left: 50%;margin-left: -190px;top: 50%;margin-top: -150px;">
+        <div class="modal-content" style="height: 187px;padding-top: 40px;">       
+            <div class="modal-body" style="text-align: center;font-size: 16px;">注册会员才能购买，点击确定注册成为会员。</div>
+            <div class="modal-footer" style="text-align: center;border: 0;">
+                <button type="button" class="btn btn-primary btn-lg odr-btn" data-dismiss="modal" style="width: 110px" name="goon1" id="goon1">确定</button>            
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>	
+<script type="text/javascript">
+		$(function(){
+			$('#goon1').click(function(){
+				window.location.href="/reg1"; 
+			});
+		});
+		
+		
+		</script>
    </body>
 </html>
