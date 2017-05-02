@@ -129,8 +129,8 @@
 </div>
 <div class="container">
 <s:iterator var="data" value="regQuestions">
-	<label for="name" class="font-weight">${data.question}</label>
-	<div class="radio radio-margin">
+	<label for="name" class="font-weight" style="margin-left: 24%;">${data.question}</label>
+	<div class="radio radio-margin" style="margin-left: 24%;">
 		<label class="checkbox-inline">
 			<input type="radio" name="${data.id}" id="${data.id}" value='<c:if test="${data.rightAnswer=='1'}">ok</c:if>'> ${data.answerOne}
 		</label>
@@ -150,7 +150,7 @@
 	</div>
 </s:iterator>	
 	<div class="page-header"></div>
-	<button type="button" class="btn btn-primary" name="goon" id="goon">继续</button>
+	<button type="button" class="btn btn-primary" name="goon" id="goon" style="margin-left: 45%;">继续</button>
 </div>
 <div class="footer">
 <!-- 	<div class="panel-footer custom-panel-footer text-center">

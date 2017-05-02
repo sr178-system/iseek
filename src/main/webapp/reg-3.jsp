@@ -182,8 +182,8 @@
 	    <a href="javascript:;" class="custom-font-14 font-color">填写资料</a>
 	</div>	
 </div>
-<div class="container">
 <form class="form-horizontal" role="form" method="post" action="reg3?st=1&mobile=${mobile}">
+<div class="container" style="margin-left: 35%;">
 	<div class="form-group">
 		<label for="username" class="col-sm-2 control-label">登陆名：</label>
 		<div class="col-sm-3">
@@ -224,11 +224,13 @@
 		<div class="col-sm-3">
 			<input type="text" class="form-control" id="email" name="email" placeholder="请输入邮箱地址">
 		</div>		
-	</div>		
+	</div>
+	</div>
+	<div class="container">		
 	<div class="page-header"></div>
-	<button type="submit" class="btn btn-primary">继续</button>
+	<button type="submit" class="btn btn-primary"  style="margin-left: 35%;">继续</button>
+    </div>
 </form>
-</div>
 <div class="footer">
 <!-- 	<div class="panel-footer custom-panel-footer text-center">
 		<p>Copyright ©i-Seek. All Rights Reserved.    京ICP证080047号    京公网安备11000002000006号</p>

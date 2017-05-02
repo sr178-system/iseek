@@ -171,8 +171,9 @@
 	    <a href="javascript:;" class="custom-font-14 font-color">验证手机</a>
 	</div>	
 </div>
-<div class="container">
-<form class="form-horizontal"  role="form">
+
+<form class="form-horizontal"  role="form" >
+<div class="container" style="margin-left: 35%;">
 	<div class="form-group">
 		<label for="mobile" class="col-sm-2 control-label">手机号码：</label>
 		<div class="col-sm-3">
@@ -181,16 +182,19 @@
 		<a href="javascript:;" class="btn btn-default" id="send-code">发送验证码</a>
 	</div>
 
-	<div class="form-group">
+	<div class="form-group" >
 		<label for="code" class="col-sm-2 control-label">短信验证码：</label>
 		<div class="col-sm-3">
 			<input type="text" class="form-control" id="code" name="code" placeholder="请输入手机短信验证码">
 		</div>
 	</div>
+	</div>
+	<div class="container">
 	<div class="page-header"></div>
-	<button type="button" class="btn btn-primary" id="goon" name="goon">继续</button>
+	<button type="button" class="btn btn-primary" id="goon" name="goon" style="margin-left: 40%;">继续</button>
+	</div>
 </form>
-</div>
+
 <div class="footer">
 <!-- 	<div class="panel-footer custom-panel-footer text-center">
 		<p>Copyright ©i-Seek. All Rights Reserved.    京ICP证080047号    京公网安备11000002000006号</p>
