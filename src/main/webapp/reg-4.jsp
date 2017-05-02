@@ -78,11 +78,11 @@
 		</div>
 		<div class="col-xs-4"></div>
 	</div>
-	<div class="row padding-60">
+	<div class="row padding-60" style="margin-left: 12%;">
 		<div class="col-xs-3"></div>
 		<div class="col-xs-6 text-center">
-			<p class="font-14 custom-font-14">感谢您注册 i-Seek！</p>
-			<p class="font-14 custom-font-14">请妥善保管登录名、密码，登录 i-Seek 客户端，开启您的音乐分享之旅吧！</p>
+			<p class="font-14 custom-font-14">请登录软件界面后购买会员激活您的账号。</p>
+			<p class="font-14 custom-font-14">如有疑问，请联系客服咨询。</p>
 		</div>
 		<div class="col-xs-3"></div>
 	</div>	

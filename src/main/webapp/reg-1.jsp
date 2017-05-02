@@ -150,7 +150,7 @@
 	</div>
 </s:iterator>	
 	<div class="page-header"></div>
-	<button type="button" class="btn btn-primary" name="goon" id="goon" style="margin-left: 45%;">继续</button>
+	<button type="button" class="btn btn-primary" name="goon" id="goon" style="margin-left: 48%;">继续</button>
 </div>
 <div class="footer">
 <!-- 	<div class="panel-footer custom-panel-footer text-center">

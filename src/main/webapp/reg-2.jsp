@@ -191,7 +191,7 @@
 	</div>
 	<div class="container">
 	<div class="page-header"></div>
-	<button type="button" class="btn btn-primary" id="goon" name="goon" style="margin-left: 40%;">继续</button>
+	<button type="button" class="btn btn-primary" id="goon" name="goon" style="margin-left: 45%;">继续</button>
 	</div>
 </form>
 

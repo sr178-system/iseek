@@ -183,7 +183,7 @@
 	</div>	
 </div>
 <form class="form-horizontal" role="form" method="post" action="reg3?st=1&mobile=${mobile}">
-<div class="container" style="margin-left: 35%;">
+<div class="container" style="margin-left: 40%;">
 	<div class="form-group">
 		<label for="username" class="col-sm-2 control-label">登陆名：</label>
 		<div class="col-sm-3">
@@ -228,7 +228,7 @@
 	</div>
 	<div class="container">		
 	<div class="page-header"></div>
-	<button type="submit" class="btn btn-primary"  style="margin-left: 35%;">继续</button>
+	<button type="submit" class="btn btn-primary"  style="margin-left: 48%;">继续</button>
     </div>
 </form>
 <div class="footer">

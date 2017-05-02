@@ -103,9 +103,9 @@
 	<p class="text-center font-16 font-weight font-weight-p"><font size='30'>敬告</font></p>
 </div>
 <div class="container">
-      <p style="margin-left: 35%;">尊敬的用户，欢迎使用i-Seek DJ产品.</p><p style="margin-left: 35%;">本产品是提供给专业DJ,制作人作交流使用的软件，并不对行业外的人士开放.</p><p style="margin-left: 35%;">如果不是相关行业专业人士请勿注册使用我们的产品。</p>
+      <p style="margin-left: 35%;">尊敬的用户，欢迎使用i-Seek DJ产品。</p><p style="margin-left: 35%;">本产品是提供给专业DJ,制作人作交流使用的软件，并不对行业外的人士开放。</p><p style="margin-left: 35%;">如果不是相关行业专业人士请勿注册使用我们的产品。</p>
 	<div class="page-header"></div>
-	<a href="reg"><button type="button" class="text-center btn btn-primary" style="margin-left: 45%;">知道了</button></a>
+	<a href="reg"><button type="button" class="text-center btn btn-primary" style="margin-left: 46%;">知道了</button></a>
 </div>
 <div class="footer">
 <!-- 	<div class="panel-footer custom-panel-footer text-center">
