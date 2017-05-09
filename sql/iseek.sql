@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50624
 File Encoding         : 65001
 
-Date: 2016-11-17 18:02:22
+Date: 2017-05-09 16:20:50
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -35,8 +35,8 @@ CREATE TABLE `admin_user` (
 -- ----------------------------
 -- Records of admin_user
 -- ----------------------------
-INSERT INTO `admin_user` VALUES ('1', 'admin', '超级管理员2', '2', 'mExY8fmqBhwdQCPOwPYxmswu2ES2Nxhdmr5ZFQO8gM6KJCUWxKs9W+Buw1Mf9lL5', '0', '11111111', '2016-11-17 17:50:37', '2016-11-07 18:03:12');
-INSERT INTO `admin_user` VALUES ('3', 'dogdog7788', '潮哥', '1', 'mExY8fmqBhwdQCPOwPYxmswu2ES2Nxhdmr5ZFQO8gM6KJCUWxKs9W+Buw1Mf9lL5', '0', '10100000', '2016-11-17 17:52:05', '2016-11-17 17:33:26');
+INSERT INTO `admin_user` VALUES ('1', 'admin', '超级管理员2', '2', 'oE8xVlOOZKWa4pWQUjUj7XzrgCzDbVF1THpEhv+BNBI=', '0', '11111111', '2017-05-09 15:56:16', '2016-11-07 18:03:12');
+INSERT INTO `admin_user` VALUES ('3', 'dogdog7788', '潮哥', '1', 'oE8xVlOOZKWa4pWQUjUj7XzrgCzDbVF1THpEhv+BNBI=', '0', '10100000', '2016-11-18 16:35:07', '2016-11-17 17:33:26');
 
 -- ----------------------------
 -- Table structure for charge_config
@@ -104,9 +104,9 @@ CREATE TABLE `mobile_verify` (
 -- ----------------------------
 -- Records of mobile_verify
 -- ----------------------------
-INSERT INTO `mobile_verify` VALUES ('13507418135', '628522', '0', '2016-11-05 11:56:24', '2016-11-05 11:46:41');
+INSERT INTO `mobile_verify` VALUES ('13507418135', '934208', '0', '2016-12-27 12:28:46', '2016-11-05 11:46:41');
 INSERT INTO `mobile_verify` VALUES ('13534277314', '733700', '0', '2016-11-05 11:48:23', '2016-11-04 13:33:51');
-INSERT INTO `mobile_verify` VALUES ('15919820372', '118613', '1', '2016-11-05 14:47:26', '2016-10-29 12:02:15');
+INSERT INTO `mobile_verify` VALUES ('15919820372', null, '0', null, '2016-10-29 12:02:15');
 
 -- ----------------------------
 -- Table structure for news
@@ -119,7 +119,7 @@ CREATE TABLE `news` (
   `updated_time` datetime NOT NULL,
   `created_time` datetime NOT NULL,
   PRIMARY KEY (`news_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of news
@@ -127,13 +127,17 @@ CREATE TABLE `news` (
 INSERT INTO `news` VALUES ('1', '123', 'http://adfasdf.x', '2016-10-19 16:08:10', '2016-10-19 16:08:13');
 INSERT INTO `news` VALUES ('2', '456', 'http://sadfasf', '2016-10-19 16:10:59', '2016-10-19 16:11:02');
 INSERT INTO `news` VALUES ('3', '订单的', '打发', '2016-11-15 12:49:45', '2016-11-15 12:49:45');
-INSERT INTO `news` VALUES ('4', '新加新闻', 'http://www.baidu.com', '2016-11-15 12:50:41', '2016-11-15 12:50:41');
+INSERT INTO `news` VALUES ('4', '新加新闻12', 'http://www.baidu.com.cc', '2016-11-15 12:50:41', '2016-11-15 12:50:41');
 INSERT INTO `news` VALUES ('5', '2', '2', '2016-11-15 12:50:56', '2016-11-15 12:50:56');
 INSERT INTO `news` VALUES ('6', '3', '4', '2016-11-15 12:50:59', '2016-11-15 12:50:59');
 INSERT INTO `news` VALUES ('7', '123', '1231', '2016-11-17 15:55:00', '2016-11-17 15:55:00');
 INSERT INTO `news` VALUES ('8', '123', '1231', '2016-11-17 15:55:04', '2016-11-17 15:55:04');
 INSERT INTO `news` VALUES ('11', '123', '123', '2016-11-17 15:58:19', '2016-11-17 15:58:19');
 INSERT INTO `news` VALUES ('12', '123', '123', '2016-11-17 16:01:37', '2016-11-17 16:01:37');
+INSERT INTO `news` VALUES ('13', '123', '123', '2017-03-06 18:28:04', '2017-03-06 18:28:04');
+INSERT INTO `news` VALUES ('14', '123', '1234', '2017-03-06 18:28:10', '2017-03-06 18:28:10');
+INSERT INTO `news` VALUES ('15', '123', '123', '2017-03-06 18:29:27', '2017-03-06 18:29:27');
+INSERT INTO `news` VALUES ('16', '223', '4444', '2017-04-25 12:25:04', '2017-04-25 12:25:04');
 
 -- ----------------------------
 -- Table structure for news_config
@@ -162,7 +166,7 @@ CREATE TABLE `notice` (
   `notice_url` varchar(512) NOT NULL,
   `created_time` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of notice
@@ -170,7 +174,9 @@ CREATE TABLE `notice` (
 INSERT INTO `notice` VALUES ('1', '你好', 'http://www.baidu.com', '2016-11-04 14:22:39');
 INSERT INTO `notice` VALUES ('2', '公告2', 'http://www.google.com', '2016-11-04 14:23:32');
 INSERT INTO `notice` VALUES ('3', '最新公告内容', 'http://www.google.com', '2016-11-12 17:18:21');
-INSERT INTO `notice` VALUES ('4', '最新公告内容2', '', '2016-11-12 17:18:43');
+INSERT INTO `notice` VALUES ('4', '', '', '2016-11-12 17:18:43');
+INSERT INTO `notice` VALUES ('5', '', '', '2017-04-22 12:09:38');
+INSERT INTO `notice` VALUES ('6', '213', '', '2017-04-22 12:09:52');
 
 -- ----------------------------
 -- Table structure for payment_log
@@ -217,7 +223,7 @@ CREATE TABLE `payment_order` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `order_id` (`order_id`),
   KEY `user_id` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of payment_order
@@ -225,6 +231,11 @@ CREATE TABLE `payment_order` (
 INSERT INTO `payment_order` VALUES ('1', 'ISK201611051234571001', '6', '150.00', '0', '0', '0', '', '6', '25', null, '2016-11-05 12:34:57');
 INSERT INTO `payment_order` VALUES ('2', 'ISK201611051235311002', '6', '25.00', '0', '0', '0', '', '1', '25', null, '2016-11-05 12:35:32');
 INSERT INTO `payment_order` VALUES ('3', 'ISK201611051251211001', '6', '25.00', '1', '0', '1', '2016110521001004480233730337', '1', '25', null, '2016-11-05 12:51:22');
+INSERT INTO `payment_order` VALUES ('4', 'ISK201704251415241001', '6', '280.00', '0', '0', '0', '', '5', '28', null, '2017-04-25 14:15:25');
+INSERT INTO `payment_order` VALUES ('5', 'ISK201704251415391002', '6', '140.00', '0', '0', '0', '', '4', '28', null, '2017-04-25 14:15:40');
+INSERT INTO `payment_order` VALUES ('6', 'ISK201704251415481003', '6', '76.00', '0', '0', '0', '', '3', '28', null, '2017-04-25 14:15:49');
+INSERT INTO `payment_order` VALUES ('7', 'ISK201704251415541004', '6', '28.00', '0', '0', '0', '', '2', '28', null, '2017-04-25 14:15:55');
+INSERT INTO `payment_order` VALUES ('8', 'ISK201704251415591005', '6', '7.00', '0', '0', '0', '', '1', '28', null, '2017-04-25 14:16:00');
 
 -- ----------------------------
 -- Table structure for reg_question
@@ -239,15 +250,14 @@ CREATE TABLE `reg_question` (
   `answer_four` varchar(64) NOT NULL,
   `right_answer` varchar(16) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of reg_question
 -- ----------------------------
-INSERT INTO `reg_question` VALUES ('1', '你是男是女？', '男', '女', '是男是女', '非男非女', '4');
-INSERT INTO `reg_question` VALUES ('2', '你最喜欢的人是谁？', '凤姐', '芙蓉姐姐', 'TFBOYS', '刘德华', '4');
-INSERT INTO `reg_question` VALUES ('3', '你最喜欢的体育项目？', '排球', '篮球', '足球', '游泳', '4');
-INSERT INTO `reg_question` VALUES ('4', '杨过和小龙女最后生了几个孩子？', '1个', '2个', '3个', '0个', '4');
+INSERT INTO `reg_question` VALUES ('1', '问题一 ：  大部分酒吧DJ台使用的声卡是哪个品牌？', '1、Traktor', '2、M-Audio', '3、Final Scratch', '4、Serato Rane ', '4');
+INSERT INTO `reg_question` VALUES ('2', '问题二 ：  S L软件的转盘界面上可以设定几个CUE点？', '1、1个', '2、3个', '3、5个', '4、8个', '3');
+INSERT INTO `reg_question` VALUES ('3', '问题三 ： 酒吧DJ台上大部分配备使用的CD播放机是什么品牌？', '1、Pioneer ', '2、Denon ', '3、Numark', '4、VOXOA', '1');
 
 -- ----------------------------
 -- Table structure for user
@@ -261,7 +271,7 @@ CREATE TABLE `user` (
   `pass_word` varchar(512) NOT NULL,
   `mobile` varchar(32) NOT NULL COMMENT '手机号码',
   `email` varchar(128) DEFAULT NULL COMMENT '邮箱',
-  `member_expiry_day` date DEFAULT NULL COMMENT '会员到期日期',
+  `member_expiry_day` datetime DEFAULT NULL COMMENT '会员到期日期',
   `status` int(11) NOT NULL COMMENT '账户状态 0 正常   1被封号',
   `share_compress` int(11) NOT NULL DEFAULT '2' COMMENT '2不共享压缩包  1共享压缩包',
   `share_file_count` int(11) unsigned zerofill NOT NULL DEFAULT '00000000000' COMMENT '共享文件个数',
@@ -270,14 +280,12 @@ CREATE TABLE `user` (
   `created_time` datetime NOT NULL COMMENT '用户创建日期',
   PRIMARY KEY (`user_id`),
   KEY `login_name-nick` (`login_name`,`nick_name`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of user
 -- ----------------------------
-INSERT INTO `user` VALUES ('6', 'dogdog7788', '潮哥2', '2', 'mExY8fmqBhwdQCPOwPYxmswu2ES2Nxhdmr5ZFQO8gM6KJCUWxKs9W+Buw1Mf9lL5', '13507418135', 'dogdog7788@qq.com', '2016-12-15', '0', '1', '00000000010', '2016-11-04 13:20:23', 'CAAC92F78774F4BC22DC657FEA7DB748', '2016-11-03 15:11:38');
-INSERT INTO `user` VALUES ('10', 'fiona', '小明', '1', 'mExY8fmqBhwdQCPOwPYxmswu2ES2Nxhdmr5ZFQO8gM6KJCUWxKs9W+Buw1Mf9lL5', '15919820372', 'dogdog7788@qq.com', '2016-11-09', '0', '1', '00000000000', null, null, '2016-11-12 14:02:48');
-INSERT INTO `user` VALUES ('11', 'fiona2', '22', '2', 'mExY8fmqBhwdQCPOwPYxmswu2ES2Nxhdmr5ZFQO8gM6KJCUWxKs9W+Buw1Mf9lL5', '13534277314', 'service@submsg.cn', null, '0', '1', '00000000000', null, null, '2016-11-12 14:09:23');
+INSERT INTO `user` VALUES ('6', 'dogdog7788', '潮哥', '1', 'oE8xVlOOZKWa4pWQUjUj7XzrgCzDbVF1THpEhv+BNBI=', '15919820372', 'dogdog7788@qq.com', '2017-05-09 23:59:59', '0', '2', '00000000000', '2017-04-25 13:23:25', 'BA21240CA9F4695AEF288B54DE3A64D5', '2017-04-25 13:20:47');
 
 -- ----------------------------
 -- Table structure for user_files
@@ -295,7 +303,8 @@ CREATE TABLE `user_files` (
   UNIQUE KEY `user_id,file_id` (`user_id`,`file_id`),
   KEY `search_type` (`search_type`),
   FULLTEXT KEY `search_zj` (`search_zj`),
-  FULLTEXT KEY `name` (`name`)
+  FULLTEXT KEY `name` (`name`),
+  FULLTEXT KEY `search_zj_name` (`name`,`search_zj`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
@@ -312,7 +321,7 @@ INSERT INTO `user_files` VALUES ('6', '21', '爱你一万年7.wav', '\\我的文
 INSERT INTO `user_files` VALUES ('6', '22', '一起跳舞8.mp3', '\\我的文档\\我的音乐\\黎明\\', '流行音乐\\抒情歌曲\\', '流行音乐', '抒情歌曲\\', '2016-11-04 14:19:50');
 INSERT INTO `user_files` VALUES ('6', '23', '危城9.mp3', '\\我的文档\\我的音乐\\郭富城\\', '流行音乐\\抒情歌曲\\', '流行音乐', '抒情歌曲\\', '2016-11-04 14:19:50');
 INSERT INTO `user_files` VALUES ('6', '24', '工具10.zip', '\\我的文档\\我的音乐\\工具集\\', '工具\\好用的工具\\', '工具', '好用的工具\\', '2016-11-04 14:19:50');
-INSERT INTO `user_files` VALUES ('7', '24', '工具10.zip', '\\我的文档\\我的音乐\\工具集\\', '工具\\好用的工具\\', '工具', '好用的工具\\', '2016-11-04 14:19:50');
+INSERT INTO `user_files` VALUES ('7', '12', '工具10.zip', '\\我的文档\\我的音乐\\工具集\\', '工具\\好用的工具\\', '工具', '好用的工具\\', '2016-11-04 14:19:50');
 
 -- ----------------------------
 -- Table structure for user_friends
