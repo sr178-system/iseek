@@ -338,7 +338,8 @@ public class AdminService {
 		}
 		Date memberExpireTime = null;
 		if(!Strings.isNullOrEmpty(memberExpireTimeStr)){
-			memberExpireTime = DateUtils.StringToDate(memberExpireTimeStr, "yyyy-MM-dd");
+			memberExpireTimeStr = memberExpireTimeStr +" 23:59:59";
+			memberExpireTime = DateUtils.StringToDate(memberExpireTimeStr, "yyyy-MM-dd HH:mm:ss");
 		}
 		userDao.updateUserInfoByAdmin(userId, nickerName, email,mobile, sex, password, memberExpireTime);
 	}
