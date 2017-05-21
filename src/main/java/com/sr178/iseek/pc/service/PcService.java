@@ -1100,6 +1100,7 @@ public class PcService {
     		throw new ServiceException(5000, "不存在的充值类型"+type);
     	}
     	return amount;
+//    	return 0.01d;
     }
     
     
