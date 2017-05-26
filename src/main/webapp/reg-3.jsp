@@ -45,11 +45,11 @@
 			             notEmpty: {//非空验证：提示消息
 			                 message: '登陆名不能为空'
 			             },
-			             // stringLength: {
-			             //     min: 6,
-			             //     max: 30,
-			             //     message: '用户名长度必须在6到30之间'
-			             // },
+			             stringLength: {
+			                 min: 5,
+			                 max: 30,
+			                 message: '用户名长度必须在5到30之间'
+			              },
 			             // threshold :  6 , //有6字符以上才发送ajax请求，（input中输入一个字符，插件会向服务器发送一次，设置限制，6字符以上才开始）
 			             // remote: {//ajax验证。server result:{"valid",true or false} 向服务发送当前input name值，获得一个json数据。例表示正确：{"valid",true}  
 			             //     url: 'exist2.do',//验证地址
@@ -66,8 +66,8 @@
 			             //      */
 			             // },
 			             regexp: {
-			                 regexp: /^[a-zA-Z0-9_\.]+$/,
-			                 message: '用户名由数字字母下划线和.组成'
+			                 regexp: /^[a-zA-Z0-9]+$/,
+			                 message: '用户名由数字或字母组成'
 			             }
 			         }
 			        },

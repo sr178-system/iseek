@@ -170,6 +170,17 @@ public class PcService {
 	}
 	
 	/**
+	 * 检查手机号是否已经被注册
+	 * @param mobile
+	 */
+	public void verifyMobile(String mobile){
+		User user = userDao.get(new SqlParamBean("mobile", mobile));
+		if(user!=null){
+			throw new ServiceException(1,"手机号码已被注册！");
+		}
+	}
+	
+	/**
 	 * 256位aes加密
 	 * @param encryptStr
 	 * @param key32
@@ -340,21 +351,14 @@ public class PcService {
  		String decryptLoginStr = decrypt(loginStr, truePassword);
  		LogSystem.info("loginStr解密后的值为:["+decryptLoginStr+"]");
  		if(decryptLoginStr==null){
- 			Integer times = userWrongPasswordTimes.getIfPresent(user.getUserId()+"");
- 			if(times==null){
- 				times=1;
- 			}else{
- 				times = times+1;
- 			}
- 			if(times>10){
- 				userWrongPasswordDate.put(user.getUserId()+"", new Date());
- 			}
+ 			setWrongPassword(user.getUserId()+"");
  			throw new ServiceException(4, "密码错误");
  		}
  		String clientKey = decryptLoginStr.substring(0, 32);
 // 		String time = decryptLoginStr.substring(decryptLoginStr.length()-14,decryptLoginStr.length());
  		String loginUserName = decryptLoginStr.substring(32, decryptLoginStr.length()-14);
 		if(!loginUserName.equals(userName)){
+			setWrongPassword(user.getUserId()+"");
 			throw new ServiceException(6, "加密串中的用户名和要登录的用户名不一致！");
 		}
 		
@@ -382,6 +386,20 @@ public class PcService {
         //会员过期提醒
         sendMemberExpiryNotice(user.getUserId(), user);
 		return result;
+	}
+	
+	private void setWrongPassword(String userId){
+		Integer times = userWrongPasswordTimes.getIfPresent(userId);
+			if(times==null){
+				times=1;
+			}else{
+				times = times+1;
+			}
+			if(times>10){
+				userWrongPasswordDate.put(userId, new Date());
+			}else{
+				userWrongPasswordTimes.put(userId, times);
+			}
 	}
 	
 	private static final long CODE_EXPIRE_TIME = 10*60*1000;//验证码过期时间 10分钟
@@ -462,7 +480,7 @@ public class PcService {
 				throw new ServiceException(2,"数据更新失败，请重试！");
 			}
 		}else{
-			throw new ServiceException(1,"短信发送失败！同一个手机号不能反复发送过多短信，验证码一分钟只能下发一条一个小时三条!");
+			throw new ServiceException(1,"短信发送失败！不能向同一个手机号反复发送过多短信。");
 		}
 		return randomString;
 	}

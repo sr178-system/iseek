@@ -59,6 +59,7 @@ public class PcWebNoAuthAction extends JsonBaseActionSupport {
 	public String sendSms(){
 		this.setErrorResult("json");
 		PcService pcService = ServiceCacheFactory.getService(PcService.class);
+		pcService.verifyMobile(mobile);
 		return this.renderKeyValueResult("verifyCode", pcService.sendMobileVerify(mobile,type));
 	}
 	
